@@ -20,6 +20,11 @@
 
     <modules>
         <module>daily-bill-db</module>
+        <module>daily-bill-api</module>
+        <module>daily-bill-domain</module>
+        <module>daily-bill-dao</module>
+        <module>daily-bill-service</module>
+        <module>daily-bill-web</module>
     </modules>
     <build>
         <plugins>
@@ -45,6 +50,16 @@
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.1-901-1.jdbc4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
         </dependency>
     </dependencies>
 </project>

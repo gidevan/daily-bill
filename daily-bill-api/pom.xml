@@ -17,5 +17,12 @@
         <artifactId>bill</artifactId>
         <version>0.1</version>
     </parent>
+    <dependencies>
+        <dependency>
+            <groupId>org.daily.bill</groupId>
+            <artifactId>domain</artifactId>
+            <version>0.1</version>
+        </dependency>
+    </dependencies>
 </project>
 

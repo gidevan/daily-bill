@@ -1,7 +1,8 @@
-package org.daily.bill.web;
+package org.daily.bill;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 
 /**
  * Created by vano on 31.7.16.

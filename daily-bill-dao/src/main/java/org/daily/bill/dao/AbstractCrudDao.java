@@ -2,14 +2,38 @@ package org.daily.bill.dao;
 
 
 import org.apache.ibatis.session.SqlSession;
+import org.daily.bill.api.dao.CrudDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class AbstractCrudDao {
+import java.util.List;
 
-    @Autowired
-    private SqlSession sqlSession;
+public abstract class AbstractCrudDao<T, ID> extends AbstractDao implements CrudDao<T, ID>{
 
-    protected SqlSession getSqlSession() {
-        return sqlSession;
+
+    @Override
+    public void create(T entity) {
+        getSqlSession().insert(getNamespace() + ".insert", entity);
     }
+
+    @Override
+    public int update(T entity) {
+        return getSqlSession().update(getNamespace() + ".update", entity);
+    }
+
+    @Override
+    public void delete(ID id) {
+        getSqlSession().delete(getNamespace() + ".delete", id);
+    }
+
+    @Override
+    public T findById(ID id) {
+        return getSqlSession().selectOne(getNamespace() + ".findById", id);
+    }
+
+    @Override
+    public List<T> findAll() {
+        return getSqlSession().selectList(getNamespace() + ".findAll");
+    }
+
+    protected abstract String getNamespace();
 }

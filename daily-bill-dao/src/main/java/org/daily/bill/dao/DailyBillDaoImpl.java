@@ -10,7 +10,7 @@ import java.util.List;
  * Created by vano on 4.8.16.
  */
 @Repository
-public class DailyBillDaoImpl extends AbstractCrudDao implements DailyBillDao {
+public class DailyBillDaoImpl extends AbstractDao implements DailyBillDao {
 
     @Override
     public Shop getShopById(Long id) {

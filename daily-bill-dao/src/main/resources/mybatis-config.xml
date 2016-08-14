@@ -26,5 +26,6 @@
     </typeAliases>
     <mappers>
         <mapper resource="org/daily/bill/dao/DailyBillDao.xml"/>
+        <mapper resource="org/daily/bill/dao/ShopDao.xml"/>
     </mappers>
 </configuration>

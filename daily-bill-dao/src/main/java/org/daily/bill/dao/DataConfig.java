@@ -7,8 +7,10 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -21,16 +23,24 @@ import java.util.Random;
  * Created by vano on 4.8.16.
  */
 @Configuration
+@PropertySource(value = "classpath:db.properties")
 @MapperScan("org.daily.bill.dao")
 public class DataConfig {
+
+    @Value("${db.username}")
+    private String dbUserName;
+    @Value("${db.password}")
+    private String dbPassword;
+    @Value("${db.url}")
+    private String dbUrl;
 
     @Bean(name = "dataSource")
     public DataSource dataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
         dataSource.setDriverClass(org.postgresql.Driver.class);
-        dataSource.setUsername("postgres");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/daily-bill");
-        dataSource.setPassword("postgres");
+        dataSource.setUsername(dbUserName);
+        dataSource.setUrl(dbUrl);
+        dataSource.setPassword(dbPassword);
         return dataSource;
     }
 

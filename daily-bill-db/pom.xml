@@ -14,6 +14,28 @@
     <packaging>jar</packaging>
 
     <name>daily-bill-db</name>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <db.username>postgres</db.username>
+                <db.password>postgres</db.password>
+                <db.url>jdbc:postgresql://localhost:5432/daily-bill</db.url>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <db.username>postgres</db.username>
+                <db.password>postgres</db.password>
+                <db.url>jdbc:postgresql://localhost:5432/daily-bill-test</db.url>
+            </properties>
+        </profile>
+
+    </profiles>
 
     <properties>
         <liquibase.version>3.5.1</liquibase.version>
@@ -28,9 +50,9 @@
                 <configuration>
                     <changeLogFile>src/main/resources/main.changelog.xml</changeLogFile>
                     <driver>org.postgresql.Driver</driver>
-                    <url>jdbc:postgresql://localhost:5432/daily-bill</url>
-                    <username>postgres</username>
-                    <password>postgres</password>
+                    <url>${db.url}</url>
+                    <username>${db.username}</username>
+                    <password>${db.password}</password>
                 </configuration>
                 <executions>
                     <execution>

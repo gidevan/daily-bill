@@ -4,7 +4,7 @@
         xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-        <changeSet author="vsanyc" id="init-db">
+        <changeSet author="vano" id="init-db">
             <createTable tableName="product">
                 <column name="id" type="bigint">
                     <constraints primaryKey="true" primaryKeyName="pk_product_id"/>
@@ -56,7 +56,24 @@
                 </column>
                 <column name="updated" type="timestamp(8)"></column>
             </createTable>
-
+            <rollback>
+                <dropTable tableName="bill_item"/>
+                <dropTable tableName="bill"/>
+                <dropTable tableName="shop"/>
+                <dropTable tableName="product"/>
+            </rollback>
+        </changeSet>
+        <changeSet id="add-sequencses" author="vano">
+            <createSequence sequenceName="shop_seq" minValue="1000"/>
+            <createSequence sequenceName="product_seq" minValue="1000"/>
+            <createSequence sequenceName="bill_seq" minValue="1000"/>
+            <createSequence sequenceName="bill_item_seq" minValue="1000"/>
+            <rollback>
+                <dropSequence sequenceName="shop_seq"/>
+                <dropSequence sequenceName="product_seq"/>
+                <dropSequence sequenceName="bill_seq"/>
+                <dropSequence sequenceName="bill_item_seq"/>
+            </rollback>
         </changeSet>
 
 </databaseChangeLog>

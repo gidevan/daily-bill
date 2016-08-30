@@ -30,7 +30,7 @@
 
     <insert id="insert" parameterType="java.util.Map">
         insert into shop (id, name, created)
-        values(#{id}, #{name}, #{created})
+        values(nextval('shop_seq'), #{name}, #{created})
     </insert>
 
     <update id="update" parameterType="java.util.Map">

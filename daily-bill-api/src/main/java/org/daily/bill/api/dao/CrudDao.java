@@ -1,13 +1,15 @@
 package org.daily.bill.api.dao;
 
+import org.daily.bill.domain.Identifiable;
+
 import java.util.List;
 
 /**
  * Created by vano on 13.8.16.
  */
-public interface CrudDao<T, ID> {
+public interface CrudDao<T extends Identifiable, ID> {
 
-    void create(T entity);
+    int create(T entity);
 
     int update(T entity);
 

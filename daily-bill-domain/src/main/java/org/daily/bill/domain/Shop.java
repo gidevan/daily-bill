@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by vano on 6.8.16.
  */
-public class Shop {
+public class Shop implements Identifiable<Long> {
 
     private Long id;
     private String name;

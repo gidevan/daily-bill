@@ -3,6 +3,7 @@ package org.daily.bill.dao;
 import org.daily.bill.api.dao.ShopDao;
 import org.daily.bill.domain.Shop;
 
+import org.daily.bill.utils.TestEntityFactory;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -60,10 +61,7 @@ public class ShopDaoTest extends AbstractDaoTest<Long, Shop, ShopDao> {
 
     @Override
     protected Shop createEntity() {
-        Shop shop = new Shop();
-        shop.setName(TEST_NAMES[0]);
-        shop.setCreated(new Date());
-        return shop;
+        return TestEntityFactory.createShop(TEST_NAMES[0]);
     }
 
     @Override

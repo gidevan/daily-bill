@@ -49,7 +49,8 @@
                 <column name="product_id" type="bigint">
                     <constraints references="product" referencedColumnNames="id" foreignKeyName="fk_bill_item_product_id"/>
                 </column>
-                <column name="price" type="real"></column>
+                <column name="price" type="real" remarks="Pric of one item">
+                </column>
                 <column name="count_item" type="int"></column>
                 <column name="created" type="timestamp(8)" defaultValueComputed="now()">
                     <constraints nullable="false"/>

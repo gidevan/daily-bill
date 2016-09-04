@@ -19,39 +19,43 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="BillDao">
-    <resultMap id="bill" type="bill">
+<mapper namespace="BillItemDao">
+    <resultMap id="billItem" type="billItem">
         <id column="id" property="id"/>
-        <result column="date" property="date"/>
-        <result column="shop_id" property="shopId"/>
+        <result column="bill_id" property="billId"/>
+        <result column="product_id" property="productId"/>
+        <result column="price" property="price"/>
+        <result column="count_item" property="countItem"/>
         <result column="created" property="created"/>
         <result column="updtaed" property="updated"/>
     </resultMap>
-    <select id="findById" resultType="bill">
-        select id, date, shop_id, created, updated from bill where id = #{id}
+    <select id="findById" resultType="billItem">
+        select id, bill_id, product_id, price, count_item, created, updated from bill_item where id = #{id}
     </select>
 
-    <select id="findAll" resultType="bill">
-        select id, date, shop_id, created, updated from bill
+    <select id="findAll" resultType="billItem">
+        select id, bill_id, product_id, price, count_item, created, updated from bill_item
     </select>
 
     <insert id="insert" parameterType="java.util.Map">
-        <selectKey keyProperty="id" keyColumn="id" order="AFTER" resultType="long">
-            select currval('bill_seq')
+        <selectKey keyColumn="id" keyProperty="id" resultType="long" order="AFTER">
+            select currval('bill_item_seq')
         </selectKey>
-        insert into bill (id, date, shop_id, created)
-        values(nextval('bill_seq'), #{date}, #{shopId}, now())
+        insert into bill_Item (id, bill_id, product_id, price, count_item, created)
+        values(nextval('bill_item_seq'), #{billId}, #{productId}, #{price}, #{countItem}, now())
     </insert>
 
     <update id="update" parameterType="java.util.Map">
-        update bill
-        set date = #{date}
-        set shop_id = #{shopId}
+        update bill_item
+        set bill_id = #{billId}
+        set product_id = #{productId}
+        set price = #{price}
+        set count_item = #{count_item}
         set updated = now()
         where id = #{id}
     </update>
 
     <delete id="delete" parameterType="long">
-        delete from bill where id = #{id}
+        delete from bill_item where id = #{id}
     </delete>
 </mapper>

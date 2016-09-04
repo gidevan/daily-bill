@@ -29,6 +29,9 @@
     </select>
 
     <insert id="insert" parameterType="java.util.Map">
+        <selectKey keyProperty="id" keyColumn="id" order="AFTER" resultType="long">
+            select currval('shop_seq')
+        </selectKey>
         insert into shop (id, name, created)
         values(nextval('shop_seq'), #{name}, #{created})
     </insert>

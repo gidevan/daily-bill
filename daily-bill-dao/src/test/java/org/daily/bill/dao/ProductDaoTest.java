@@ -2,6 +2,7 @@ package org.daily.bill.dao;
 
 import org.daily.bill.api.dao.ProductDao;
 import org.daily.bill.domain.Product;
+import org.daily.bill.utils.TestEntityFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -59,12 +60,8 @@ public class ProductDaoTest extends AbstractDaoTest<Long, Product, ProductDao> {
 
     @Override
     protected Product createEntity() {
-        Product product= new Product();
         String name = PRODUCT_NAMES[DEFAULT_INDEX];
-        product.setName(name);
-        product.setDescription(DESCRIPTION_PREFIX + name);
-        product.setCreated(new Date());
-        return product;
+        return TestEntityFactory.createProduct(name, DESCRIPTION_PREFIX + name);
     }
 
     @Override

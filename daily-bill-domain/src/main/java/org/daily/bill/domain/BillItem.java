@@ -11,6 +11,7 @@ public class BillItem implements Identifiable<Long> {
     private Long id;
     private Long billId;
     private Long productId;
+    private Product product;
     private BigDecimal price;
     private int countItem;
     private Date created;
@@ -39,6 +40,14 @@ public class BillItem implements Identifiable<Long> {
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public BigDecimal getPrice() {

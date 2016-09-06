@@ -1,5 +1,6 @@
 package org.daily.bill.api.service;
 
+import org.daily.bill.domain.Bill;
 import org.daily.bill.domain.Shop;
 
 import java.util.List;
@@ -10,4 +11,5 @@ import java.util.List;
 public interface DailyBillService {
     Shop getShopById(Long id);
     List<Shop> findShops();
+    Long addDailyBill(Bill bill);
 }

@@ -33,7 +33,7 @@
             select currval('product_seq')
         </selectKey>
         insert into product (id, name, description, created)
-        values(nextval('product_seq'), #{name}, #{description}, #{created})
+        values(nextval('product_seq'), #{name}, #{description}, now())
     </insert>
 
     <update id="update" parameterType="java.util.Map">

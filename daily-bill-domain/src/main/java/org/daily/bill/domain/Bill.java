@@ -1,6 +1,7 @@
 package org.daily.bill.domain;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by vano on 2.9.16.
@@ -10,6 +11,8 @@ public class Bill implements Identifiable<Long> {
     private Long id;
     private Date date;
     private Long shopId;
+    private Shop shop;
+    private List<BillItem> items;
     private Date created;
     private Date updated;
 
@@ -36,6 +39,22 @@ public class Bill implements Identifiable<Long> {
 
     public void setShopId(Long shopId) {
         this.shopId = shopId;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
+
+    public List<BillItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<BillItem> items) {
+        this.items = items;
     }
 
     public Date getCreated() {

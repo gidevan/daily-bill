@@ -61,6 +61,11 @@ public class DailyBillServiceImpl implements DailyBillService {
         return bill.getId();
     }
 
+    @Override
+    public List<Bill> getBills() {
+        return billDao.getBills();
+    }
+
     private void checkShop(Shop shop) {
         if(shop.getId() != null) {
             Shop stored = shopDao.findById(shop.getId());

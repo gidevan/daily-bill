@@ -56,6 +56,12 @@ public class DailyBillRest {
 
     @RequestMapping("/bills")
     public Response getBills() {
-        return null;
+        try {
+            List<Bill> bills = dailyBillService.getBills();
+            return new Response(OK_CODE, OK_STATUS, null, bills);
+        } catch (Exception e) {
+            return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
+        }
+
     }
 }

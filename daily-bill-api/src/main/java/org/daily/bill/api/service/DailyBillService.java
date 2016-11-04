@@ -12,4 +12,5 @@ public interface DailyBillService {
     Shop getShopById(Long id);
     List<Shop> findShops();
     Long addDailyBill(Bill bill);
+    List<Bill> getBills();
 }

@@ -98,6 +98,12 @@ public class BillItemDaoTest extends AbstractDaoTest<Long, BillItem, BillItemDao
         Assert.assertNotNull(items);
     }
 
+    //@TODO: implement
+    @Override
+    protected void assertEntity(BillItem entity) {
+
+    }
+
     @Override
     protected void assertUpdatedEntity(BillItem expected, BillItem updated) {
         Assert.assertEquals(expected.getBillId(),updated.getBillId());

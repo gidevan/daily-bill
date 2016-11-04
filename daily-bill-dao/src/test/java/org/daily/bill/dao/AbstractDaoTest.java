@@ -60,8 +60,11 @@ public abstract class AbstractDaoTest<ID, T extends Identifiable, D extends Crud
         Assert.assertNotNull(entity.getId());
         T stored = (T)dao.findById(entity.getId());
         Assert.assertNotNull(stored);
+        assertEntity(stored);
         return stored;
     }
+
+    protected abstract void assertEntity(T entity);
 
     protected abstract void assertUpdatedEntity(T expected, T updated);
 

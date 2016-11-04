@@ -20,6 +20,9 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+    <settings>
+        <setting name="autoMappingBehavior" value="FULL"/>
+    </settings>
     <typeAliases>
         <!-- package name="org.daily.bill.domain"/-->
         <typeAlias alias="shop" type="org.daily.bill.domain.Shop"/>

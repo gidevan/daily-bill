@@ -53,4 +53,9 @@ public class DailyBillRest {
             return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
         }
     }
+
+    @RequestMapping("/bills")
+    public Response getBills() {
+        return null;
+    }
 }

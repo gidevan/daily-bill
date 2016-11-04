@@ -1,15 +1,13 @@
 package org.daily.bill.dao;
 
 import org.daily.bill.api.dao.ShopDao;
+import org.daily.bill.domain.BillItem;
 import org.daily.bill.domain.Shop;
 
 import org.daily.bill.utils.TestEntityFactory;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -44,6 +42,12 @@ public class ShopDaoTest extends AbstractDaoTest<Long, Shop, ShopDao> {
             dao.delete(shop.getId());
             Assert.assertNull(dao.findById(shop.getId()));
         }
+    }
+
+    //@TODO: implement
+    @Override
+    protected void assertEntity(Shop entity) {
+
     }
 
     @Override

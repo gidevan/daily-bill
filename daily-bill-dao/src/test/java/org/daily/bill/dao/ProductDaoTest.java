@@ -1,6 +1,7 @@
 package org.daily.bill.dao;
 
 import org.daily.bill.api.dao.ProductDao;
+import org.daily.bill.domain.BillItem;
 import org.daily.bill.domain.Product;
 import org.daily.bill.utils.TestEntityFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,12 @@ public class ProductDaoTest extends AbstractDaoTest<Long, Product, ProductDao> {
             dao.delete(product.getId());
             Assert.assertNull(dao.findById(product.getId()));
         }
+    }
+
+    //@TODO: implement
+    @Override
+    protected void assertEntity(Product entity) {
+
     }
 
     @Override

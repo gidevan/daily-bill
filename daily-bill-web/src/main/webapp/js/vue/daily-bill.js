@@ -1,6 +1,30 @@
 document.addEventListener("DOMContentLoaded", function(event) {
-    const Foo = {template: '<div>foo</div>'}
-    const Bar = {template: '<div>bar</div>'}
+    Vue.component('foo', {
+        data: function() {
+            return {message: 'Foo message'}
+        },
+        template: ' \
+            <div class="foo"> \
+                foo \
+                <div>message: {{message}}</div> \
+            </div> \
+        '
+
+    });
+    Vue.component('bar', {
+        template: ' \
+            <div class="bar"> \
+                bar \
+                <div>message: {{message}}<div> \
+            </div> \
+        ',
+        data: function() {
+            return {message: 'Bar message'}
+        }
+    })
+
+    const Foo = {template: '<foo>'};
+    const Bar = {template: '<bar>'};
 
     const routes = [
         {path: '/foo', component: Foo},

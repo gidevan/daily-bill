@@ -1,0 +1,9 @@
+
+.bill-list .bill {
+  border: 1px solid black;
+  margin: 1px;
+}
+
+.bill-list .bill .bill-info.span {
+  font-weight: bolder;
+}

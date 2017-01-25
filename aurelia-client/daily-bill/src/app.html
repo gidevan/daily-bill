@@ -1,3 +1,14 @@
 <template>
-  <h1>${message}</h1>
+  <require from="./css/daily-bill.css"></require>
+  <nav role="navigation">
+    <div>
+      <a href="#">
+        <span>Bills</span>
+      </a>
+      <span>|</span>
+    </div>
+  </nav>
+  <div class="container">
+    <router-view></router-view>
+  </div>
 </template>

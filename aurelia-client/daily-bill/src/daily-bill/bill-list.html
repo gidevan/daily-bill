@@ -1,0 +1,16 @@
+<template>
+  <h1>Bill List</h1>
+  <div class="bill-list">
+    <div repeat.for="bill of bills" class="bill" click.delegate="viewBillDetails(bill.id)">
+      <div class="bill-info">
+        <span>id:</span> ${bill.id}
+      </div>
+      <div class="bill-info">
+        <span>shop:</span> ${bill.shop}
+      </div>
+      <div class="bill-info">
+        <span>date:</span> ${bill.date}
+      </div>
+    </div>
+  </div>
+</template>

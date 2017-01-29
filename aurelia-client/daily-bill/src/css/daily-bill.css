@@ -7,3 +7,25 @@
 .bill-list .bill .bill-info.span {
   font-weight: bolder;
 }
+
+.shop-info {
+  display: flex;
+  flex-direction: row;
+}
+.item{
+  border: 1px solid black;
+  margin: 2px;
+}
+
+.bill-item-info {
+  display: flex;
+  flex-direction: row;
+}
+
+.shop-info > p, .bill-item-info >p{
+  font-weight: bolder;
+}
+
+
+
+

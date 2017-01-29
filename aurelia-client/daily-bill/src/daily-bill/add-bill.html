@@ -1,0 +1,30 @@
+<template>
+  <h1>Add Bill</h1>
+  <div class="shop-info">
+    <p>Shop name: </p>
+    <input type="text" value.bind="bill.shopName">
+  </div>
+  <div class="bill-items">
+    <div class="item" repeat.for="billItem of bill.items">
+      <div class="bill-item-info">
+        <p>Product:</p>
+        <input type="text" value.bind="billItem.product">
+      </div>
+      <div class="bill-item-info">
+        <p>Price:</p>
+        <input type="text" value.bind="billItem.price">
+      </div>
+      <div class="bill-item-info">
+        <p>Count:</p>
+        <input type="text" value.bind="billItem.countItem">
+      </div>
+
+    </div>
+    <div class="item-button-panel">
+      <button type="button" click.delegate="addBillItem()">Add item</button>
+    </div>
+  </div>
+  <div class="bill-button-panel">
+    <button type="button" click.delegate="addBill()">Add bill</button>
+  </div>
+</template>

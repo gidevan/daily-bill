@@ -5,12 +5,12 @@ export class BillList {
   }
   constructor(dailyBillService) {
     this.dailyBillService = dailyBillService;
-    this.bills = dailyBillService.getBills();
+    this.bills = dailyBillService.getLocalBills();
   }
 
   viewBillDetails(id) {
     console.log("viewBillDetails: " + id);
-    var bill = this.dailyBillService.getBillById(id);
+    var bill = this.dailyBillService.getLocalBillById(id);
     console.log(bill);
     return bill;
   }

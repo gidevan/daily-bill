@@ -6,7 +6,11 @@ export class AddBill{
   constructor(dailyBillService) {
     this.dailyBillService = dailyBillService;
     this.bill = {
-      shopName: "",
+      id: null,
+      shop: {
+        shopId: null,
+        shopName: ""
+      },
       items: [
       ]
     };
@@ -21,11 +25,15 @@ export class AddBill{
   addBill() {
     console.log("add bill:");
     console.log(this.bill);
+    this.dailyBillService.addBill(this.bill);
   }
 
   createDefaultBillItem() {
     return {
-      product: "",
+      product: {
+        productId: null,
+        productName: null
+      },
       price: 0,
       countItem: 1
     }

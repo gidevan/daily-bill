@@ -14,6 +14,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/daily-bill")
+@CrossOrigin("http://localhost:9000")
 public class DailyBillRest {
 
     private static final String ERROR_STATUS = "Error";
@@ -23,7 +24,6 @@ public class DailyBillRest {
 
     @Autowired
     private DailyBillService dailyBillService;
-
 
     @RequestMapping("/info")
     public String info() {

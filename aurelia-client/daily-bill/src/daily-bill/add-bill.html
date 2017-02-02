@@ -2,13 +2,13 @@
   <h1>Add Bill</h1>
   <div class="shop-info">
     <p>Shop name: </p>
-    <input type="text" value.bind="bill.shopName">
+    <input type="text" value.bind="bill.shop.name">
   </div>
   <div class="bill-items">
     <div class="item" repeat.for="billItem of bill.items">
       <div class="bill-item-info">
         <p>Product:</p>
-        <input type="text" value.bind="billItem.product">
+        <input type="text" value.bind="billItem.product.name">
       </div>
       <div class="bill-item-info">
         <p>Price:</p>

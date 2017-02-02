@@ -1,3 +1,8 @@
+import {HttpClient, json} from 'aurelia-fetch-client'
+//import {HttpClient} from 'aurelia-http-client'
+
+let httpClient = new HttpClient();
+
 export class DailyBillService {
   constructor() {
     this.bills = [
@@ -8,10 +13,10 @@ export class DailyBillService {
     ]
   }
 
-  getBills() {
+  getLocalBills() {
     return this.bills;
   }
-  getBillById(id) {
+  getLocalBillById(id) {
     console.log("service. get by id: " +id)
     for(let bill of this.bills) {
       if (bill.id == id) {
@@ -19,5 +24,26 @@ export class DailyBillService {
       }
     }
     return null;
+  }
+
+  getBills() {
+    httpClient.fetch('http://localhost:8080/daily-bill/bills')
+          .then(response => response.json())
+          .then(data => {
+             console.log(data);
+          });
+  }
+
+  addBill(bill) {
+    httpClient.fetch('http://localhost:8080/daily-bill/add', {
+             method: "PUT",
+             //body: JSON.stringify(bill)
+             body: json(bill)
+          })
+
+          .then(response => response.json())
+          .then(data => {
+             console.log(data);
+          });
   }
 }

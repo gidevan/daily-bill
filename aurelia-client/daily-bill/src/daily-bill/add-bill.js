@@ -25,7 +25,11 @@ export class AddBill{
   addBill() {
     console.log("add bill:");
     console.log(this.bill);
-    this.dailyBillService.addBill(this.bill);
+    this.dailyBillService.addBill(this.bill)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        });;
   }
 
   createDefaultBillItem() {

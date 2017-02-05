@@ -27,23 +27,18 @@ export class DailyBillService {
   }
 
   getBills() {
-    httpClient.fetch('http://localhost:8080/daily-bill/bills')
-          .then(response => response.json())
-          .then(data => {
-             console.log(data);
-          });
+    console.log("Get bills")
+    return httpClient.fetch('http://localhost:8080/daily-bill/bills')
+
   }
 
   addBill(bill) {
-    httpClient.fetch('http://localhost:8080/daily-bill/add', {
+    return httpClient.fetch('http://localhost:8080/daily-bill/add', {
              method: "PUT",
              //body: JSON.stringify(bill)
              body: json(bill)
           })
 
-          .then(response => response.json())
-          .then(data => {
-             console.log(data);
-          });
+
   }
 }

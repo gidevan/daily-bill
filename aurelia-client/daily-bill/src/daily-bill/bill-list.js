@@ -1,10 +1,12 @@
 import {DailyBillService} from "./service/daily-bill-service"
+import {Router} from "aurelia-router"
 export class BillList {
   static inject() {
-    return [DailyBillService]
+    return [DailyBillService, Router]
   }
-  constructor(dailyBillService) {
+  constructor(dailyBillService, router) {
     this.dailyBillService = dailyBillService;
+    this.router = router;
     this.localBillsbills = dailyBillService.getLocalBills();
   }
 
@@ -27,8 +29,7 @@ export class BillList {
 
   viewBillDetails(id) {
       console.log("viewBillDetails: " + id);
-      var bill = this.dailyBillService.getBillById(id);
-      console.log(bill);
-      return bill;
+      this.router.navigateToRoute('billDetails', {id: id})
+
     }
 }

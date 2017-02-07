@@ -29,8 +29,12 @@ export class DailyBillService {
   getBills() {
     console.log("Get bills")
     return httpClient.fetch('http://localhost:8080/daily-bill/bills')
-
   }
+
+  getBillById(id) {
+      console.log("Get bill by id: " +id)
+      return httpClient.fetch('http://localhost:8080/daily-bill/bill/' + id)
+    }
 
   addBill(bill) {
     return httpClient.fetch('http://localhost:8080/daily-bill/add', {

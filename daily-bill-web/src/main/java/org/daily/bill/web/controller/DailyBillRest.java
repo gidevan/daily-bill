@@ -7,6 +7,7 @@ import org.daily.bill.web.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 /**
@@ -59,6 +60,17 @@ public class DailyBillRest {
         try {
             List<Bill> bills = dailyBillService.getBills();
             return new Response(OK_CODE, OK_STATUS, null, bills);
+        } catch (Exception e) {
+            return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
+        }
+
+    }
+
+    @RequestMapping("/bill/{id}")
+    public Response getBillById(@PathVariable Long id) {
+        try {
+            Bill bill = dailyBillService.getBillById(id);
+            return new Response(OK_CODE, OK_STATUS, null, bill);
         } catch (Exception e) {
             return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
         }

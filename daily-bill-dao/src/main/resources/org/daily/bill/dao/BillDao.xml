@@ -32,6 +32,17 @@
             <result column="shop_name" property="name"/>
         </association>
     </resultMap>
+    <resultMap id="billDetails" type="billDetails" autoMapping="true">
+        <result column="bill_id" property="billId"/>
+        <result column="date" property="date"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="shop_name" property="shopName"/>
+        <result column="bill_item_id" property="billItemId"/>
+        <result column="price" property="price"/>
+        <result column="count_item" property="countItem"/>
+        <result column="product_id" property="productId"/>
+        <result column="product_name" property="productName"/>
+    </resultMap>
     <select id="findById" resultMap="bill">
         select id, date, shop_id, created, updated from bill where id = #{id}
     </select>
@@ -65,5 +76,15 @@
         from bill b
         inner join shop s on b.shop_id = s.id
         order by date desc
+    </select>
+    <select id="getBillDetails"  resultMap="billDetails" parameterType="long">
+        select b.id bill_id, b.date, b.shop_id, sh.name shop_name,
+            bi.id bill_item_id, bi.product_id, bi.price, bi.count_item,
+            bi.product_id, p.name product_name
+        from bill b
+        inner join shop sh on b.shop_id = sh.id
+        inner join bill_item bi on bi.bill_id = b.id
+        inner join product p on bi.product_id = p.id
+        where b.id = #{billId}
     </select>
 </mapper>

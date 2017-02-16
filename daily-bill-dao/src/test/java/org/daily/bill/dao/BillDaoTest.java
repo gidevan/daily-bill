@@ -1,9 +1,10 @@
 package org.daily.bill.dao;
 
 import org.daily.bill.api.dao.BillDao;
+import org.daily.bill.api.dao.BillItemDao;
+import org.daily.bill.api.dao.ProductDao;
 import org.daily.bill.api.dao.ShopDao;
-import org.daily.bill.domain.Bill;
-import org.daily.bill.domain.Shop;
+import org.daily.bill.domain.*;
 import org.daily.bill.utils.TestEntityFactory;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Created by vano on 3.9.16.
@@ -23,38 +23,38 @@ import java.util.List;
 public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
 
     private static final String[] SHOP_NAMES = {"ShopName1", "ShopName2"};
+    private static final String[] PRODUCT_NAMES = {"Product1", "Product2"};
+    private static final BigDecimal PRICES[] = {BigDecimal.valueOf(12.4), BigDecimal.valueOf(23.5)};
+    private static final int COUNTS[] = {1, 3};
+    private static final Object[][] PRODUCT_INFO = {{PRODUCT_NAMES[0], PRICES[0], COUNTS[0]},
+            {PRODUCT_NAMES[1], PRICES[1], COUNTS[1]}
+    };
 
     @Autowired
     private ShopDao shopDao;
-    private List<Shop> shops;
+    @Autowired
+    private ProductDao productDao;
+    @Autowired
+    private BillItemDao billItemDao;
+    private Map<String, Shop> shops = new HashMap<>();
+    private Map<String, Product> products = new HashMap<>();
 
     @BeforeClass
     public void beforeClass() {
-        for(String shopName : SHOP_NAMES) {
-            Shop shop = TestEntityFactory.createShop(shopName);
-            shopDao.create(shop);
-        }
-
-        shops = shopDao.findAll();
-        for(Shop shop : shops) {
-            Assert.assertTrue(Arrays.asList(SHOP_NAMES).contains(shop.getName()));
-        }
-
+        createProducts();
+        createShops();
     }
     @AfterClass
     public void afterClass() {
-        List<Shop> shops = shopDao.findAll();
-        for(Shop shop : shops) {
-            shopDao.delete(shop.getId());
-        }
-        Assert.assertTrue(shopDao.findAll().isEmpty());
+        deleteShops();
+        deleteProducts();
     }
 
     @Test
     @Override
     public void testFindAll() {
-        Bill bill1 = TestEntityFactory.createBill(shops.get(DEFAULT_INDEX).getId(), new Date());
-        Bill bill2 = TestEntityFactory.createBill(shops.get(DEFAULT_INDEX + 1).getId(), new Date());
+        Bill bill1 = TestEntityFactory.createBill(shops.get(SHOP_NAMES[0]).getId(), new Date());
+        Bill bill2 = TestEntityFactory.createBill(shops.get(SHOP_NAMES[1]).getId(), new Date());
         dao.create(bill1);
         dao.create(bill2);
         List<Bill> bills = dao.findAll();
@@ -90,18 +90,18 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
 
     @Override
     protected Bill createEntity() {
-        return TestEntityFactory.createBill(shops.get(DEFAULT_INDEX).getId(), new Date());
+        return TestEntityFactory.createBill(shops.get(SHOP_NAMES[0]).getId(), new Date());
     }
 
     @Override
     protected void updateEntity(Bill entity) {
-        entity.setShopId(shops.get(DEFAULT_INDEX + 1).getId());
+        entity.setShopId(shops.get(SHOP_NAMES[1]).getId());
         entity.setDate(new Date());
     }
 
     @Test
     public void testGetBills() {
-        Bill bill = TestEntityFactory.createBill(shops.get(DEFAULT_INDEX).getId(), new Date());
+        Bill bill = TestEntityFactory.createBill(shops.get(SHOP_NAMES[0]).getId(), new Date());
         dao.create(bill);
         List<Bill> bills = dao.getBills();
         Date date = new Date();
@@ -115,5 +115,84 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
         Assert.assertFalse(bills.isEmpty());
 
         dao.delete(bill.getId());
+    }
+
+    @Test
+    public void testGetBillDetails() {
+        Bill bill = TestEntityFactory.createBill(shops.get(SHOP_NAMES[0]).getId(), new Date());
+        dao.create(bill);
+        Long billId = bill.getId();
+        Assert.assertNotNull(billId);
+        createBillItems(billId);
+        List<BillDetails> billDetails = dao.getBillDetails(billId);
+        Assert.assertFalse(billDetails.isEmpty());
+        for(BillDetails details : billDetails) {
+            Assert.assertEquals(details.getBillId(), billId);
+            Assert.assertEquals(details.getShopName(), SHOP_NAMES[0]);
+        }
+        deleteBillItems();
+        dao.delete(billId);
+        Assert.assertNull(dao.findById(billId));
+    }
+
+    private void createShops() {
+        shops.clear();
+        for(String shopName : SHOP_NAMES) {
+            Shop shop = TestEntityFactory.createShop(shopName);
+            shopDao.create(shop);
+        }
+
+        List<Shop> stored = shopDao.findAll();
+        for(Shop shop : stored) {
+            Assert.assertTrue(Arrays.asList(SHOP_NAMES).contains(shop.getName()));
+            shops.put(shop.getName(), shop);
+        }
+    }
+
+    private void createProducts() {
+        products.clear();
+        for(String name: PRODUCT_NAMES) {
+            Product product = TestEntityFactory.createProduct(name, name);
+            productDao.create(product);
+
+        }
+        List<Product> stored = productDao.findAll();
+        for(Product product : stored) {
+            Assert.assertTrue(Arrays.asList(PRODUCT_NAMES).contains(product.getName()));
+            products.put(product.getName(), product);
+        }
+    }
+
+    private void deleteShops() {
+        List<Shop> shops = shopDao.findAll();
+        for(Shop shop : shops) {
+            shopDao.delete(shop.getId());
+        }
+        Assert.assertTrue(shopDao.findAll().isEmpty());
+    }
+
+    private void deleteProducts() {
+        List<Product> products = productDao.findAll();
+        for(Product product : products) {
+            productDao.delete(product.getId());
+        }
+        Assert.assertTrue(productDao.findAll().isEmpty());
+    }
+
+    private void createBillItems(Long billId) {
+        for(Object[] productInfo : PRODUCT_INFO) {
+            BillItem item = TestEntityFactory.cretaeBillItem(billId,
+                    products.get(productInfo[0]).getId(), (BigDecimal) productInfo[1],
+                    (Integer) productInfo[2]);
+            billItemDao.create(item);
+        }
+    }
+
+    private void deleteBillItems() {
+        List<BillItem> billItems = billItemDao.findAll();
+        for(BillItem item : billItems) {
+            billItemDao.delete(item.getId());
+        }
+        Assert.assertTrue(billItemDao.findAll().isEmpty());
     }
 }

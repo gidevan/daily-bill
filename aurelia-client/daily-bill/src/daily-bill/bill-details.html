@@ -1,4 +1,11 @@
 <template>
   Bill details message: ${message}
   bill id: ${bill.id}
+  date: ${bill.date}
+  shop: ${bill.shop.name}
+  <div class="bill-item" repeat.for="item of bill.items">
+    <div>product: </div><div>${item.product.name}</div>
+    <div>price: </div><div>${item.price}</div>
+    <div>count: </div><div>${item.countItem}</div>
+  </div>
 </template>

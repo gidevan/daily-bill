@@ -1,5 +1,6 @@
 package org.daily.bill.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class Bill implements Identifiable<Long> {
     private Long shopId;
     private String shopName;
     private Shop shop;
-    private List<BillItem> items;
+    private List<BillItem> items = new ArrayList<>();
     private Date created;
     private Date updated;
 

@@ -2,10 +2,7 @@ package org.daily.bill.service;
 
 import org.daily.bill.api.dao.*;
 import org.daily.bill.api.service.DailyBillService;
-import org.daily.bill.domain.Bill;
-import org.daily.bill.domain.BillItem;
-import org.daily.bill.domain.Product;
-import org.daily.bill.domain.Shop;
+import org.daily.bill.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +65,31 @@ public class DailyBillServiceImpl implements DailyBillService {
 
     @Override
     public Bill getBillById(Long id) {
-        return billDao.findById(id);
+        List<BillDetails> billDetails = billDao.getBillDetails(id);
+        return createBill(billDetails);
+    }
+
+    private Bill createBill(List<BillDetails> billDetails) {
+        Bill bill = new Bill();
+        for(BillDetails details :billDetails) {
+            if(bill.getShop() == null) {
+                Shop shop = new Shop();
+                shop.setId(details.getShopId());
+                shop.setName(details.getShopName());
+                bill.setShop(shop);
+            }
+            bill.setId(details.getBillId());
+            bill.setDate(details.getDate());
+            BillItem item = new BillItem();
+            item.setPrice(details.getPrice());
+            item.setCountItem(details.getCountItem());
+            Product product = new Product();
+            product.setId(details.getProductId());
+            product.setName(details.getProductName());
+            item.setProduct(product);
+            bill.getItems().add(item);
+        }
+        return bill;
     }
 
     private void checkShop(Shop shop) {

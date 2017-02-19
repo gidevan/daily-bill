@@ -59,6 +59,11 @@ public class DailyBillServiceImpl implements DailyBillService {
     }
 
     @Override
+    public Long updateDailyBill(Bill bill) {
+        return null;
+    }
+
+    @Override
     public List<Bill> getBills() {
         return billDao.getBills();
     }

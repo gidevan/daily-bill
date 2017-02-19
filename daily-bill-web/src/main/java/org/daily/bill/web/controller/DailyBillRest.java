@@ -55,6 +55,20 @@ public class DailyBillRest {
         }
     }
 
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    public Response editBill(@RequestBody Bill bill) {
+        try {
+            Long billId = dailyBillService.addDailyBill(bill);
+            if (billId != null) {
+                return new Response(OK_CODE, OK_STATUS,  "Bill was updated", billId);
+            } else {
+                return new Response(ERROR_CODE, ERROR_STATUS, "Bill wasn't updated");
+            }
+        } catch (Exception e) {
+            return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
+        }
+    }
+
     @RequestMapping("/bills")
     public Response getBills() {
         try {

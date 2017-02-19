@@ -39,10 +39,17 @@ export class DailyBillService {
   addBill(bill) {
     return httpClient.fetch('http://localhost:8080/daily-bill/add', {
              method: "PUT",
-             //body: JSON.stringify(bill)
              body: json(bill)
           })
 
 
   }
+  updateBill(bill) {
+      return httpClient.fetch('http://localhost:8080/daily-bill/edit', {
+               method: "POST",
+               body: json(bill)
+            })
+
+
+    }
 }

@@ -1,11 +1,13 @@
 import {DailyBillService} from "./service/daily-bill-service"
 import {json} from 'aurelia-fetch-client'
+import {Router} from "aurelia-router"
 export class BillDetails {
 static inject() {
-    return [DailyBillService]
+    return [DailyBillService, Router]
   }
-  constructor(dailyBillService) {
+  constructor(dailyBillService, router) {
     this.dailyBillService = dailyBillService;
+    this.router = router;
     this.message = "Bill details message";
   }
 
@@ -18,6 +20,12 @@ static inject() {
             console.log('bill: ')
             console.log(data.object)
             self.bill = data.object;
+
+            //self.bill.dateStr = new Date(data.object.date)
       });
     }
+  edit() {
+    console.log('edit bill: ',  this.bill.id)
+    this.router.navigateToRoute("editBill", {id: this.bill.id});
+  }
 }

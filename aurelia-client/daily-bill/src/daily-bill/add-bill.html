@@ -4,6 +4,10 @@
     <p>Shop name: </p>
     <input type="text" value.bind="bill.shop.name">
   </div>
+  <div class="shop-info">
+    <p>Date: </p>
+    <input type="text" value.bind="bill.dateStr">
+  </div>
   <div class="bill-items">
     <div class="item" repeat.for="billItem of bill.items">
       <div class="bill-item-info">
@@ -24,7 +28,10 @@
       <button type="button" click.delegate="addBillItem()">Add item</button>
     </div>
   </div>
-  <div class="bill-button-panel">
+  <div class="bill-button-panel" if.bind="!bill.id">
     <button type="button" click.delegate="addBill()">Add bill</button>
+  </div>
+  <div class="bill-button-panel" if.bind="bill.id">
+    <button type="button" click.delegate="updateBill()">Update bill</button>
   </div>
 </template>

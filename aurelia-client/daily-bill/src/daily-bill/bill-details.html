@@ -4,9 +4,12 @@
   date: ${bill.date}
   shop: ${bill.shop.name}
   <div class="bill-item" repeat.for="item of bill.items">
-    <div>product: </div><div>${item.product.name}</div>
-    <div>price: </div><div>${item.price}</div>
-    <div>count: </div><div>${item.countItem}</div>
+    <div class="item-description">product: </div><div class="item-value">${item.product.name}</div>
+    <div class="item-description">price: </div><div class="item-value">${item.price}</div>
+    <div class="item-description">count: </div><div class="item-value">${item.countItem}</div>
   </div>
-  <button click.delegate="edit()">Edit bill</button>
+  <div class="bill-button-panel">
+    <button class="edit-bill-button" click.delegate="edit()">Edit bill</button>
+  </div>
+
 </template>

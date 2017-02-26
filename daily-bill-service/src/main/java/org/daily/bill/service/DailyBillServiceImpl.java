@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,7 +46,11 @@ public class DailyBillServiceImpl implements DailyBillService {
         Shop shop = bill.getShop();
         checkShop(shop);
         bill.setShopId(shop.getId());
-        billDao.create(bill);
+        if(bill.getId() != null) {
+            billDao.update(bill);
+        } else {
+            billDao.create(bill);
+        }
 
         List<BillItem> items = bill.getItems();
         for(BillItem item : items) {
@@ -53,14 +58,39 @@ public class DailyBillServiceImpl implements DailyBillService {
             checkProduct(product);
             item.setBillId(bill.getId());
             item.setProductId(product.getId());
-            billItemDao.create(item);
+            if(item.getId() != null) {
+                billItemDao.update(item);
+            } else {
+                billItemDao.create(item);
+            }
+
         }
         return bill.getId();
     }
 
     @Override
     public Long updateDailyBill(Bill bill) {
-        return null;
+        Shop shop = bill.getShop();
+        checkShop(shop);
+        bill.setShopId(shop.getId());
+        bill.setUpdated(new Date());
+        billDao.update(bill);
+
+        List<BillItem> items = bill.getItems();
+        for(BillItem item : items) {
+            Product product = item.getProduct();
+            checkProduct(product);
+            item.setBillId(bill.getId());
+            item.setProductId(product.getId());
+            if(item.getId() != null) {
+                item.setUpdated(new Date());
+                billItemDao.update(item);
+            } else {
+
+            }
+            billItemDao.create(item);
+        }
+        return bill.getId();
     }
 
     @Override
@@ -86,6 +116,7 @@ public class DailyBillServiceImpl implements DailyBillService {
             bill.setId(details.getBillId());
             bill.setDate(details.getDate());
             BillItem item = new BillItem();
+            item.setId(details.getBillItemId());
             item.setPrice(details.getPrice());
             item.setCountItem(details.getCountItem());
             Product product = new Product();

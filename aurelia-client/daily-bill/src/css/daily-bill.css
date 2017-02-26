@@ -26,6 +26,27 @@
   font-weight: bolder;
 }
 
-
+.bill-item {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid black;
+  margin: 1px;
+  padding: 1px;
+}
+.bill-item .item-description {
+  font-weight: bolder;
+  margin-right: 2px;
+  margin-left: 2px;
+}
+.item-button-panel button {
+    width: 100%;
+    font-size: 24px;
+    margin: 2px;
+}
+.bill-button-panel button {
+  width: 100%;
+  font-size: 24px;
+  margin: 2px;
+}
 
 

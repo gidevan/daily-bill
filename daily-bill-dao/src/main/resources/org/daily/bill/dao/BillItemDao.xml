@@ -47,11 +47,11 @@
 
     <update id="update" parameterType="java.util.Map">
         update bill_item
-        set bill_id = #{billId}
-        set product_id = #{productId}
-        set price = #{price}
-        set count_item = #{count_item}
-        set updated = now()
+        set bill_id = #{billId},
+            product_id = #{productId},
+            price = #{price},
+            count_item = #{countItem},
+            updated = now()
         where id = #{id}
     </update>
 

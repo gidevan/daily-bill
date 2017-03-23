@@ -2,8 +2,10 @@
   Bill details message: ${message}
   bill id: ${bill.id}
   date: ${bill.date}
+  shop id: {bill.shop.id}
   shop: ${bill.shop.name}
   <div class="bill-item" repeat.for="item of bill.items">
+    <div class="item-description">product id: </div><div class="item-value">${item.product.id}</div>
     <div class="item-description">product: </div><div class="item-value">${item.product.name}</div>
     <div class="item-description">price: </div><div class="item-value">${item.price}</div>
     <div class="item-description">count: </div><div class="item-value">${item.countItem}</div>

@@ -49,7 +49,14 @@ export class DailyBillService {
                method: "POST",
                body: json(bill)
             })
+  }
 
+  getShops() {
+      return httpClient.fetch('http://localhost:8080/daily-bill/shops')
+  }
 
-    }
+  getProducts() {
+        return httpClient.fetch('http://localhost:8080/daily-bill/products')
+   }
+
 }

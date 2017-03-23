@@ -30,6 +30,7 @@
         <typeAlias alias="bill" type="org.daily.bill.domain.Bill"/>
         <typeAlias alias="billItem" type="org.daily.bill.domain.BillItem"/>
         <typeAlias alias="billDetails" type="org.daily.bill.domain.BillDetails"/>
+        <typeAlias alias="entity" type="org.daily.bill.domain.Entity"/>
     </typeAliases>
     <mappers>
         <mapper resource="org/daily/bill/dao/ShopDao.xml"/>

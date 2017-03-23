@@ -2,6 +2,7 @@ package org.daily.bill.web.controller;
 
 import org.daily.bill.api.service.DailyBillService;
 import org.daily.bill.domain.Bill;
+import org.daily.bill.domain.Product;
 import org.daily.bill.domain.Shop;
 import org.daily.bill.web.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +35,6 @@ public class DailyBillRest {
     @RequestMapping("/shop/{id}")
     public Shop getShop(@PathVariable Long id) {
         return dailyBillService.getShopById(id);
-    }
-
-    @RequestMapping("/shops")
-    public List<Shop> findShops() {
-        return dailyBillService.findShops();
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.PUT)
@@ -89,5 +85,25 @@ public class DailyBillRest {
             return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
         }
 
+    }
+
+    @RequestMapping("/products")
+    public Response getProducts() {
+        try {
+            List<Product> products = dailyBillService.getProducts();
+            return new Response(OK_CODE, OK_STATUS, null, products);
+        } catch (Exception e) {
+            return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
+        }
+    }
+
+    @RequestMapping("/shops")
+    public Response findShops() {
+        try {
+            List<Shop> shops = dailyBillService.findShops();
+            return new Response(OK_CODE, OK_STATUS, null, shops);
+        } catch (Exception e) {
+            return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
+        }
     }
 }

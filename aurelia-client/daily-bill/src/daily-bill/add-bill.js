@@ -8,6 +8,8 @@ export class AddBill{
     this.dailyBillService = dailyBillService;
     this.router = router;
     this.createBill();
+    this.products = [];
+    this.shops = [];
   }
   activate(params, routeConfig) {
     this.routeConfig = routeConfig;
@@ -21,6 +23,18 @@ export class AddBill{
                   console.log('bill: ')
                   console.log(data.object)
                   self.bill = data.object;
+                  self.dailyBillService.getShops().then(response => response.json())
+                    .then(data => {
+                        console.log('shops: ')
+                        console.log(data)
+                        self.shops = data.object;
+                        self.dailyBillService.getProducts().then(response => response.json())
+                            .then(prodData => {
+                                console.log('products: ')
+                                console.log(prodData);
+                                console.log(prodData.object);
+                                self.products = prodData.object})
+                    })
             });
     } else {
       this.createBill();

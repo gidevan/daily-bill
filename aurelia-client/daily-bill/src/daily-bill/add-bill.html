@@ -1,8 +1,17 @@
 <template>
   <h1>Add Bill</h1>
   <div class="shop-info">
+    <p>Shop ID: </p>
+    <div >${bill.shop.id}</div>
+  </div>
+  <div class="shop-info">
     <p>Shop name: </p>
     <input type="text" value.bind="bill.shop.name">
+    <select value.bind="selectedShopId">
+      <option model.bind="null">Choose...</option>
+      <option repeat.for="shop of shops" model.bind="shop.id">${shop.name}</option>
+    </select>
+    <div>selected product id:</div><div>${selectedShopId}</div>
   </div>
   <div class="shop-info">
     <p>Date: </p>
@@ -13,7 +22,16 @@
       <div class="bill-item-info">
         <p>Product:</p>
         <input type="text" value.bind="billItem.product.name">
+        <select value.bind="selectedProductId">
+          <option model.bind="null">Choose...</option>
+          <option repeat.for="product of products" model.bind="product.id">${product.name}</option>
+        </select>
       </div>
+      <div class="bill-item-info">
+        <p>Product ID:</p>
+        <div>${billItem.product.id}</div>
+      </div>
+      <div>selected product id:</div><div>${selectedProductId}</div>
       <div class="bill-item-info">
         <p>Price:</p>
         <input type="text" value.bind="billItem.price">

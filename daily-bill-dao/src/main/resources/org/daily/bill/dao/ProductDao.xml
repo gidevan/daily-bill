@@ -47,4 +47,5 @@
     <delete id="delete" parameterType="long">
         delete from product where id = #{id}
     </delete>
+
 </mapper>

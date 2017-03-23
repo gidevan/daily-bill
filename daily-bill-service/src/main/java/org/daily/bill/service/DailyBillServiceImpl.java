@@ -104,6 +104,11 @@ public class DailyBillServiceImpl implements DailyBillService {
         return createBill(billDetails);
     }
 
+    @Override
+    public List<Product> getProducts() {
+        return productDao.findAll();
+    }
+
     private Bill createBill(List<BillDetails> billDetails) {
         Bill bill = new Bill();
         for(BillDetails details :billDetails) {

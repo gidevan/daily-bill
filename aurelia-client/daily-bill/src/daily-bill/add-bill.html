@@ -6,12 +6,11 @@
   </div>
   <div class="shop-info">
     <p>Shop name: </p>
-    <input type="text" value.bind="bill.shop.name">
-    <select value.bind="selectedShopId">
+    <input type="text" value.bind="bill.shop.name" change.delegate="shopNameChange()">
+    <select value.bind="selectedShop" change.delegate="shopChange()">
       <option model.bind="null">Choose...</option>
-      <option repeat.for="shop of shops" model.bind="shop.id">${shop.name}</option>
+      <option repeat.for="shop of shops" model.bind="shop">${shop.name}</option>
     </select>
-    <div>selected product id:</div><div>${selectedShopId}</div>
   </div>
   <div class="shop-info">
     <p>Date: </p>
@@ -21,17 +20,17 @@
     <div class="item" repeat.for="billItem of bill.items">
       <div class="bill-item-info">
         <p>Product:</p>
-        <input type="text" value.bind="billItem.product.name">
-        <select value.bind="selectedProductId">
+        <input type="text" value.bind="billItem.product.name" chamge.delegate="productNameChange(billItem)">
+        <select value.bind="billItem.selectedProduct" change.delegate="productChange(billItem)">
           <option model.bind="null">Choose...</option>
-          <option repeat.for="product of products" model.bind="product.id">${product.name}</option>
+          <option repeat.for="product of products" model.bind="product">${product.name}</option>
         </select>
       </div>
       <div class="bill-item-info">
         <p>Product ID:</p>
         <div>${billItem.product.id}</div>
       </div>
-      <div>selected product id:</div><div>${selectedProductId}</div>
+      <div>selected product id:</div><div>${billItem.selectedProduct.id}</div>
       <div class="bill-item-info">
         <p>Price:</p>
         <input type="text" value.bind="billItem.price">

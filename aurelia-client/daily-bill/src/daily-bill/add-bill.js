@@ -23,6 +23,8 @@ export class AddBill{
                   console.log('bill: ')
                   console.log(data.object)
                   self.bill = data.object;
+                  console.log('bill date: ')
+                  console.log(self.bill.date);
                   self.dailyBillService.getShops().then(response => response.json())
                     .then(data => {
                         console.log('shops: ')
@@ -42,14 +44,15 @@ export class AddBill{
   }
 
   createBill() {
+    let date = new Date();
     this.bill = {
         id: null,
+        date: date,
+        dateStr: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate(),
         shop: {
           shopId: null,
           shopName: ""
         },
-        date: null,
-        dateStr: '',
         items: [
         ]
       };
@@ -96,5 +99,45 @@ export class AddBill{
       price: 0,
       countItem: 1
     }
+  }
+
+  productChange(billItem) {
+    console.log('Change product value:');
+    let changedValue = billItem.selectedProduct;
+    console.log(changedValue);
+    console.log(changedValue.id + " " + changedValue.name);
+    billItem.product.id = changedValue.id;
+    billItem.product.name = changedValue.name;
+  }
+
+  shopChange() {
+      console.log('Change shop value:');
+      this.bill.shop.id = this.selectedShop.id;
+      this.bill.shop.name = this.selectedShop.name;
+  }
+
+  shopNameChange() {
+     console.log('shop name change')
+     let shopName = this.bill.shop.name.toLowerCase();
+     console.log('new: ' + shopName)
+     let shop = this.shops.find((element, index, array) => element.name.toLowerCase() === shopName)
+     if(shop) {
+        this.bill.shop.id = shop.id;
+        this.bill.shop.name = shop.name;
+     } else {
+        this.bill.shop.id = null;
+     }
+  }
+
+  productNameChange(billItem) {
+    console.log('product name change')
+      let productName = billItem.product.name.toLowerCase();
+      let product = this.products.find((element, index, array) => element.name.toLowerCase() === productName)
+      if(product) {
+          billItem.product.id = product.id;
+          billItem.product.name = product.name;
+      } else {
+          billItem.product.id = null;
+      }
   }
 }

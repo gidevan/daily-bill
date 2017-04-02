@@ -27,6 +27,7 @@
         <result column="shop_name" property="shopName"/>
         <result column="created" property="created"/>
         <result column="updtaed" property="updated"/>
+        <result column="bill_sum" property="billSum"/>
         <association property="shop" column="shop_id" javaType="shop">
             <id column="shop_id" property="id"/>
             <result column="shop_name" property="name"/>
@@ -72,10 +73,13 @@
     </delete>
 
     <select id="getBills" resultMap="bill">
-        select b.id, b.date, b.shop_id shop_id, s.name as shop_name
-        from bill b
-        inner join shop s on b.shop_id = s.id
-        order by date desc
+        select bills.id, bills.date, bills.shop_id, bills.shop_name, sum(item_price) as bill_sum
+        from (select b.id, b.date, b.shop_id shop_id, s.name as shop_name, bi.price * bi.count_item item_price
+                from bill b
+                inner join shop s on b.shop_id = s.id
+                inner join bill_item bi on bi.bill_id = b.id) bills
+        group by bills.id, bills.date, bills.shop_id, bills.shop_name
+        order by bills.date desc
     </select>
     <select id="getBillDetails"  resultMap="billDetails" parameterType="long">
         select b.id bill_id, b.date, b.shop_id, sh.name shop_name,

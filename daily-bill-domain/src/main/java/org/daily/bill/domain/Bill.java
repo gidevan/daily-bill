@@ -1,5 +1,6 @@
 package org.daily.bill.domain;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +18,7 @@ public class Bill implements Identifiable<Long> {
     private List<BillItem> items = new ArrayList<>();
     private Date created;
     private Date updated;
-
+    private BigDecimal billSum;
     @Override
     public Long getId() {
         return id;
@@ -81,5 +82,13 @@ public class Bill implements Identifiable<Long> {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public BigDecimal getBillSum() {
+        return billSum;
+    }
+
+    public void setBillSum(BigDecimal billSum) {
+        this.billSum = billSum;
     }
 }

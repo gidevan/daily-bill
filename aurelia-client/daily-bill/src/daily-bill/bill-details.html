@@ -1,17 +1,54 @@
 <template>
-  Bill details message: ${message}
-  bill id: ${bill.id}
-  date: ${bill.date}
-  shop id: {bill.shop.id}
-  shop: ${bill.shop.name}
-  <div class="bill-item" repeat.for="item of bill.items">
-    <div class="item-description">product id: </div><div class="item-value">${item.product.id}</div>
-    <div class="item-description">product: </div><div class="item-value">${item.product.name}</div>
-    <div class="item-description">price: </div><div class="item-value">${item.price}</div>
-    <div class="item-description">count: </div><div class="item-value">${item.countItem}</div>
-  </div>
-  <div class="bill-button-panel">
-    <button class="edit-bill-button" click.delegate="edit()">Edit bill</button>
-  </div>
+    <div class="bill-details">
+        <div class="bill-info">
+            <div class="bill-info-item">
+                <div class="bill-info-description">bill id:</div>
+                <div class="bill-info-item">${bill.id}</div>
+            </div>
+            <div class="bill-info-item">
+                <div class="bill-info-description">date:</div>
+                <div class="bill-info-item">${bill.dateStr}</div>
+            </div>
+            <div class="bill-info-item">
+                <div class="bill-info-description">shop id:</div>
+                <div class="bill-info-item">${bill.shop.id}</div>
+            </div>
+            <div class="bill-info-item">
+                <div class="bill-info-description">shop:</div>
+                <div class="bill-info-item">${bill.shop.name}</div>
+            </div>
+            <div class="bill-info-item">
+                <div class="bill-info-description">bill sum:</div>
+                <div class="bill-info-item">${bill.billSum}</div>
+            </div>
+        </div>
+        <div class="bill-items">
+            <div class="bill-item" repeat.for="item of bill.items">
+                <div class="bill-item-info-data">
+                    <div class="item-description">product id: </div>
+                    <div class="item-value">${item.product.id}</div>
+                </div>
+                <div class="bill-item-info-data">
+                    <div class="item-description">product: </div>
+                    <div class="item-value">${item.product.name}</div>
+                </div>
+                <div class="bill-item-info-data">
+                    <div class="item-description">price: </div>
+                    <div class="item-value">${item.price}</div>
+                </div>
+                <div class="bill-item-info-data">
+                    <div class="item-description">count: </div>
+                    <div class="item-value">${item.countItem}</div>
+                </div>
+                <div class="bill-item-info-data">
+                    <div class="item-description">sum: </div>
+                    <div class="item-value">${item.countItem * item.price}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bill-button-panel">
+        <button class="edit-bill-button" click.delegate="edit()">Edit bill</button>
+    </div>
 
 </template>

@@ -49,4 +49,33 @@
   margin: 2px;
 }
 
+.bill-details {
+    border: 1px solid black;
+}
+
+.bill-details .bill-info {
+    margin: 2px;
+    padding-bottom: 3px;
+    font-size: 20px;
+
+}
+
+.bill-details .bill-info .bill-info-item {
+    display: flex;
+    flex-direction: row;
+}
+
+.bill-details .bill-info .bill-info-item .bill-info-description {
+    font-weight: bolder;
+}
+.bill-items .bill-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.bill-items .bill-item .bill-item-info-data  {
+    display: flex;
+    flex-direction: row;
+}
+
 

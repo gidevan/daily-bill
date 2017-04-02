@@ -1,30 +1,19 @@
 <template>
-  <h1>Local Bill List</h1>
-  <div class="bill-list">
-    <div repeat.for="bill of localBills" class="bill" click.delegate="viewBillDetails(bill.id)">
-      <div class="bill-info">
-        <span>id:</span> ${bill.id}
-      </div>
-      <div class="bill-info">
-        <span>shop:</span> ${bill.shop}
-      </div>
-      <div class="bill-info">
-        <span>date: </span> ${new Date(bill.date)}
-      </div>
-    </div>
-  </div>
-  <h1>Bill List</h1>
-  <div class="bill-list">
-    <div repeat.for="bill of bills" class="bill" click.delegate="viewBillDetails(bill.id)">
-      <div class="bill-info">
-        <span>id:</span> ${bill.id}
-      </div>
-      <div class="bill-info">
-        <span>shop:</span> ${bill.shopName}
-      </div>
-      <div class="bill-info">
-        <span>date:</span> ${bill.date}
-      </div>
+    <h1>Bill List</h1>
+    <div class="bill-list">
+        <div repeat.for="bill of bills" class="bill" click.delegate="viewBillDetails(bill.id)">
+            <div class="bill-info">
+                <span>id:</span> ${bill.id}
+            </div>
+        <div class="bill-info">
+            <span>shop:</span> ${bill.shopName}
+        </div>
+        <div class="bill-info">
+            <span>date:</span> ${bill.dateStr}
+        </div>
+        <div class="bill-info">
+            <span>sum:</span> ${bill.billSum}
+        </div>
     </div>
   </div>
 </template>

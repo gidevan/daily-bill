@@ -17,6 +17,10 @@ export class BillList {
               .then(data => {
                  console.log(data);
                  self.bills = data.object;
+                 self.bills.forEach((element) => {
+                    let date = new Date(element.date);
+                    element.dateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+                 })
               });
   }
 

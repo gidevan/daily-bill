@@ -103,6 +103,9 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
     public void testGetBills() {
         Bill bill = TestEntityFactory.createBill(shops.get(SHOP_NAMES[0]).getId(), new Date());
         dao.create(bill);
+        Long billId = bill.getId();
+        Assert.assertNotNull(billId);
+        createBillItems(billId);
         List<Bill> bills = dao.getBills();
         Date date = new Date();
         for(Bill stored: bills) {
@@ -113,7 +116,7 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
             date = stored.getDate();
         }
         Assert.assertFalse(bills.isEmpty());
-
+        deleteBillItems();
         dao.delete(bill.getId());
     }
 

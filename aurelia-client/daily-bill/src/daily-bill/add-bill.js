@@ -1,48 +1,54 @@
 import {DailyBillService} from "./service/daily-bill-service"
 import {Router} from "aurelia-router"
 export class AddBill{
-  static inject() {
-    return [DailyBillService, Router]
-  }
-  constructor(dailyBillService, router) {
-    this.dailyBillService = dailyBillService;
-    this.router = router;
-    this.createBill();
-    this.products = [];
-    this.shops = [];
-  }
-  activate(params, routeConfig) {
-    this.routeConfig = routeConfig;
-    console.log('activate add-bill');
-    console.log('params: ', params.id)
-    if(params.id) {
-      let self = this;
-      this.dailyBillService.getBillById(params.id)
+    static inject() {
+        return [DailyBillService, Router]
+    }
+    constructor(dailyBillService, router) {
+        this.dailyBillService = dailyBillService;
+        this.router = router;
+        this.createBill();
+        this.products = [];
+        this.shops = [];
+    }
+    activate(params, routeConfig) {
+        this.routeConfig = routeConfig;
+        console.log('activate add-bill');
+        console.log('params: ', params.id)
+        let self = this;
+
+        this.dailyBillService.getShops().then(response => response.json())
+                        .then(data => {
+                            console.log('shops: ')
+                            console.log(data)
+                            self.shops = data.object;
+                            self.dailyBillService.getProducts().then(response => response.json())
+                                .then(prodData => {
+                                    console.log('products: ')
+                                    console.log(prodData);
+                                    console.log(prodData.object);
+                                    self.products = prodData.object})
+                        })
+        if(params.id) {
+            let self = this;
+            this.dailyBillService.getBillById(params.id)
                 .then(response => response.json())
                 .then(data => {
-                  console.log('bill: ')
-                  console.log(data.object)
-                  self.bill = data.object;
-                  console.log('bill date: ')
-                  console.log(self.bill.date);
-                  self.dailyBillService.getShops().then(response => response.json())
-                    .then(data => {
-                        console.log('shops: ')
-                        console.log(data)
-                        self.shops = data.object;
-                        self.dailyBillService.getProducts().then(response => response.json())
-                            .then(prodData => {
-                                console.log('products: ')
-                                console.log(prodData);
-                                console.log(prodData.object);
-                                self.products = prodData.object})
-                    })
+                    console.log('bill: ')
+                    console.log(data.object)
+                    self.bill = data.object;
+                    self.initOpenBill();
+                    console.log('bill date: ')
+                    console.log(self.bill.date);
             });
-    } else {
-      this.createBill();
+        } else {
+            this.createBill();
+        }
     }
-  }
-
+    initOpenBill() {
+        let date = new Date(this.bill.date)
+        this.bill.dateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+    }
   createBill() {
     let date = new Date();
     this.bill = {
@@ -124,20 +130,24 @@ export class AddBill{
      if(shop) {
         this.bill.shop.id = shop.id;
         this.bill.shop.name = shop.name;
+        this.selectedShop = shop;
      } else {
         this.bill.shop.id = null;
      }
   }
 
-  productNameChange(billItem) {
-    console.log('product name change')
-      let productName = billItem.product.name.toLowerCase();
-      let product = this.products.find((element, index, array) => element.name.toLowerCase() === productName)
-      if(product) {
-          billItem.product.id = product.id;
-          billItem.product.name = product.name;
-      } else {
-          billItem.product.id = null;
-      }
-  }
+    productNameChange(billItem) {
+        console.log('product name change')
+        let productName = billItem.product.name.toLowerCase();
+        console.log('bill item product')
+        console.log(productName)
+        let product = this.products.find((element, index, array) => element.name.toLowerCase() === productName)
+        if(product) {
+            billItem.product.id = product.id;
+            billItem.product.name = product.name;
+            billItem.selectedProduct = product;
+        } else {
+            billItem.product.id = null;
+        }
+    }
 }

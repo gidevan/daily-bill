@@ -20,7 +20,7 @@
     <div class="item" repeat.for="billItem of bill.items">
       <div class="bill-item-info">
         <p>Product:</p>
-        <input type="text" value.bind="billItem.product.name" chamge.delegate="productNameChange(billItem)">
+        <input type="text" value.bind="billItem.product.name" change.delegate="productNameChange(billItem)">
         <select value.bind="billItem.selectedProduct" change.delegate="productChange(billItem)">
           <option model.bind="null">Choose...</option>
           <option repeat.for="product of products" model.bind="product">${product.name}</option>

@@ -25,9 +25,9 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
     private static final String[] SHOP_NAMES = {"ShopName1", "ShopName2"};
     private static final String[] PRODUCT_NAMES = {"Product1", "Product2"};
     private static final BigDecimal PRICES[] = {BigDecimal.valueOf(12.4), BigDecimal.valueOf(23.5)};
-    private static final int COUNTS[] = {1, 3};
-    private static final Object[][] PRODUCT_INFO = {{PRODUCT_NAMES[0], PRICES[0], COUNTS[0]},
-            {PRODUCT_NAMES[1], PRICES[1], COUNTS[1]}
+    private static final double AMOUNTS[] = {1, 3};
+    private static final Object[][] PRODUCT_INFO = {{PRODUCT_NAMES[0], PRICES[0], AMOUNTS[0]},
+            {PRODUCT_NAMES[1], PRICES[1], AMOUNTS[1]}
     };
 
     @Autowired
@@ -186,7 +186,7 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
         for(Object[] productInfo : PRODUCT_INFO) {
             BillItem item = TestEntityFactory.cretaeBillItem(billId,
                     products.get(productInfo[0]).getId(), (BigDecimal) productInfo[1],
-                    (Integer) productInfo[2]);
+                    (Double) productInfo[2]);
             billItemDao.create(item);
         }
     }

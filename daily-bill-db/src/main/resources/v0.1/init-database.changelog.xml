@@ -76,5 +76,13 @@
                 <dropSequence sequenceName="bill_item_seq"/>
             </rollback>
         </changeSet>
+        <changeSet id="modify-count-item" author="vano">
+            <modifyDataType tableName="bill_item" columnName="count_item" newDataType="real"/>
+            <renameColumn tableName="bill_item" oldColumnName="count_item" newColumnName="amount"/>
+            <rollback>
+                <renameColumn tableName="bill_item" oldColumnName="amount" newColumnName="count_item"/>
+                <modifyDataType tableName="bill_item" columnName="count_item" newDataType="int"/>
+            </rollback>
+        </changeSet>
 
 </databaseChangeLog>

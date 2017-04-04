@@ -4,7 +4,7 @@
   margin: 1px;
 }
 
-.bill-list .bill .bill-info.span {
+.bill-list .bill .bill-info>span {
   font-weight: bolder;
 }
 

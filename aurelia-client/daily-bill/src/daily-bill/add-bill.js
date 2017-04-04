@@ -103,7 +103,7 @@ export class AddBill{
         productName: null
       },
       price: 0,
-      countItem: 1
+      amount: 1
     }
   }
 

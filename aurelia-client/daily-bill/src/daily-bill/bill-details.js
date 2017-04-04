@@ -23,7 +23,7 @@ export class BillDetails {
                 self.bill.dateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
                 self.bill.billSum = 0;
                 self.bill.items.forEach(element => {
-                    self.bill.billSum += element.price * element.countItem;
+                    self.bill.billSum += element.price * element.amount;
                 })
           });
     }

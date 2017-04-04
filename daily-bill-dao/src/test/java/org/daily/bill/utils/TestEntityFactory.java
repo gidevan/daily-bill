@@ -33,12 +33,12 @@ public final class TestEntityFactory {
         return bill;
     }
 
-    public static BillItem cretaeBillItem(Long billId, Long productId, BigDecimal price, Integer countItem) {
+    public static BillItem cretaeBillItem(Long billId, Long productId, BigDecimal price, Double amount) {
         BillItem billItem = new BillItem();
         billItem.setBillId(billId);
         billItem.setProductId(productId);
         billItem.setPrice(price);
-        billItem.setCountItem(countItem);
+        billItem.setAmount(amount);
         billItem.setCreated(new Date());
         return billItem;
     }

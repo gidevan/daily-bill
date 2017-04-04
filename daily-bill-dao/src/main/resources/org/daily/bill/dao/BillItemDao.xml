@@ -25,24 +25,24 @@
         <result column="bill_id" property="billId"/>
         <result column="product_id" property="productId"/>
         <result column="price" property="price"/>
-        <result column="count_item" property="countItem"/>
+        <result column="amount" property="amount"/>
         <result column="created" property="created"/>
         <result column="updtaed" property="updated"/>
     </resultMap>
     <select id="findById" resultType="billItem">
-        select id, bill_id, product_id, price, count_item, created, updated from bill_item where id = #{id}
+        select id, bill_id, product_id, price, amount, created, updated from bill_item where id = #{id}
     </select>
 
     <select id="findAll" resultType="billItem">
-        select id, bill_id, product_id, price, count_item, created, updated from bill_item
+        select id, bill_id, product_id, price, amount, created, updated from bill_item
     </select>
 
     <insert id="insert" parameterType="java.util.Map">
         <selectKey keyColumn="id" keyProperty="id" resultType="long" order="AFTER">
             select currval('bill_item_seq')
         </selectKey>
-        insert into bill_Item (id, bill_id, product_id, price, count_item, created)
-        values(nextval('bill_item_seq'), #{billId}, #{productId}, #{price}, #{countItem}, now())
+        insert into bill_Item (id, bill_id, product_id, price, amount, created)
+        values(nextval('bill_item_seq'), #{billId}, #{productId}, #{price}, #{amount}, now())
     </insert>
 
     <update id="update" parameterType="java.util.Map">
@@ -50,7 +50,7 @@
         set bill_id = #{billId},
             product_id = #{productId},
             price = #{price},
-            count_item = #{countItem},
+            amount = #{amount},
             updated = now()
         where id = #{id}
     </update>

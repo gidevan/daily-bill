@@ -109,7 +109,7 @@ public class BillItemDaoTest extends AbstractDaoTest<Long, BillItem, BillItemDao
         Assert.assertEquals(expected.getBillId(),updated.getBillId());
         Assert.assertEquals(expected.getProductId(), updated.getProductId());
         Assert.assertEquals(expected.getPrice(), updated.getPrice());
-        Assert.assertEquals(expected.getCountItem(), updated.getCountItem());
+        Assert.assertEquals(expected.getAmount(), updated.getAmount());
     }
 
     @Autowired
@@ -122,7 +122,7 @@ public class BillItemDaoTest extends AbstractDaoTest<Long, BillItem, BillItemDao
     protected BillItem createEntity() {
         BillItem item = TestEntityFactory.cretaeBillItem(bills.get(DEFAULT_INDEX).getId(),
                 products.get(DEFAULT_INDEX).getId(),
-                TEST_PRICE, TEST_COUNT);
+                TEST_PRICE, (double)TEST_COUNT);
         return item;
     }
 
@@ -130,7 +130,7 @@ public class BillItemDaoTest extends AbstractDaoTest<Long, BillItem, BillItemDao
     protected void updateEntity(BillItem entity) {
         entity.setProductId(products.get(DEFAULT_INDEX + 1).getId());
         entity.setBillId(bills.get(DEFAULT_INDEX + 1).getId());
-        entity.setCountItem(UPDATED_TEST_COUNT);
+        entity.setAmount((double)UPDATED_TEST_COUNT);
         entity.setPrice(UPDATED_TEST_PRICE);
     }
 }

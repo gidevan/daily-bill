@@ -123,7 +123,7 @@ public class DailyBillServiceImpl implements DailyBillService {
             BillItem item = new BillItem();
             item.setId(details.getBillItemId());
             item.setPrice(details.getPrice());
-            item.setCountItem(details.getCountItem());
+            item.setAmount(details.getAmount());
             Product product = new Product();
             product.setId(details.getProductId());
             product.setName(details.getProductName());

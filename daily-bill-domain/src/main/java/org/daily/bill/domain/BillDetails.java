@@ -11,7 +11,7 @@ public class BillDetails {
     private String shopName;
     private Long billItemId;
     private BigDecimal price;
-    private Integer countItem;
+    private Double amount;
     private Long productId;
     private String productName;
 
@@ -64,12 +64,12 @@ public class BillDetails {
         this.price = price;
     }
 
-    public Integer getCountItem() {
-        return countItem;
+    public Double getAmount() {
+        return amount;
     }
 
-    public void setCountItem(Integer countItem) {
-        this.countItem = countItem;
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
     public Long getProductId() {

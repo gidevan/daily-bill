@@ -1,10 +1,6 @@
 <template>
   <h1>Add Bill</h1>
   <div class="shop-info">
-    <p>Shop ID: </p>
-    <div >${bill.shop.id}</div>
-  </div>
-  <div class="shop-info">
     <p>Shop name: </p>
     <input type="text" value.bind="bill.shop.name" change.delegate="shopNameChange()">
     <select value.bind="selectedShop" change.delegate="shopChange()">
@@ -26,11 +22,6 @@
           <option repeat.for="product of products" model.bind="product">${product.name}</option>
         </select>
       </div>
-      <div class="bill-item-info">
-        <p>Product ID:</p>
-        <div>${billItem.product.id}</div>
-      </div>
-      <div>selected product id:</div><div>${billItem.selectedProduct.id}</div>
       <div class="bill-item-info">
         <p>Price:</p>
         <input type="text" value.bind="billItem.price">

@@ -24,6 +24,7 @@
 
 .shop-info > p, .bill-item-info >p{
   font-weight: bolder;
+  width: 20%;
 }
 
 .bill-item {
@@ -37,6 +38,7 @@
   font-weight: bolder;
   margin-right: 2px;
   margin-left: 2px;
+  width: 20%;
 }
 .item-button-panel button {
     width: 100%;
@@ -67,6 +69,7 @@
 
 .bill-details .bill-info .bill-info-item .bill-info-description {
     font-weight: bolder;
+    width: 20%;
 }
 .bill-items .bill-item {
     display: flex;

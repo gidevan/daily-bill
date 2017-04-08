@@ -28,6 +28,10 @@
         select id, name, description, created, updated from product
     </select>
 
+    <select id="findProducts" resultType="product">
+        select id, name, description, created, updated from product order by name
+    </select>
+
     <insert id="insert" parameterType="java.util.Map">
         <selectKey keyColumn="id" resultType="long" order="AFTER" keyProperty="id">
             select currval('product_seq')

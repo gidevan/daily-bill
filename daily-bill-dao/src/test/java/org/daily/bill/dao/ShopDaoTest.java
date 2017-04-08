@@ -9,8 +9,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -20,17 +23,32 @@ import java.util.List;
  */
 @Test
 public class ShopDaoTest extends AbstractDaoTest<Long, Shop, ShopDao> {
-    private static final String TEST_NAMES[] = {"TestShop1", "TestShop2", "TestShop3"};
+    private static final String TEST_NAME = "TestShop";
+    private static final String TEST_NAMES[] = {"TestShop1", "TestShop2", "TestShop3", "TestShop5", "TestShop4"};
     private static final String UPDATED_TEST_NAME = "UpdatedTestShop";
+    private List<Shop> testShops = new ArrayList<>();
 
-    @Test
-    @Override
-    public void testFindAll() {
+    @BeforeClass
+    public void before() {
         for(String testName : TEST_NAMES) {
             Shop shop = createEntity();
             shop.setName(testName);
             dao.create(shop);
+            testShops.add(shop);
         }
+    }
+
+    @AfterClass
+    public void afterTest() {
+        for(Shop shop : testShops) {
+            dao.delete(shop.getId());
+            Assert.assertNull(dao.findById(shop.getId()));
+        }
+    }
+
+    @Test
+    @Override
+    public void testFindAll() {
 
         List<Shop> shops = dao.findAll();
         Assert.assertEquals(shops.size(), TEST_NAMES.length);
@@ -38,9 +56,18 @@ public class ShopDaoTest extends AbstractDaoTest<Long, Shop, ShopDao> {
             Assert.assertTrue(Arrays.asList(TEST_NAMES).contains(shop.getName()));
         }
 
+    }
+
+    @Test
+    public void testFindShops() {
+        List<Shop> shops = dao.findShops();
+        Assert.assertFalse(shops.isEmpty());
+        Shop sh = null;
         for(Shop shop : shops) {
-            dao.delete(shop.getId());
-            Assert.assertNull(dao.findById(shop.getId()));
+            if(sh != null) {
+                Assert.assertTrue(sh.getName().compareTo(shop.getName()) <=0);
+            }
+            sh = shop;
         }
     }
 
@@ -65,7 +92,7 @@ public class ShopDaoTest extends AbstractDaoTest<Long, Shop, ShopDao> {
 
     @Override
     protected Shop createEntity() {
-        return TestEntityFactory.createShop(TEST_NAMES[0]);
+        return TestEntityFactory.createShop(TEST_NAME);
     }
 
     @Override

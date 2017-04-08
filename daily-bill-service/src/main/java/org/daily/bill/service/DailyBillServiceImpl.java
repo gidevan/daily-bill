@@ -38,7 +38,7 @@ public class DailyBillServiceImpl implements DailyBillService {
 
     @Override
     public List<Shop> findShops() {
-        return shopDao.findAll();
+        return shopDao.findShops();
     }
 
     @Override
@@ -106,7 +106,7 @@ public class DailyBillServiceImpl implements DailyBillService {
 
     @Override
     public List<Product> getProducts() {
-        return productDao.findAll();
+        return productDao.findProducts();
     }
 
     private Bill createBill(List<BillDetails> billDetails) {

@@ -6,8 +6,11 @@ import org.daily.bill.domain.Product;
 import org.daily.bill.utils.TestEntityFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -20,29 +23,51 @@ import static org.testng.CommandLineArgs.TEST_NAMES;
 public class ProductDaoTest extends AbstractDaoTest<Long, Product, ProductDao> {
 
     private static final String DESCRIPTION_PREFIX = "Description: ";
-    private static final String[] PRODUCT_NAMES = {"Product1", "Product2", "Product3"};
+    private static final String TEST_NAME = "TestProduct";
+    private static final String[] PRODUCT_NAMES = {"Product1", "Product2", "Product3", "Product6", "Product5", "Product4"};
     private static final String UPDATED_NAME = "UpdatedProductName";
+    private List<Product> testProducts = new ArrayList<>();
 
-    @Test
-    @Override
-    public void testFindAll() {
+    @BeforeClass
+    public void before() {
         for(String testName : PRODUCT_NAMES) {
             Product product = createEntity();
             product.setName(testName);
             product.setDescription(DESCRIPTION_PREFIX + testName);
             dao.create(product);
+            testProducts.add(product);
         }
+    }
 
+    @AfterClass
+    public void after() {
+        for(Product product : testProducts) {
+            dao.delete(product.getId());
+            Assert.assertNull(dao.findById(product.getId()));
+        }
+    }
+
+    @Test
+    @Override
+    public void testFindAll() {
         List<Product> products = dao.findAll();
         Assert.assertEquals(products.size(), PRODUCT_NAMES.length);
         for(Product product : products) {
             Assert.assertTrue(Arrays.asList(PRODUCT_NAMES).contains(product.getName()));
             Assert.assertTrue(product.getDescription().startsWith(DESCRIPTION_PREFIX));
         }
+    }
 
+    @Test
+    public void testFindProducts() {
+        List<Product> products = dao.findProducts();
+        Assert.assertFalse(products.isEmpty());
+        Product pr = null;
         for(Product product : products) {
-            dao.delete(product.getId());
-            Assert.assertNull(dao.findById(product.getId()));
+            if(pr != null) {
+                Assert.assertTrue(pr.getName().compareTo(product.getName()) <= 0 );
+            }
+            pr = product;
         }
     }
 
@@ -67,7 +92,7 @@ public class ProductDaoTest extends AbstractDaoTest<Long, Product, ProductDao> {
 
     @Override
     protected Product createEntity() {
-        String name = PRODUCT_NAMES[DEFAULT_INDEX];
+        String name = TEST_NAME;
         return TestEntityFactory.createProduct(name, DESCRIPTION_PREFIX + name);
     }
 

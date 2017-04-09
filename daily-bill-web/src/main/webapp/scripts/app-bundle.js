@@ -18,7 +18,7 @@ define('app',['exports'], function (exports) {
 
     App.prototype.configureRouter = function configureRouter(config, router) {
       config.title = 'Daily Bill';
-      config.map([{ route: '', moduleId: 'daily-bill/bill-list', title: 'Bill List', name: 'billList' }, { route: 'bill/:id', moduleId: 'daily-bill/bill-details', name: 'billDetails' }, { route: 'bill/add', moduleId: 'daily-bill/add-bill', name: 'addBill' }, { route: 'bill/edit/:id', moduleId: 'daily-bill/add-bill', name: 'editBill' }]);
+      config.map([{ route: '', moduleId: 'daily-bill/bill-list', title: 'Bill List', name: 'billList' }, { route: 'bill/:id', moduleId: 'daily-bill/bill-details', name: 'billDetails' }, { route: 'bill/add', moduleId: 'daily-bill/add-bill', name: 'addBill' }, { route: 'bill/edit/:id', moduleId: 'daily-bill/add-bill', name: 'editBill' }, { route: 'statistics', moduleId: 'daily-bill/statistics', name: 'statistics' }]);
 
       this.router = router;
     };
@@ -311,60 +311,52 @@ define('daily-bill/bill-details',["exports", "./service/daily-bill-service", "au
     }();
 });
 define('daily-bill/bill-list',["exports", "./service/daily-bill-service", "aurelia-router"], function (exports, _dailyBillService, _aureliaRouter) {
-  "use strict";
+    "use strict";
 
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.BillList = undefined;
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.BillList = undefined;
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var BillList = exports.BillList = function () {
-    BillList.inject = function inject() {
-      return [_dailyBillService.DailyBillService, _aureliaRouter.Router];
-    };
-
-    function BillList(dailyBillService, router) {
-      _classCallCheck(this, BillList);
-
-      this.dailyBillService = dailyBillService;
-      this.router = router;
-      this.localBillsbills = dailyBillService.getLocalBills();
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
     }
 
-    BillList.prototype.activate = function activate(params, routeConfig) {
-      var self = this;
-      this.dailyBillService.getBills().then(function (response) {
-        return response.json();
-      }).then(function (data) {
-        console.log(data);
-        self.bills = data.object;
-        self.bills.forEach(function (element) {
-          var date = new Date(element.date);
-          element.dateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-        });
-      });
-    };
+    var BillList = exports.BillList = function () {
+        BillList.inject = function inject() {
+            return [_dailyBillService.DailyBillService, _aureliaRouter.Router];
+        };
 
-    BillList.prototype.viewLocalBillDetails = function viewLocalBillDetails(id) {
-      console.log("viewBillDetails: " + id);
-      var bill = this.dailyBillService.getLocalBillById(id);
-      console.log(bill);
-      return bill;
-    };
+        function BillList(dailyBillService, router) {
+            _classCallCheck(this, BillList);
 
-    BillList.prototype.viewBillDetails = function viewBillDetails(id) {
-      console.log("viewBillDetails: " + id);
-      this.router.navigateToRoute('billDetails', { id: id });
-    };
+            this.dailyBillService = dailyBillService;
+            this.router = router;
+        }
 
-    return BillList;
-  }();
+        BillList.prototype.activate = function activate(params, routeConfig) {
+            var self = this;
+            this.dailyBillService.getBills().then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                console.log(data);
+                self.bills = data.object;
+                self.bills.forEach(function (element) {
+                    var date = new Date(element.date);
+                    element.dateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+                });
+            });
+        };
+
+        BillList.prototype.viewBillDetails = function viewBillDetails(id) {
+            console.log("viewBillDetails: " + id);
+            this.router.navigateToRoute('billDetails', { id: id });
+        };
+
+        return BillList;
+    }();
 });
 define('resources/index',["exports"], function (exports) {
   "use strict";
@@ -375,94 +367,119 @@ define('resources/index',["exports"], function (exports) {
   exports.configure = configure;
   function configure(config) {}
 });
-define('daily-bill/service/daily-bill-service',["exports", "aurelia-fetch-client"], function (exports, _aureliaFetchClient) {
-  "use strict";
+define('daily-bill/service/daily-bill-service',['exports', 'aurelia-fetch-client'], function (exports, _aureliaFetchClient) {
+    'use strict';
 
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.DailyBillService = undefined;
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.DailyBillService = undefined;
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var httpClient = new _aureliaFetchClient.HttpClient();
-
-  var DailyBillService = exports.DailyBillService = function () {
-    function DailyBillService() {
-      _classCallCheck(this, DailyBillService);
-
-      this.bills = [{ id: 1, shop: "Shop1", date: "24-12-2016", price: 24.5 }, { id: 2, shop: "Shop2", date: "25-12-2016", price: 34.6 }, { id: 3, shop: "Shop1", date: "05-01-2017", price: 14.6 }, { id: 4, shop: "Shop3", date: "06-01-2017", price: 24.1 }];
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
     }
 
-    DailyBillService.prototype.getLocalBills = function getLocalBills() {
-      return this.bills;
-    };
+    var httpClient = new _aureliaFetchClient.HttpClient();
 
-    DailyBillService.prototype.getLocalBillById = function getLocalBillById(id) {
-      console.log("service. get by id: " + id);
-      for (var _iterator = this.bills, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
-        var _ref;
-
-        if (_isArray) {
-          if (_i >= _iterator.length) break;
-          _ref = _iterator[_i++];
-        } else {
-          _i = _iterator.next();
-          if (_i.done) break;
-          _ref = _i.value;
+    var DailyBillService = exports.DailyBillService = function () {
+        function DailyBillService() {
+            _classCallCheck(this, DailyBillService);
         }
 
-        var bill = _ref;
+        DailyBillService.prototype.getBills = function getBills() {
+            console.log("Get bills");
+            return httpClient.fetch('http://localhost:8080/daily-bill/bills');
+        };
 
-        if (bill.id == id) {
-          return bill;
-        }
-      }
-      return null;
-    };
+        DailyBillService.prototype.getBillById = function getBillById(id) {
+            console.log("Get bill by id: " + id);
+            return httpClient.fetch('http://localhost:8080/daily-bill/bill/' + id);
+        };
 
-    DailyBillService.prototype.getBills = function getBills() {
-      console.log("Get bills");
-      return httpClient.fetch('http://localhost:8080/daily-bill/bills');
-    };
+        DailyBillService.prototype.addBill = function addBill(bill) {
+            return httpClient.fetch('http://localhost:8080/daily-bill/add', {
+                method: "PUT",
+                body: (0, _aureliaFetchClient.json)(bill)
+            });
+        };
 
-    DailyBillService.prototype.getBillById = function getBillById(id) {
-      console.log("Get bill by id: " + id);
-      return httpClient.fetch('http://localhost:8080/daily-bill/bill/' + id);
-    };
+        DailyBillService.prototype.updateBill = function updateBill(bill) {
+            return httpClient.fetch('http://localhost:8080/daily-bill/edit', {
+                method: "POST",
+                body: (0, _aureliaFetchClient.json)(bill)
+            });
+        };
 
-    DailyBillService.prototype.addBill = function addBill(bill) {
-      return httpClient.fetch('http://localhost:8080/daily-bill/add', {
-        method: "PUT",
-        body: (0, _aureliaFetchClient.json)(bill)
-      });
-    };
+        DailyBillService.prototype.getShops = function getShops() {
+            return httpClient.fetch('http://localhost:8080/daily-bill/shops');
+        };
 
-    DailyBillService.prototype.updateBill = function updateBill(bill) {
-      return httpClient.fetch('http://localhost:8080/daily-bill/edit', {
-        method: "POST",
-        body: (0, _aureliaFetchClient.json)(bill)
-      });
-    };
+        DailyBillService.prototype.getProducts = function getProducts() {
+            return httpClient.fetch('http://localhost:8080/daily-bill/products');
+        };
 
-    DailyBillService.prototype.getShops = function getShops() {
-      return httpClient.fetch('http://localhost:8080/daily-bill/shops');
-    };
+        DailyBillService.prototype.getStatisticByProduct = function getStatisticByProduct(params) {
+            console.log('Getstatistic by product');
+            return httpClient.fetch('http://localhost:8080/daily-bill/statistics/product', {
+                method: "POST",
+                body: (0, _aureliaFetchClient.json)(params)
+            });
+        };
 
-    DailyBillService.prototype.getProducts = function getProducts() {
-      return httpClient.fetch('http://localhost:8080/daily-bill/products');
-    };
-
-    return DailyBillService;
-  }();
+        return DailyBillService;
+    }();
 });
-define('text!css/daily-bill.css', ['module'], function(module) { module.exports = "\n.bill-list .bill {\n  border: 1px solid black;\n  margin: 1px;\n}\n\n.bill-list .bill .bill-info>span {\n  font-weight: bolder;\n}\n\n.shop-info {\n  display: flex;\n  flex-direction: row;\n}\n.item{\n  border: 1px solid black;\n  margin: 2px;\n}\n\n.bill-item-info {\n  display: flex;\n  flex-direction: row;\n}\n\n.shop-info > p, .bill-item-info >p{\n  font-weight: bolder;\n}\n\n.bill-item {\n  display: flex;\n  flex-direction: row;\n  border: 1px solid black;\n  margin: 1px;\n  padding: 1px;\n}\n.bill-item .item-description {\n  font-weight: bolder;\n  margin-right: 2px;\n  margin-left: 2px;\n}\n.item-button-panel button {\n    width: 100%;\n    font-size: 24px;\n    margin: 2px;\n}\n.bill-button-panel button {\n  width: 100%;\n  font-size: 24px;\n  margin: 2px;\n}\n\n.bill-details {\n    border: 1px solid black;\n}\n\n.bill-details .bill-info {\n    margin: 2px;\n    padding-bottom: 3px;\n    font-size: 20px;\n\n}\n\n.bill-details .bill-info .bill-info-item {\n    display: flex;\n    flex-direction: row;\n}\n\n.bill-details .bill-info .bill-info-item .bill-info-description {\n    font-weight: bolder;\n}\n.bill-items .bill-item {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-items .bill-item .bill-item-info-data  {\n    display: flex;\n    flex-direction: row;\n}\n\n\n"; });
-define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./css/daily-bill.css\"></require><nav role=\"navigation\"><div><a href=\"#\"><span>Bills</span> </a><span>|</span> <a route-href=\"route: addBill\"><span>Add Bill</span> </a><span>|</span></div></nav><div class=\"container\"><router-view></router-view></div></template>"; });
-define('text!daily-bill/add-bill.html', ['module'], function(module) { module.exports = "<template><h1>Add Bill</h1><div class=\"shop-info\"><p>Shop ID:</p><div>${bill.shop.id}</div></div><div class=\"shop-info\"><p>Shop name:</p><input type=\"text\" value.bind=\"bill.shop.name\" change.delegate=\"shopNameChange()\"><select value.bind=\"selectedShop\" change.delegate=\"shopChange()\"><option model.bind=\"null\">Choose...</option><option repeat.for=\"shop of shops\" model.bind=\"shop\">${shop.name}</option></select></div><div class=\"shop-info\"><p>Date:</p><input type=\"text\" value.bind=\"bill.dateStr\"></div><div class=\"bill-items\"><div class=\"item\" repeat.for=\"billItem of bill.items\"><div class=\"bill-item-info\"><p>Product:</p><input type=\"text\" value.bind=\"billItem.product.name\" change.delegate=\"productNameChange(billItem)\"><select value.bind=\"billItem.selectedProduct\" change.delegate=\"productChange(billItem)\"><option model.bind=\"null\">Choose...</option><option repeat.for=\"product of products\" model.bind=\"product\">${product.name}</option></select></div><div class=\"bill-item-info\"><p>Product ID:</p><div>${billItem.product.id}</div></div><div>selected product id:</div><div>${billItem.selectedProduct.id}</div><div class=\"bill-item-info\"><p>Price:</p><input type=\"text\" value.bind=\"billItem.price\"></div><div class=\"bill-item-info\"><p>Amount:</p><input type=\"text\" value.bind=\"billItem.amount\"></div></div><div class=\"item-button-panel\"><button type=\"button\" click.delegate=\"addBillItem()\">Add item</button></div></div><div class=\"bill-button-panel\" if.bind=\"!bill.id\"><button type=\"button\" click.delegate=\"addBill()\">Add bill</button></div><div class=\"bill-button-panel\" if.bind=\"bill.id\"><button type=\"button\" click.delegate=\"updateBill()\">Update bill</button></div></template>"; });
+define('daily-bill/statistics',["exports", "./service/daily-bill-service", "aurelia-router"], function (exports, _dailyBillService, _aureliaRouter) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.Statistics = undefined;
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    var Statistics = exports.Statistics = function () {
+        Statistics.inject = function inject() {
+            return [_dailyBillService.DailyBillService, _aureliaRouter.Router];
+        };
+
+        function Statistics(dailyBillService, router) {
+            _classCallCheck(this, Statistics);
+
+            console.log('Init statistics module');
+            this.dailyBillService = dailyBillService;
+            this.router = router;
+            var date = new Date();
+            this.params = {
+                startPeriodDate: new Date(date.getFullYear(), date.getMonth(), 1),
+                endPeriodDate: date
+            };
+        }
+
+        Statistics.prototype.activate = function activate(params, routeConfig) {
+            var self = this;
+            this.dailyBillService.getStatisticByProduct(this.params).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                console.log(data);
+                self.statisticsByProduct = data.object;
+            });
+        };
+
+        return Statistics;
+    }();
+});
+define('text!css/daily-bill.css', ['module'], function(module) { module.exports = "\n.bill-list .bill {\n  border: 1px solid black;\n  margin: 1px;\n}\n\n.bill-list .bill .bill-info>span {\n  font-weight: bolder;\n}\n\n.shop-info {\n  display: flex;\n  flex-direction: row;\n}\n.item{\n  border: 1px solid black;\n  margin: 2px;\n}\n\n.bill-item-info {\n  display: flex;\n  flex-direction: row;\n}\n\n.shop-info > p, .bill-item-info >p{\n  font-weight: bolder;\n  width: 20%;\n}\n\n.bill-item {\n  display: flex;\n  flex-direction: row;\n  border: 1px solid black;\n  margin: 1px;\n  padding: 1px;\n}\n.bill-item .item-description {\n  font-weight: bolder;\n  margin-right: 2px;\n  margin-left: 2px;\n  width: 20%;\n}\n.item-button-panel button {\n    width: 100%;\n    font-size: 24px;\n    margin: 2px;\n}\n.bill-button-panel button {\n  width: 100%;\n  font-size: 24px;\n  margin: 2px;\n}\n\n.bill-details {\n    border: 1px solid black;\n}\n\n.bill-details .bill-info {\n    margin: 2px;\n    padding-bottom: 3px;\n    font-size: 20px;\n\n}\n\n.bill-details .bill-info .bill-info-item {\n    display: flex;\n    flex-direction: row;\n}\n\n.bill-details .bill-info .bill-info-item .bill-info-description {\n    font-weight: bolder;\n    width: 20%;\n}\n.bill-items .bill-item {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-items .bill-item .bill-item-info-data  {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item {\n    border: 1px solid black;\n    margin: 2px;\n    padding: 2px;\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item .name {\n    font-weight: bolder;\n}\n\n\n"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./css/daily-bill.css\"></require><nav role=\"navigation\"><div><a href=\"#\"><span>Bills</span> </a><span>|</span> <a route-href=\"route: addBill\"><span>Add Bill</span> </a><span>|</span> <a route-href=\"route: statistics\"><span>Statistics</span></a></div></nav><div class=\"container\"><router-view></router-view></div></template>"; });
+define('text!daily-bill/add-bill.html', ['module'], function(module) { module.exports = "<template><h1>Add Bill</h1><div class=\"shop-info\"><p>Shop name:</p><input type=\"text\" value.bind=\"bill.shop.name\" change.delegate=\"shopNameChange()\"><select value.bind=\"selectedShop\" change.delegate=\"shopChange()\"><option model.bind=\"null\">Choose...</option><option repeat.for=\"shop of shops\" model.bind=\"shop\">${shop.name}</option></select></div><div class=\"shop-info\"><p>Date:</p><input type=\"text\" value.bind=\"bill.dateStr\"></div><div class=\"bill-items\"><div class=\"item\" repeat.for=\"billItem of bill.items\"><div class=\"bill-item-info\"><p>Product:</p><input type=\"text\" value.bind=\"billItem.product.name\" change.delegate=\"productNameChange(billItem)\"><select value.bind=\"billItem.selectedProduct\" change.delegate=\"productChange(billItem)\"><option model.bind=\"null\">Choose...</option><option repeat.for=\"product of products\" model.bind=\"product\">${product.name}</option></select></div><div class=\"bill-item-info\"><p>Price:</p><input type=\"text\" value.bind=\"billItem.price\"></div><div class=\"bill-item-info\"><p>Amount:</p><input type=\"text\" value.bind=\"billItem.amount\"></div></div><div class=\"item-button-panel\"><button type=\"button\" click.delegate=\"addBillItem()\">Add item</button></div></div><div class=\"bill-button-panel\" if.bind=\"!bill.id\"><button type=\"button\" click.delegate=\"addBill()\">Add bill</button></div><div class=\"bill-button-panel\" if.bind=\"bill.id\"><button type=\"button\" click.delegate=\"updateBill()\">Update bill</button></div></template>"; });
 define('text!daily-bill/bill-details.html', ['module'], function(module) { module.exports = "<template><div class=\"bill-details\"><div class=\"bill-info\"><div class=\"bill-info-item\"><div class=\"bill-info-description\">bill id:</div><div class=\"bill-info-item\">${bill.id}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">date:</div><div class=\"bill-info-item\">${bill.dateStr}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">shop id:</div><div class=\"bill-info-item\">${bill.shop.id}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">shop:</div><div class=\"bill-info-item\">${bill.shop.name}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">bill sum:</div><div class=\"bill-info-item\">${bill.billSum}</div></div></div><div class=\"bill-items\"><div class=\"bill-item\" repeat.for=\"item of bill.items\"><div class=\"bill-item-info-data\"><div class=\"item-description\">product id:</div><div class=\"item-value\">${item.product.id}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">product:</div><div class=\"item-value\">${item.product.name}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">price:</div><div class=\"item-value\">${item.price}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">amount:</div><div class=\"item-value\">${item.amount}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">sum:</div><div class=\"item-value\">${item.amount * item.price}</div></div></div></div></div><div class=\"bill-button-panel\"><button class=\"edit-bill-button\" click.delegate=\"edit()\">Edit bill</button></div></template>"; });
 define('text!daily-bill/bill-list.html', ['module'], function(module) { module.exports = "<template><h1>Bill List</h1><div class=\"bill-list\"><div repeat.for=\"bill of bills\" class=\"bill\" click.delegate=\"viewBillDetails(bill.id)\"><div class=\"bill-info\"><span>id:</span> ${bill.id}</div><div class=\"bill-info\"><span>shop:</span> ${bill.shopName}</div><div class=\"bill-info\"><span>date:</span> ${bill.dateStr}</div><div class=\"bill-info\"><span>sum:</span> ${bill.billSum}</div></div></div></template>"; });
+define('text!daily-bill/statistics.html', ['module'], function(module) { module.exports = "<template>Statistics:<div repeat.for=\"statistics of statisticsByProduct\" class=\"statistics-item\"><div class=\"name\">${statistics.name}:</div><div class=\"value\">${statistics.price}</div></div><template></template></template>"; });
 //# sourceMappingURL=app-bundle.js.map

@@ -109,6 +109,14 @@ public class DailyBillServiceImpl implements DailyBillService {
         return productDao.findProducts();
     }
 
+    @Override
+    public List<StatisticDetails> getDetailsByProduct(StatisticsParams params) {
+        if(params.getEndPeriodDate() == null) {
+            params.setEndPeriodDate(new Date());
+        }
+        return billDao.getStatisticByProduct(params.getStartPeriodDate(), params.getEndPeriodDate());
+    }
+
     private Bill createBill(List<BillDetails> billDetails) {
         Bill bill = new Bill();
         for(BillDetails details :billDetails) {

@@ -1,9 +1,7 @@
 package org.daily.bill.web.controller;
 
 import org.daily.bill.api.service.DailyBillService;
-import org.daily.bill.domain.Bill;
-import org.daily.bill.domain.Product;
-import org.daily.bill.domain.Shop;
+import org.daily.bill.domain.*;
 import org.daily.bill.web.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -102,6 +100,16 @@ public class DailyBillRest {
         try {
             List<Shop> shops = dailyBillService.findShops();
             return new Response(OK_CODE, OK_STATUS, null, shops);
+        } catch (Exception e) {
+            return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value="/statistics/product", method = RequestMethod.POST)
+    public Response getStatisticsByProduct(@RequestBody StatisticsParams params) {
+        try {
+            List<StatisticDetails> details = dailyBillService.getDetailsByProduct(params);
+            return new Response(OK_CODE, OK_STATUS, null, details);
         } catch (Exception e) {
             return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
         }

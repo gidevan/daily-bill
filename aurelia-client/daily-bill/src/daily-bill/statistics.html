@@ -1,3 +1,7 @@
 <template>
-    Statistics
+    Statistics:
+    <div repeat.for="statistics of statisticsByProduct" class="statistics-item">
+        <div class="name">${statistics.name}: </div>
+        <div class="value">${statistics.price}</div>
+    </div>
 <template>

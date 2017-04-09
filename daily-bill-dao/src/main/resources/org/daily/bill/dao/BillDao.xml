@@ -44,6 +44,11 @@
         <result column="product_id" property="productId"/>
         <result column="product_name" property="productName"/>
     </resultMap>
+    <resultMap id="statisticDetails" type="statisticDetails">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="price" property="price"/>
+    </resultMap>
     <select id="findById" resultMap="bill">
         select id, date, shop_id, created, updated from bill where id = #{id}
     </select>
@@ -91,13 +96,24 @@
         inner join product p on bi.product_id = p.id
         where b.id = #{billId}
     </select>
-    <select id="getDetailsByProduct" parameterType="map">
-        select a.id,a.name, sum(a.product_price)
+    <select id="getDetailsByProduct" parameterType="map" resultMap="statisticDetails">
+        select a.id,a.name, sum(a.product_price) price
         from(
         select p.id, p.name, b.date, bi.price, bi.amount, bi.price* bi.amount product_price
         from bill b
         inner join bill_item bi on bi.bill_id = b.id
         inner join product p on bi.product_id = p.id) a
+        <where>
+            <if test="endPeriodDate != null">
+                <![CDATA[
+                    b.date < #{endPeriodDate}
+                ]]>
+            </if>
+            <if test="srartPeriodDate != null">
+                and b.date >= #{startPeriodDate}
+            </if>
+
+        </where>
         group by a.id, a.name order by a.name
     </select>
 </mapper>

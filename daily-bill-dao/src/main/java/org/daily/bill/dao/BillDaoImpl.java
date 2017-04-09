@@ -3,8 +3,10 @@ package org.daily.bill.dao;
 import org.daily.bill.api.dao.BillDao;
 import org.daily.bill.domain.Bill;
 import org.daily.bill.domain.BillDetails;
+import org.daily.bill.domain.StatisticDetails;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,5 +31,13 @@ public class BillDaoImpl extends AbstractCrudDao<Bill, Long> implements BillDao 
         Map<String, Object> params = new HashMap<>();
         params.put("billId", billId);
         return getSqlSession().selectList(getNamespace() + ".getBillDetails", params);
+    }
+
+    @Override
+    public List<StatisticDetails> getStatisticByProduct(Date startPeriodDate, Date endPeriodDate) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("startPeriodDate", startPeriodDate);
+        params.put("endPeriodDate", endPeriodDate);
+        return getSqlSession().selectList(getNamespace() + ".getDetailsByProduct");
     }
 }

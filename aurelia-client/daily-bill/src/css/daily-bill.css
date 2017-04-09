@@ -81,4 +81,16 @@
     flex-direction: row;
 }
 
+.statistics-item {
+    border: 1px solid black;
+    margin: 2px;
+    padding: 2px;
+    display: flex;
+    flex-direction: row;
+}
+
+.statistics-item .name {
+    font-weight: bolder;
+}
+
 

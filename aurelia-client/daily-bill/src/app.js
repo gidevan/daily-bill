@@ -6,6 +6,7 @@ export class App {
       { route: 'bill/:id',  moduleId: 'daily-bill/bill-details', name:'billDetails' },
       {route: 'bill/add', moduleId: 'daily-bill/add-bill', name: 'addBill'},
       {route: 'bill/edit/:id', moduleId: 'daily-bill/add-bill', name: 'editBill'},
+      {route: 'statistics', moduleId: 'daily-bill/statistics', name: 'statistics'}
     ]);
 
     this.router = router;

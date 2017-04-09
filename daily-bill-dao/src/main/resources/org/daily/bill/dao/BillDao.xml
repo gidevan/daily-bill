@@ -91,4 +91,13 @@
         inner join product p on bi.product_id = p.id
         where b.id = #{billId}
     </select>
+    <select id="getDetailsByProduct" parameterType="map">
+        select a.id,a.name, sum(a.product_price)
+        from(
+        select p.id, p.name, b.date, bi.price, bi.amount, bi.price* bi.amount product_price
+        from bill b
+        inner join bill_item bi on bi.bill_id = b.id
+        inner join product p on bi.product_id = p.id) a
+        group by a.id, a.name order by a.name
+    </select>
 </mapper>

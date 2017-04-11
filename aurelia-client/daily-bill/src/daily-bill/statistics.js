@@ -15,15 +15,35 @@ export class Statistics {
             startPeriodDate: new Date(date.getFullYear(), date.getMonth(), 1),
             endPeriodDate: date
         }
+        this.startDateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + 1;
+        this.endDateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     }
 
     activate(params, routeConfig) {
+        this.getStatisticsByProduct(this.params);
+    }
+
+    getStatisticsByProduct(params) {
+        console.log('get statistics')
+        console.log(params)
         let self = this;
-        this.dailyBillService.getStatisticByProduct(this.params)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    self.statisticsByProduct = data.object;
-                });
+        this.dailyBillService.getStatisticByProduct(params)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                            self.statisticsByProduct = data.object;
+                        });
+    }
+
+    updateStatistics() {
+        let startDate = Date.parse(this.startDateStr);
+        let endDate = Date.parse(this.endDateStr);
+        console.log('update statistics')
+        console.log(startDate, endDate)
+        this.params = {
+            startPeriodDate: startDate,
+            endPeriodDate: endDate
+        }
+        this.getStatisticsByProduct(this.params);
     }
 }

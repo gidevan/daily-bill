@@ -93,4 +93,23 @@
     font-weight: bolder;
 }
 
+.statistics-button-panel {
+    display: flex;
+    flex-direction: row;
+}
+
+.statistics-button-panel > div {
+    display: flex;
+    flex-direction: row;
+}
+
+.statistics-button-panel .date {
+    margin: 2px;
+}
+
+.statistics-button-panel .date .date-title {
+    font-weight: bolder;
+}
+
+
 

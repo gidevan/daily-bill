@@ -98,22 +98,27 @@
     </select>
     <select id="getDetailsByProduct" parameterType="map" resultMap="statisticDetails">
         select a.id,a.name, sum(a.product_price) price
-        from(
+        from (
         select p.id, p.name, b.date, bi.price, bi.amount, bi.price* bi.amount product_price
         from bill b
         inner join bill_item bi on bi.bill_id = b.id
-        inner join product p on bi.product_id = p.id) a
+        inner join product p on bi.product_id = p.id
         <where>
             <if test="endPeriodDate != null">
                 <![CDATA[
                     b.date < #{endPeriodDate}
                 ]]>
             </if>
-            <if test="srartPeriodDate != null">
-                and b.date >= #{startPeriodDate}
+            <if test="startPeriodDate != null">
+                <![CDATA[
+                    and b.date >= #{startPeriodDate}
+                ]]>
             </if>
 
         </where>
-        group by a.id, a.name order by a.name
+        ) a
+
+        group by a.id, a.name
+        order by price desc
     </select>
 </mapper>

@@ -38,6 +38,6 @@ public class BillDaoImpl extends AbstractCrudDao<Bill, Long> implements BillDao 
         Map<String, Object> params = new HashMap<>();
         params.put("startPeriodDate", startPeriodDate);
         params.put("endPeriodDate", endPeriodDate);
-        return getSqlSession().selectList(getNamespace() + ".getDetailsByProduct");
+        return getSqlSession().selectList(getNamespace() + ".getDetailsByProduct", params);
     }
 }

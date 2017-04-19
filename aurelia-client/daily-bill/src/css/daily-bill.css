@@ -111,5 +111,16 @@
     font-weight: bolder;
 }
 
+.total-sum {
+    display: flex;
+    flex-direction: row;
+    margin: 3px;
+}
+
+.total-sum .title {
+    font-weight: bolder;
+    margin-right: 5px;
+}
+
 
 

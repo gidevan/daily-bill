@@ -16,5 +16,5 @@ public interface DailyBillService {
     List<Bill> getBills();
     Bill getBillById(Long id);
     List<Product> getProducts();
-    List<StatisticDetails> getDetailsByProduct(StatisticsParams params);
+    StatisticsInfo getDetailsByProduct(StatisticsParams params);
 }

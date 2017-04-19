@@ -110,11 +110,13 @@ public class DailyBillServiceImpl implements DailyBillService {
     }
 
     @Override
-    public List<StatisticDetails> getDetailsByProduct(StatisticsParams params) {
+    public StatisticsInfo getDetailsByProduct(StatisticsParams params) {
         if(params.getEndPeriodDate() == null) {
             params.setEndPeriodDate(new Date());
         }
-        return billDao.getStatisticByProduct(params.getStartPeriodDate(), params.getEndPeriodDate());
+        List<StatisticDetails> details = billDao.getStatisticByProduct(params.getStartPeriodDate(),
+                params.getEndPeriodDate());
+        return new StatisticsInfo(details);
     }
 
     private Bill createBill(List<BillDetails> billDetails) {

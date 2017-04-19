@@ -358,6 +358,71 @@ define('daily-bill/bill-list',["exports", "./service/daily-bill-service", "aurel
         return BillList;
     }();
 });
+define('daily-bill/statistics',["exports", "./service/daily-bill-service", "aurelia-router"], function (exports, _dailyBillService, _aureliaRouter) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.Statistics = undefined;
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    var Statistics = exports.Statistics = function () {
+        Statistics.inject = function inject() {
+            return [_dailyBillService.DailyBillService, _aureliaRouter.Router];
+        };
+
+        function Statistics(dailyBillService, router) {
+            _classCallCheck(this, Statistics);
+
+            console.log('Init statistics module');
+            this.dailyBillService = dailyBillService;
+            this.router = router;
+            var date = new Date();
+            this.params = {
+                startPeriodDate: new Date(date.getFullYear(), date.getMonth(), 1),
+                endPeriodDate: date
+            };
+            this.startDateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + 1;
+            this.endDateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+        }
+
+        Statistics.prototype.activate = function activate(params, routeConfig) {
+            this.getStatisticsByProduct(this.params);
+        };
+
+        Statistics.prototype.getStatisticsByProduct = function getStatisticsByProduct(params) {
+            console.log('get statistics');
+            console.log(params);
+            var self = this;
+            this.dailyBillService.getStatisticByProduct(params).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                console.log(data);
+                self.statisticsByProduct = data.object;
+            });
+        };
+
+        Statistics.prototype.updateStatistics = function updateStatistics() {
+            var startDate = Date.parse(this.startDateStr);
+            var endDate = Date.parse(this.endDateStr);
+            console.log('update statistics');
+            console.log(startDate, endDate);
+            this.params = {
+                startPeriodDate: startDate,
+                endPeriodDate: endDate
+            };
+            this.getStatisticsByProduct(this.params);
+        };
+
+        return Statistics;
+    }();
+});
 define('resources/index',["exports"], function (exports) {
   "use strict";
 
@@ -431,55 +496,10 @@ define('daily-bill/service/daily-bill-service',['exports', 'aurelia-fetch-client
         return DailyBillService;
     }();
 });
-define('daily-bill/statistics',["exports", "./service/daily-bill-service", "aurelia-router"], function (exports, _dailyBillService, _aureliaRouter) {
-    "use strict";
-
-    Object.defineProperty(exports, "__esModule", {
-        value: true
-    });
-    exports.Statistics = undefined;
-
-    function _classCallCheck(instance, Constructor) {
-        if (!(instance instanceof Constructor)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-
-    var Statistics = exports.Statistics = function () {
-        Statistics.inject = function inject() {
-            return [_dailyBillService.DailyBillService, _aureliaRouter.Router];
-        };
-
-        function Statistics(dailyBillService, router) {
-            _classCallCheck(this, Statistics);
-
-            console.log('Init statistics module');
-            this.dailyBillService = dailyBillService;
-            this.router = router;
-            var date = new Date();
-            this.params = {
-                startPeriodDate: new Date(date.getFullYear(), date.getMonth(), 1),
-                endPeriodDate: date
-            };
-        }
-
-        Statistics.prototype.activate = function activate(params, routeConfig) {
-            var self = this;
-            this.dailyBillService.getStatisticByProduct(this.params).then(function (response) {
-                return response.json();
-            }).then(function (data) {
-                console.log(data);
-                self.statisticsByProduct = data.object;
-            });
-        };
-
-        return Statistics;
-    }();
-});
-define('text!css/daily-bill.css', ['module'], function(module) { module.exports = "\n.bill-list .bill {\n  border: 1px solid black;\n  margin: 1px;\n}\n\n.bill-list .bill .bill-info>span {\n  font-weight: bolder;\n}\n\n.shop-info {\n  display: flex;\n  flex-direction: row;\n}\n.item{\n  border: 1px solid black;\n  margin: 2px;\n}\n\n.bill-item-info {\n  display: flex;\n  flex-direction: row;\n}\n\n.shop-info > p, .bill-item-info >p{\n  font-weight: bolder;\n  width: 20%;\n}\n\n.bill-item {\n  display: flex;\n  flex-direction: row;\n  border: 1px solid black;\n  margin: 1px;\n  padding: 1px;\n}\n.bill-item .item-description {\n  font-weight: bolder;\n  margin-right: 2px;\n  margin-left: 2px;\n  width: 20%;\n}\n.item-button-panel button {\n    width: 100%;\n    font-size: 24px;\n    margin: 2px;\n}\n.bill-button-panel button {\n  width: 100%;\n  font-size: 24px;\n  margin: 2px;\n}\n\n.bill-details {\n    border: 1px solid black;\n}\n\n.bill-details .bill-info {\n    margin: 2px;\n    padding-bottom: 3px;\n    font-size: 20px;\n\n}\n\n.bill-details .bill-info .bill-info-item {\n    display: flex;\n    flex-direction: row;\n}\n\n.bill-details .bill-info .bill-info-item .bill-info-description {\n    font-weight: bolder;\n    width: 20%;\n}\n.bill-items .bill-item {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-items .bill-item .bill-item-info-data  {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item {\n    border: 1px solid black;\n    margin: 2px;\n    padding: 2px;\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item .name {\n    font-weight: bolder;\n}\n\n\n"; });
 define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./css/daily-bill.css\"></require><nav role=\"navigation\"><div><a href=\"#\"><span>Bills</span> </a><span>|</span> <a route-href=\"route: addBill\"><span>Add Bill</span> </a><span>|</span> <a route-href=\"route: statistics\"><span>Statistics</span></a></div></nav><div class=\"container\"><router-view></router-view></div></template>"; });
+define('text!css/daily-bill.css', ['module'], function(module) { module.exports = "\n.bill-list .bill {\n  border: 1px solid black;\n  margin: 1px;\n}\n\n.bill-list .bill .bill-info>span {\n  font-weight: bolder;\n}\n\n.shop-info {\n  display: flex;\n  flex-direction: row;\n}\n.item{\n  border: 1px solid black;\n  margin: 2px;\n}\n\n.bill-item-info {\n  display: flex;\n  flex-direction: row;\n}\n\n.shop-info > p, .bill-item-info >p{\n  font-weight: bolder;\n  width: 20%;\n}\n\n.bill-item {\n  display: flex;\n  flex-direction: row;\n  border: 1px solid black;\n  margin: 1px;\n  padding: 1px;\n}\n.bill-item .item-description {\n  font-weight: bolder;\n  margin-right: 2px;\n  margin-left: 2px;\n  width: 20%;\n}\n.item-button-panel button {\n    width: 100%;\n    font-size: 24px;\n    margin: 2px;\n}\n.bill-button-panel button {\n  width: 100%;\n  font-size: 24px;\n  margin: 2px;\n}\n\n.bill-details {\n    border: 1px solid black;\n}\n\n.bill-details .bill-info {\n    margin: 2px;\n    padding-bottom: 3px;\n    font-size: 20px;\n\n}\n\n.bill-details .bill-info .bill-info-item {\n    display: flex;\n    flex-direction: row;\n}\n\n.bill-details .bill-info .bill-info-item .bill-info-description {\n    font-weight: bolder;\n    width: 20%;\n}\n.bill-items .bill-item {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-items .bill-item .bill-item-info-data  {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item {\n    border: 1px solid black;\n    margin: 2px;\n    padding: 2px;\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item .name {\n    font-weight: bolder;\n}\n\n.statistics-button-panel {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-button-panel > div {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-button-panel .date {\n    margin: 2px;\n}\n\n.statistics-button-panel .date .date-title {\n    font-weight: bolder;\n}\n\n.total-sum {\n    display: flex;\n    flex-direction: row;\n    margin: 3px;\n}\n\n.total-sum .title {\n    font-weight: bolder;\n    margin-right: 5px;\n}\n\n\n\n"; });
 define('text!daily-bill/add-bill.html', ['module'], function(module) { module.exports = "<template><h1>Add Bill</h1><div class=\"shop-info\"><p>Shop name:</p><input type=\"text\" value.bind=\"bill.shop.name\" change.delegate=\"shopNameChange()\"><select value.bind=\"selectedShop\" change.delegate=\"shopChange()\"><option model.bind=\"null\">Choose...</option><option repeat.for=\"shop of shops\" model.bind=\"shop\">${shop.name}</option></select></div><div class=\"shop-info\"><p>Date:</p><input type=\"text\" value.bind=\"bill.dateStr\"></div><div class=\"bill-items\"><div class=\"item\" repeat.for=\"billItem of bill.items\"><div class=\"bill-item-info\"><p>Product:</p><input type=\"text\" value.bind=\"billItem.product.name\" change.delegate=\"productNameChange(billItem)\"><select value.bind=\"billItem.selectedProduct\" change.delegate=\"productChange(billItem)\"><option model.bind=\"null\">Choose...</option><option repeat.for=\"product of products\" model.bind=\"product\">${product.name}</option></select></div><div class=\"bill-item-info\"><p>Price:</p><input type=\"text\" value.bind=\"billItem.price\"></div><div class=\"bill-item-info\"><p>Amount:</p><input type=\"text\" value.bind=\"billItem.amount\"></div></div><div class=\"item-button-panel\"><button type=\"button\" click.delegate=\"addBillItem()\">Add item</button></div></div><div class=\"bill-button-panel\" if.bind=\"!bill.id\"><button type=\"button\" click.delegate=\"addBill()\">Add bill</button></div><div class=\"bill-button-panel\" if.bind=\"bill.id\"><button type=\"button\" click.delegate=\"updateBill()\">Update bill</button></div></template>"; });
 define('text!daily-bill/bill-details.html', ['module'], function(module) { module.exports = "<template><div class=\"bill-details\"><div class=\"bill-info\"><div class=\"bill-info-item\"><div class=\"bill-info-description\">bill id:</div><div class=\"bill-info-item\">${bill.id}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">date:</div><div class=\"bill-info-item\">${bill.dateStr}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">shop id:</div><div class=\"bill-info-item\">${bill.shop.id}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">shop:</div><div class=\"bill-info-item\">${bill.shop.name}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">bill sum:</div><div class=\"bill-info-item\">${bill.billSum}</div></div></div><div class=\"bill-items\"><div class=\"bill-item\" repeat.for=\"item of bill.items\"><div class=\"bill-item-info-data\"><div class=\"item-description\">product id:</div><div class=\"item-value\">${item.product.id}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">product:</div><div class=\"item-value\">${item.product.name}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">price:</div><div class=\"item-value\">${item.price}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">amount:</div><div class=\"item-value\">${item.amount}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">sum:</div><div class=\"item-value\">${item.amount * item.price}</div></div></div></div></div><div class=\"bill-button-panel\"><button class=\"edit-bill-button\" click.delegate=\"edit()\">Edit bill</button></div></template>"; });
 define('text!daily-bill/bill-list.html', ['module'], function(module) { module.exports = "<template><h1>Bill List</h1><div class=\"bill-list\"><div repeat.for=\"bill of bills\" class=\"bill\" click.delegate=\"viewBillDetails(bill.id)\"><div class=\"bill-info\"><span>id:</span> ${bill.id}</div><div class=\"bill-info\"><span>shop:</span> ${bill.shopName}</div><div class=\"bill-info\"><span>date:</span> ${bill.dateStr}</div><div class=\"bill-info\"><span>sum:</span> ${bill.billSum}</div></div></div></template>"; });
-define('text!daily-bill/statistics.html', ['module'], function(module) { module.exports = "<template>Statistics:<div repeat.for=\"statistics of statisticsByProduct\" class=\"statistics-item\"><div class=\"name\">${statistics.name}:</div><div class=\"value\">${statistics.price}</div></div><template></template></template>"; });
+define('text!daily-bill/statistics.html', ['module'], function(module) { module.exports = "<template>Statistics:<div class=\"statistics-button-panel\"><div class=\"date\"><div class=\"date-title\">Start Period Date</div><div><input type=\"text\" value.bind=\"startDateStr\"></div></div><div class=\"date\"><div class=\"date-title\">End Period Date</div><div><input type=\"text\" value.bind=\"endDateStr\"></div></div><button class=\"edit-bill-button\" click.delegate=\"updateStatistics()\">Update statistics</button></div><div class=\"total-sum\"><div class=\"title\">Total Sum:</div><div>${statisticsByProduct.totalSum}</div></div><div repeat.for=\"statistics of statisticsByProduct.statisticDetails\" class=\"statistics-item\"><div class=\"name\">${statistics.name}:</div><div class=\"value\">${statistics.price}</div></div><template></template></template>"; });
 //# sourceMappingURL=app-bundle.js.map

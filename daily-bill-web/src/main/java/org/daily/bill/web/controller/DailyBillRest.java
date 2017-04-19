@@ -108,7 +108,7 @@ public class DailyBillRest {
     @RequestMapping(value="/statistics/product", method = RequestMethod.POST)
     public Response getStatisticsByProduct(@RequestBody StatisticsParams params) {
         try {
-            List<StatisticDetails> details = dailyBillService.getDetailsByProduct(params);
+            StatisticsInfo details = dailyBillService.getDetailsByProduct(params);
             return new Response(OK_CODE, OK_STATUS, null, details);
         } catch (Exception e) {
             return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());

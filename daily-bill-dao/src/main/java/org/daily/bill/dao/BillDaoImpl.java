@@ -4,7 +4,9 @@ import org.daily.bill.api.dao.BillDao;
 import org.daily.bill.domain.Bill;
 import org.daily.bill.domain.BillDetails;
 import org.daily.bill.domain.StatisticDetails;
+import org.daily.bill.domain.StatisticsParams;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -34,10 +36,14 @@ public class BillDaoImpl extends AbstractCrudDao<Bill, Long> implements BillDao 
     }
 
     @Override
-    public List<StatisticDetails> getStatisticByProduct(Date startPeriodDate, Date endPeriodDate) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("startPeriodDate", startPeriodDate);
-        params.put("endPeriodDate", endPeriodDate);
-        return getSqlSession().selectList(getNamespace() + ".getDetailsByProduct", params);
+    public List<StatisticDetails> getStatisticByProduct(StatisticsParams params) {
+        Map<String, Object> queryParams = new HashMap<>();
+        queryParams.put("startPeriodDate", params.getStartPeriodDate());
+        queryParams.put("endPeriodDate", params.getEndPeriodDate());
+        if(!StringUtils.isEmpty(params.getProductName())) {
+            queryParams.put("productName", "%" + params.getProductName().toLowerCase() + "%");
+        }
+
+        return getSqlSession().selectList(getNamespace() + ".getDetailsByProduct", queryParams);
     }
 }

@@ -9,6 +9,7 @@ public class StatisticsParams {
 
     private Date startPeriodDate;
     private Date endPeriodDate;
+    private String productName;
 
     public Date getStartPeriodDate() {
         return startPeriodDate;
@@ -24,5 +25,13 @@ public class StatisticsParams {
 
     public void setEndPeriodDate(Date endPeriodDate) {
         this.endPeriodDate = endPeriodDate;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 }

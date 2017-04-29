@@ -103,11 +103,11 @@
     flex-direction: row;
 }
 
-.statistics-button-panel .date {
+.statistics-button-panel .filter-field {
     margin: 2px;
 }
 
-.statistics-button-panel .date .date-title {
+.statistics-button-panel .filter-field .filter-title {
     font-weight: bolder;
 }
 

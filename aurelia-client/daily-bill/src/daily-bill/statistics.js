@@ -42,7 +42,8 @@ export class Statistics {
         console.log(startDate, endDate)
         this.params = {
             startPeriodDate: startDate,
-            endPeriodDate: endDate
+            endPeriodDate: endDate,
+            productName: this.productName
         }
         this.getStatisticsByProduct(this.params);
     }

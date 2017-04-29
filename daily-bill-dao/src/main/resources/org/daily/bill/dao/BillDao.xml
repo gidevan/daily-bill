@@ -114,7 +114,9 @@
                     and b.date >= #{startPeriodDate}
                 ]]>
             </if>
-
+            <if test="productName != null">
+                and lower(p.name) like #{productName}
+            </if>
         </where>
         ) a
 

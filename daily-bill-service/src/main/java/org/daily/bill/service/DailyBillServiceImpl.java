@@ -114,8 +114,7 @@ public class DailyBillServiceImpl implements DailyBillService {
         if(params.getEndPeriodDate() == null) {
             params.setEndPeriodDate(new Date());
         }
-        List<StatisticDetails> details = billDao.getStatisticByProduct(params.getStartPeriodDate(),
-                params.getEndPeriodDate());
+        List<StatisticDetails> details = billDao.getStatisticByProduct(params);
         return new StatisticsInfo(details);
     }
 

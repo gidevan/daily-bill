@@ -3,6 +3,7 @@ package org.daily.bill.api.dao;
 import org.daily.bill.domain.Bill;
 import org.daily.bill.domain.BillDetails;
 import org.daily.bill.domain.StatisticDetails;
+import org.daily.bill.domain.StatisticsParams;
 
 import java.util.Date;
 import java.util.List;
@@ -21,6 +22,6 @@ public interface BillDao extends CrudDao<Bill, Long> {
      */
     List<BillDetails> getBillDetails(Long billId);
 
-    List<StatisticDetails> getStatisticByProduct(Date startPeriodDate, Date endPeriodDate);
+    List<StatisticDetails> getStatisticByProduct(StatisticsParams params);
 
 }

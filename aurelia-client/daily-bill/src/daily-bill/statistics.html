@@ -1,13 +1,17 @@
 <template>
     Statistics:
     <div class="statistics-button-panel">
-        <div class="date">
-            <div class="date-title">Start Period Date</div>
+        <div class="filter-field">
+            <div class="filter-title">Start Period Date:</div>
             <div><input type="text" value.bind="startDateStr"></div>
         </div>
-        <div class="date">
-            <div class="date-title">End Period Date</div>
+        <div class="filter-field">
+            <div class="filter-title">End Period Date:</div>
             <div><input type="text" value.bind="endDateStr"></div>
+        </div>
+        <div class="filter-field">
+            <div class="filter-title">Product Name:</div>
+            <div><input type="text" value.bind="productName"></div>
         </div>
         <button class="edit-bill-button" click.delegate="updateStatistics()">Update statistics</button>
     </div>

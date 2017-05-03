@@ -13,7 +13,7 @@ public interface DailyBillService {
     List<Shop> findShops();
     Long addDailyBill(Bill bill);
     Long updateDailyBill(Bill bill);
-    List<Bill> getBills();
+    List<Bill> getBills(BillListParams params);
     Bill getBillById(Long id);
     List<Product> getProducts();
     StatisticsInfo getDetailsByProduct(StatisticsParams params);

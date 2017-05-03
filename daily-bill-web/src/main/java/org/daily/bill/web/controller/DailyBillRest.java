@@ -63,10 +63,10 @@ public class DailyBillRest {
         }
     }
 
-    @RequestMapping("/bills")
-    public Response getBills() {
+    @RequestMapping(value="/bills", method = RequestMethod.POST)
+    public Response getBills(@RequestBody BillListParams params) {
         try {
-            List<Bill> bills = dailyBillService.getBills();
+            List<Bill> bills = dailyBillService.getBills(params);
             return new Response(OK_CODE, OK_STATUS, null, bills);
         } catch (Exception e) {
             return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());

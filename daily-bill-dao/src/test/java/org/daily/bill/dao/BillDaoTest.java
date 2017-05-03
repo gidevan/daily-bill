@@ -106,7 +106,7 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
         Long billId = bill.getId();
         Assert.assertNotNull(billId);
         createBillItems(billId);
-        List<Bill> bills = dao.getBills();
+        List<Bill> bills = dao.getBills(new BillListParams());
         Date date = new Date();
         for(Bill stored: bills) {
             boolean dateCondition = date.compareTo(stored.getDate()) >= 0;

@@ -1,9 +1,6 @@
 package org.daily.bill.api.dao;
 
-import org.daily.bill.domain.Bill;
-import org.daily.bill.domain.BillDetails;
-import org.daily.bill.domain.StatisticDetails;
-import org.daily.bill.domain.StatisticsParams;
+import org.daily.bill.domain.*;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +10,7 @@ import java.util.List;
  */
 public interface BillDao extends CrudDao<Bill, Long> {
 
-    List<Bill> getBills();
+    List<Bill> getBills(BillListParams params);
 
     /**
      * TODO: Use bill object.

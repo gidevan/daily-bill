@@ -1,5 +1,16 @@
 <template>
     <h1>Bill List</h1>
+    <div class="statistics-button-panel">
+        <div class="filter-field">
+            <div class="filter-title">Start Period Date:</div>
+            <div><input type="text" value.bind="startDateStr"></div>
+        </div>
+        <div class="filter-field">
+            <div class="filter-title">End Period Date:</div>
+            <div><input type="text" value.bind="endDateStr"></div>
+        </div>
+        <button class="edit-bill-button" click.delegate="findBills()">Find</button>
+    </div>
     <div class="bill-list">
         <div repeat.for="bill of bills" class="bill" click.delegate="viewBillDetails(bill.id)">
             <div class="bill-info">

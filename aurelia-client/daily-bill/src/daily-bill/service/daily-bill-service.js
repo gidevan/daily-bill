@@ -7,9 +7,12 @@ export class DailyBillService {
     constructor() {
     }
 
-    getBills() {
+    getBills(params) {
         console.log("Get bills")
-        return httpClient.fetch('http://localhost:8080/daily-bill/bills')
+        return httpClient.fetch('http://localhost:8080/daily-bill/bills', {
+                   method: "POST",
+                   body: json(params)
+            })
     }
 
     getBillById(id) {

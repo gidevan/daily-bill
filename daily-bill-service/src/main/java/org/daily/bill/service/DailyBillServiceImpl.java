@@ -94,8 +94,8 @@ public class DailyBillServiceImpl implements DailyBillService {
     }
 
     @Override
-    public List<Bill> getBills() {
-        return billDao.getBills();
+    public List<Bill> getBills(BillListParams params) {
+        return billDao.getBills(params);
     }
 
     @Override

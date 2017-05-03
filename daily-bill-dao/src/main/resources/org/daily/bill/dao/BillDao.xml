@@ -77,12 +77,24 @@
         delete from bill where id = #{id}
     </delete>
 
-    <select id="getBills" resultMap="bill">
+    <select id="getBills" resultMap="bill" parameterType="map">
         select bills.id, bills.date, bills.shop_id, bills.shop_name, sum(item_price) as bill_sum
         from (select b.id, b.date, b.shop_id shop_id, s.name as shop_name, bi.price * bi.amount item_price
                 from bill b
                 inner join shop s on b.shop_id = s.id
                 inner join bill_item bi on bi.bill_id = b.id) bills
+        <where>
+            <if test="endPeriodDate != null">
+                <![CDATA[
+                    bills.date <= #{endPeriodDate}
+                ]]>
+            </if>
+            <if test="startPeriodDate != null">
+                <![CDATA[
+                    and bills.date >= #{startPeriodDate}
+                ]]>
+            </if>
+        </where>
         group by bills.id, bills.date, bills.shop_id, bills.shop_name
         order by bills.date desc
     </select>
@@ -106,7 +118,7 @@
         <where>
             <if test="endPeriodDate != null">
                 <![CDATA[
-                    b.date < #{endPeriodDate}
+                    b.date <= #{endPeriodDate}
                 ]]>
             </if>
             <if test="startPeriodDate != null">

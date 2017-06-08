@@ -1,0 +1,8 @@
+<template>
+    <div class = "filtered-select">
+        <input type="text" value.bind="filterValue" change.delegate="filterChange()">
+        <select value.bind="filterSelectedItem" change.delegate="selectItem()" size="6">
+            <option repeat.for="it of filteredItems" model.bind="it">${it.name}</option>
+        </select>
+    </div>
+</template>

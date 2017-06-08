@@ -122,5 +122,10 @@
     margin-right: 5px;
 }
 
+.filtered-select {
+    display: flex;
+    flex-direction: column;
+}
+
 
 

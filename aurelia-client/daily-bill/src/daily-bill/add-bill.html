@@ -1,12 +1,10 @@
 <template>
+    <require from="./components/filtered-select/filtered-select"></require>
+  <div if.bind="bill">
   <h1>Add Bill</h1>
   <div class="shop-info">
     <p>Shop name: </p>
-    <input type="text" value.bind="bill.shop.name" change.delegate="shopNameChange()">
-    <select value.bind="selectedShop" change.delegate="shopChange()">
-      <option model.bind="null">Choose...</option>
-      <option repeat.for="shop of shops" model.bind="shop">${shop.name}</option>
-    </select>
+      <filtered-select items.two-way="shops" selected-item.two-way="bill.shop"></filtered-select>
   </div>
   <div class="shop-info">
     <p>Date: </p>
@@ -16,11 +14,7 @@
     <div class="item" repeat.for="billItem of bill.items">
       <div class="bill-item-info">
         <p>Product:</p>
-        <input type="text" value.bind="billItem.product.name" change.delegate="productNameChange(billItem)">
-        <select value.bind="billItem.selectedProduct" change.delegate="productChange(billItem)">
-          <option model.bind="null">Choose...</option>
-          <option repeat.for="product of products" model.bind="product">${product.name}</option>
-        </select>
+          <filtered-select items.two-way="products" selected-item.two-way="billItem.product"></filtered-select>
       </div>
       <div class="bill-item-info">
         <p>Price:</p>
@@ -41,5 +35,6 @@
   </div>
   <div class="bill-button-panel" if.bind="bill.id">
     <button type="button" click.delegate="updateBill()">Update bill</button>
+  </div>
   </div>
 </template>

@@ -26,7 +26,9 @@
   font-weight: bolder;
   width: 20%;
 }
-
+.shop-info > input, .shop-info > filtered-select {
+    width: 80%
+}
 .bill-item {
   display: flex;
   flex-direction: row;
@@ -39,6 +41,12 @@
   margin-right: 2px;
   margin-left: 2px;
   width: 20%;
+}
+.bill-item-info > input {
+    width: 80%;
+}
+.bill-item-info > filtered-select {
+    width: 80%;
 }
 .item-button-panel button {
     width: 100%;

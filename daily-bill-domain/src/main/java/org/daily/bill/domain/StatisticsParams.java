@@ -1,6 +1,7 @@
 package org.daily.bill.domain;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by vano on 10.4.17.
@@ -9,7 +10,7 @@ public class StatisticsParams {
 
     private Date startPeriodDate;
     private Date endPeriodDate;
-    private String productName;
+    private List<String> productNames;
 
     public Date getStartPeriodDate() {
         return startPeriodDate;
@@ -27,11 +28,11 @@ public class StatisticsParams {
         this.endPeriodDate = endPeriodDate;
     }
 
-    public String getProductName() {
-        return productName;
+    public List<String> getProductNames() {
+        return productNames;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setProductNames(List<String> productNames) {
+        this.productNames = productNames;
     }
 }

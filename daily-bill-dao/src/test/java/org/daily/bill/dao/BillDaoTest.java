@@ -29,6 +29,7 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
     private static final Object[][] PRODUCT_INFO = {{PRODUCT_NAMES[0], PRICES[0], AMOUNTS[0]},
             {PRODUCT_NAMES[1], PRICES[1], AMOUNTS[1]}
     };
+    private static final String WRONG_NAME = "wrong name";
 
     @Autowired
     private ShopDao shopDao;
@@ -133,6 +134,38 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
             Assert.assertEquals(details.getBillId(), billId);
             Assert.assertEquals(details.getShopName(), SHOP_NAMES[0]);
         }
+        deleteBillItems();
+        dao.delete(billId);
+        Assert.assertNull(dao.findById(billId));
+    }
+
+    @Test
+    public void testGetStatisticsByProduct() {
+        Bill bill = TestEntityFactory.createBill(shops.get(SHOP_NAMES[0]).getId(), new Date());
+        dao.create(bill);
+        Long billId = bill.getId();
+        Assert.assertNotNull(billId);
+        createBillItems(billId);
+        StatisticsParams statisticsParams = new StatisticsParams();
+        statisticsParams.setProductNames(Arrays.asList(PRODUCT_NAMES[0], PRODUCT_NAMES[1]));
+        List<StatisticDetails> details = dao.getStatisticByProduct(statisticsParams);
+        Assert.assertFalse(details.isEmpty());
+        deleteBillItems();
+        dao.delete(billId);
+        Assert.assertNull(dao.findById(billId));
+    }
+
+    @Test
+    public void testGetStatisticsByProductWrongName() {
+        Bill bill = TestEntityFactory.createBill(shops.get(SHOP_NAMES[0]).getId(), new Date());
+        dao.create(bill);
+        Long billId = bill.getId();
+        Assert.assertNotNull(billId);
+        createBillItems(billId);
+        StatisticsParams statisticsParams = new StatisticsParams();
+        statisticsParams.setProductNames(Arrays.asList(WRONG_NAME));
+        List<StatisticDetails> details = dao.getStatisticByProduct(statisticsParams);
+        Assert.assertTrue(details.isEmpty());
         deleteBillItems();
         dao.delete(billId);
         Assert.assertNull(dao.findById(billId));

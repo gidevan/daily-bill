@@ -27,7 +27,7 @@
   width: 20%;
 }
 .shop-info > input, .shop-info > filtered-select {
-    width: 80%
+    width: 75%
 }
 .bill-item {
   display: flex;
@@ -43,10 +43,10 @@
   width: 20%;
 }
 .bill-item-info > input {
-    width: 80%;
+    width: 75%;
 }
 .bill-item-info > filtered-select {
-    width: 80%;
+    width: 75%;
 }
 .item-button-panel button {
     width: 100%;
@@ -101,12 +101,12 @@
     font-weight: bolder;
 }
 
-.statistics-button-panel {
+.statistics-button-panel .name-filter {
     display: flex;
     flex-direction: row;
 }
 
-.statistics-button-panel > div {
+.statistics-button-panel .date-filter, .statistics-button-panel .date-filter > div {
     display: flex;
     flex-direction: row;
 }
@@ -117,6 +117,21 @@
 
 .statistics-button-panel .filter-field .filter-title {
     font-weight: bolder;
+}
+
+.statistics-button-panel .add-product-button {
+    width: 100%;
+    font-weight: bolder;
+    padding: 2px;
+    margin: 2px;
+}
+
+.statistics-button-panel .edit-bill-button {
+    width: 100%;
+    font-weight: bolder;
+    padding: 2px;
+    margin: 2px;
+    height: 40px;
 }
 
 .total-sum {

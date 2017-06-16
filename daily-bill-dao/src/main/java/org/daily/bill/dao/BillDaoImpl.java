@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by vano on 2.9.16.
@@ -40,8 +41,10 @@ public class BillDaoImpl extends AbstractCrudDao<Bill, Long> implements BillDao 
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.put("startPeriodDate", params.getStartPeriodDate());
         queryParams.put("endPeriodDate", params.getEndPeriodDate());
-        if(!StringUtils.isEmpty(params.getProductName())) {
-            queryParams.put("productName", "%" + params.getProductName().toLowerCase() + "%");
+        if(!params.getProductNames().isEmpty()) {
+            List<String> likeCondition = params.getProductNames().stream().map(n -> "%" + n.toLowerCase() + "%")
+                    .collect(Collectors.toList());
+            queryParams.put("productNames", likeCondition);
         }
 
         return getSqlSession().selectList(getNamespace() + ".getDetailsByProduct", queryParams);

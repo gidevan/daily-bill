@@ -15,6 +15,8 @@ export class Statistics {
             startPeriodDate: new Date(date.getFullYear(), date.getMonth(), 1),
             endPeriodDate: date
         }
+        // Aurelia doesn't support change of array in repeat.for
+        this.productNames = [{name: ''}];
         this.startDateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + 1;
         this.endDateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     }
@@ -24,7 +26,8 @@ export class Statistics {
     }
 
     getStatisticsByProduct(params) {
-        console.log('get statistics')
+        let names = this.productNames.map(it => it.name).filter(it => it);
+        params.productNames = names;
         console.log(params)
         let self = this;
         this.dailyBillService.getStatisticByProduct(params)
@@ -38,13 +41,14 @@ export class Statistics {
     updateStatistics() {
         let startDate = Date.parse(this.startDateStr);
         let endDate = Date.parse(this.endDateStr);
-        console.log('update statistics')
-        console.log(startDate, endDate)
         this.params = {
             startPeriodDate: startDate,
             endPeriodDate: endDate,
-            productName: this.productName
         }
         this.getStatisticsByProduct(this.params);
+    }
+
+    addProductName() {
+        this.productNames.push({name: ''});
     }
 }

@@ -111,11 +111,11 @@
     flex-direction: row;
 }
 
-.statistics-button-panel .filter-field {
+.statistics-button-panel .filter-field,  .bill-list-button-panel .filter-field {
     margin: 2px;
 }
 
-.statistics-button-panel .filter-field .filter-title {
+.statistics-button-panel .filter-field .filter-title, .bill-list-button-panel .filter-field .filter-title {
     font-weight: bolder;
 }
 
@@ -149,6 +149,22 @@
     display: flex;
     flex-direction: column;
 }
+
+.bill-list-button-panel {
+    display: flex;
+    flex-direction: row;
+}
+.bill-list-button-panel .filter-field {
+    display: flex;
+    flex-direction: row;
+}
+.bill-list-button-panel .edit-bill-button {
+    font-weight: bolder;
+    padding: 2px;
+    margin: 2px;
+    width: 20%;
+}
+
 
 
 

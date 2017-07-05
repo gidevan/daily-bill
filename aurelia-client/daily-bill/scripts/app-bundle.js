@@ -560,13 +560,40 @@ define('daily-bill/components/filtered-select/filtered-select',['exports', 'aure
             }
         };
 
+        FilteredSelect.prototype.searchByFilterValue = function searchByFilterValue(it, filterValues) {
+            var condition = true;
+            for (var _iterator = filterValues, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
+                var _ref;
+
+                if (_isArray) {
+                    if (_i >= _iterator.length) break;
+                    _ref = _iterator[_i++];
+                } else {
+                    _i = _iterator.next();
+                    if (_i.done) break;
+                    _ref = _i.value;
+                }
+
+                var s = _ref;
+
+                condition = condition && it.name.toLowerCase().indexOf(s.toLowerCase()) >= 0;
+            }
+            return condition;
+        };
+
         FilteredSelect.prototype.filterChange = function filterChange() {
             var _this = this;
 
             if (this.filterValue) {
-                this.filteredItems = this.items.filter(function (it) {
-                    return it.name.toLowerCase().indexOf(_this.filterValue.toLowerCase()) >= 0;
-                });
+                (function () {
+                    var delimeter = /\s+/;
+                    var filterValues = _this.filterValue.split(delimeter).filter(function (i) {
+                        return i !== '';
+                    });
+                    _this.filteredItems = _this.items.filter(function (it) {
+                        return _this.searchByFilterValue(it, filterValues);
+                    });
+                })();
             } else {
                 this.filteredItems = this.items;
             }

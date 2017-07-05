@@ -14,9 +14,19 @@ export class FilteredSelect {
         }
     }
 
+    searchByFilterValue(it, filterValues) {
+        let condition = true;
+        for(let s of filterValues) {
+           condition = condition && it.name.toLowerCase().indexOf(s.toLowerCase()) >= 0;
+        }
+        return condition;
+    }
+
     filterChange() {
         if(this.filterValue) {
-            this.filteredItems = this.items.filter(it => it.name.toLowerCase().indexOf(this.filterValue.toLowerCase()) >= 0)
+            let delimeter = /\s+/;
+            let filterValues = this.filterValue.split(delimeter).filter(i => i !== '');
+            this.filteredItems = this.items.filter(it => this.searchByFilterValue(it, filterValues))
         } else {
             this.filteredItems = this.items;
         }

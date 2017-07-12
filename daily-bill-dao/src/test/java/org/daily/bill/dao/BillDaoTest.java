@@ -217,7 +217,7 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
 
     private void createBillItems(Long billId) {
         for(Object[] productInfo : PRODUCT_INFO) {
-            BillItem item = TestEntityFactory.cretaeBillItem(billId,
+            BillItem item = TestEntityFactory.createBillItem(billId,
                     products.get(productInfo[0]).getId(), (BigDecimal) productInfo[1],
                     (Double) productInfo[2]);
             billItemDao.create(item);

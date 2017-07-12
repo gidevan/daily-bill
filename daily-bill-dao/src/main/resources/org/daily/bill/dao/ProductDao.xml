@@ -52,4 +52,13 @@
         delete from product where id = #{id}
     </delete>
 
+    <select id="findLastPrice" resultType="BigDecimal">
+        select price
+        from bill b
+        inner join bill_item bi on b.id = bi.bill_id
+        where b.shop_id= #{shopId} and bi.product_id = #{productId}
+        order by b.date desc
+        limit 1
+    </select>
+
 </mapper>

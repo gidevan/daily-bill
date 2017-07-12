@@ -33,7 +33,7 @@ public final class TestEntityFactory {
         return bill;
     }
 
-    public static BillItem cretaeBillItem(Long billId, Long productId, BigDecimal price, Double amount) {
+    public static BillItem createBillItem(Long billId, Long productId, BigDecimal price, Double amount) {
         BillItem billItem = new BillItem();
         billItem.setBillId(billId);
         billItem.setProductId(productId);

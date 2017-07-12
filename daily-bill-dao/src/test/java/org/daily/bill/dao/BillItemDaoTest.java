@@ -120,7 +120,7 @@ public class BillItemDaoTest extends AbstractDaoTest<Long, BillItem, BillItemDao
 
     @Override
     protected BillItem createEntity() {
-        BillItem item = TestEntityFactory.cretaeBillItem(bills.get(DEFAULT_INDEX).getId(),
+        BillItem item = TestEntityFactory.createBillItem(bills.get(DEFAULT_INDEX).getId(),
                 products.get(DEFAULT_INDEX).getId(),
                 TEST_PRICE, (double)TEST_COUNT);
         return item;

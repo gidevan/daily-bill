@@ -2,6 +2,7 @@ package org.daily.bill.api.dao;
 
 import org.daily.bill.domain.Product;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -10,4 +11,6 @@ import java.util.List;
 public interface ProductDao extends CrudDao<Product, Long> {
 
     List<Product> findProducts();
+
+    BigDecimal findLastPrice(Long shopId, Long productId);
 }

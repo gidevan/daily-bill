@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -110,6 +111,15 @@ public class DailyBillRest {
         try {
             StatisticsInfo details = dailyBillService.getDetailsByProduct(params);
             return new Response(OK_CODE, OK_STATUS, null, details);
+        } catch (Exception e) {
+            return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
+        }
+    }
+    @RequestMapping("/product/last/price/{shopId}/{productId}")
+    public Response findLastPrice(@PathVariable Long shopId, @PathVariable Long productId) {
+        try {
+            BigDecimal lastPrice = dailyBillService.findLastPrice(shopId, productId);
+            return new Response(OK_CODE, OK_STATUS, null, lastPrice);
         } catch (Exception e) {
             return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
         }

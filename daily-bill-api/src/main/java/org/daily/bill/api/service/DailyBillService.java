@@ -2,6 +2,7 @@ package org.daily.bill.api.service;
 
 import org.daily.bill.domain.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -17,4 +18,5 @@ public interface DailyBillService {
     Bill getBillById(Long id);
     List<Product> getProducts();
     StatisticsInfo getDetailsByProduct(StatisticsParams params);
+    BigDecimal findLastPrice(Long shopId, Long productId);
 }

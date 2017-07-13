@@ -6,6 +6,7 @@ import org.daily.bill.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
@@ -116,6 +117,11 @@ public class DailyBillServiceImpl implements DailyBillService {
         }
         List<StatisticDetails> details = billDao.getStatisticByProduct(params);
         return new StatisticsInfo(details);
+    }
+
+    @Override
+    public BigDecimal findLastPrice(Long shopId, Long productId) {
+        return productDao.findLastPrice(shopId, productId);
     }
 
     private Bill createBill(List<BillDetails> billDetails) {

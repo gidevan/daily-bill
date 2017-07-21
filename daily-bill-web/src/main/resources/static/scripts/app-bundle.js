@@ -480,8 +480,132 @@ define('daily-bill/service/daily-bill-service',['exports', 'aurelia-fetch-client
             });
         };
 
+        DailyBillService.prototype.findLastPrice = function findLastPrice(shopId, productId) {
+            return httpClient.fetch('http://localhost:8080/daily-bill/last/price/shop/' + shopId + '/product/' + productId);
+        };
+
         return DailyBillService;
     }();
+});
+define('daily-bill/components/bill-item/bill-item',["exports", "aurelia-framework", "../../service/daily-bill-service"], function (exports, _aureliaFramework, _dailyBillService) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.BillItem = undefined;
+
+    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+        return typeof obj;
+    } : function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+
+    function _initDefineProp(target, property, descriptor, context) {
+        if (!descriptor) return;
+        Object.defineProperty(target, property, {
+            enumerable: descriptor.enumerable,
+            configurable: descriptor.configurable,
+            writable: descriptor.writable,
+            value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
+        });
+    }
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+        var desc = {};
+        Object['ke' + 'ys'](descriptor).forEach(function (key) {
+            desc[key] = descriptor[key];
+        });
+        desc.enumerable = !!desc.enumerable;
+        desc.configurable = !!desc.configurable;
+
+        if ('value' in desc || desc.initializer) {
+            desc.writable = true;
+        }
+
+        desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+            return decorator(target, property, desc) || desc;
+        }, desc);
+
+        if (context && desc.initializer !== void 0) {
+            desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+            desc.initializer = undefined;
+        }
+
+        if (desc.initializer === void 0) {
+            Object['define' + 'Property'](target, property, desc);
+            desc = null;
+        }
+
+        return desc;
+    }
+
+    function _initializerWarningHelper(descriptor, context) {
+        throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
+    }
+
+    var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3;
+
+    var BillItem = exports.BillItem = (_class = function () {
+        BillItem.inject = function inject() {
+            return [_dailyBillService.DailyBillService];
+        };
+
+        function BillItem(dailyBillService) {
+            var _this = this;
+
+            _classCallCheck(this, BillItem);
+
+            _initDefineProp(this, "billItem", _descriptor, this);
+
+            _initDefineProp(this, "products", _descriptor2, this);
+
+            _initDefineProp(this, "shopId", _descriptor3, this);
+
+            this.findLastPrice = function (productId) {
+                console.log('bill-item: find last price: ' + productId);
+                console.log(_this.shopId);
+                if (_this.shopId) {
+                    var _ret = function () {
+                        var self = _this;
+                        return {
+                            v: _this.dailyBillService.findLastPrice(_this.shopId, productId).then(function (response) {
+                                return response.json();
+                            }).then(function (data) {
+                                console.log('last price');
+                                console.log(data);
+                                var lastPrice = data.object;
+                                self.billItem.price = lastPrice ? lastPrice : 0;
+                                return data;
+                            })
+                        };
+                    }();
+
+                    if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
+                }
+            };
+
+            console.log("add bill item constructor");
+            this.dailyBillService = dailyBillService;
+        }
+
+        return BillItem;
+    }(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "billItem", [_aureliaFramework.bindable], {
+        enumerable: true,
+        initializer: null
+    }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "products", [_aureliaFramework.bindable], {
+        enumerable: true,
+        initializer: null
+    }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "shopId", [_aureliaFramework.bindable], {
+        enumerable: true,
+        initializer: null
+    })), _class);
 });
 define('daily-bill/components/filtered-select/filtered-select',['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
     'use strict';
@@ -540,7 +664,7 @@ define('daily-bill/components/filtered-select/filtered-select',['exports', 'aure
         throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
     }
 
-    var _desc, _value, _class, _descriptor, _descriptor2;
+    var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3;
 
     var FilteredSelect = exports.FilteredSelect = (_class = function () {
         function FilteredSelect() {
@@ -549,6 +673,8 @@ define('daily-bill/components/filtered-select/filtered-select',['exports', 'aure
             _initDefineProp(this, 'selectedItem', _descriptor, this);
 
             _initDefineProp(this, 'items', _descriptor2, this);
+
+            _initDefineProp(this, 'callbackFn', _descriptor3, this);
         }
 
         FilteredSelect.prototype.attached = function attached() {
@@ -609,11 +735,17 @@ define('daily-bill/components/filtered-select/filtered-select',['exports', 'aure
                     name: this.filterValue
                 };
             }
+            console.log('call callback');
+            console.log(this.callbackFn);
         };
 
         FilteredSelect.prototype.selectItem = function selectItem() {
+            console.log('select item');
             this.filterValue = this.filterSelectedItem.name;
             this.selectedItem = this.filterSelectedItem;
+            if (this.callbackFn) {
+                this.callbackFn(this.selectedItem.id);
+            }
         };
 
         return FilteredSelect;
@@ -623,13 +755,138 @@ define('daily-bill/components/filtered-select/filtered-select',['exports', 'aure
     }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, 'items', [_aureliaFramework.bindable], {
         enumerable: true,
         initializer: null
+    }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'callbackFn', [_aureliaFramework.bindable], {
+        enumerable: true,
+        initializer: null
+    })), _class);
+});
+define('daily-bill/components/bill-item/edit-bill-item',["exports", "aurelia-framework", "../../service/daily-bill-service"], function (exports, _aureliaFramework, _dailyBillService) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.EditBillItem = undefined;
+
+    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+        return typeof obj;
+    } : function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+
+    function _initDefineProp(target, property, descriptor, context) {
+        if (!descriptor) return;
+        Object.defineProperty(target, property, {
+            enumerable: descriptor.enumerable,
+            configurable: descriptor.configurable,
+            writable: descriptor.writable,
+            value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
+        });
+    }
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+        var desc = {};
+        Object['ke' + 'ys'](descriptor).forEach(function (key) {
+            desc[key] = descriptor[key];
+        });
+        desc.enumerable = !!desc.enumerable;
+        desc.configurable = !!desc.configurable;
+
+        if ('value' in desc || desc.initializer) {
+            desc.writable = true;
+        }
+
+        desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+            return decorator(target, property, desc) || desc;
+        }, desc);
+
+        if (context && desc.initializer !== void 0) {
+            desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+            desc.initializer = undefined;
+        }
+
+        if (desc.initializer === void 0) {
+            Object['define' + 'Property'](target, property, desc);
+            desc = null;
+        }
+
+        return desc;
+    }
+
+    function _initializerWarningHelper(descriptor, context) {
+        throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
+    }
+
+    var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3;
+
+    var EditBillItem = exports.EditBillItem = (_class = function () {
+        EditBillItem.inject = function inject() {
+            return [_dailyBillService.DailyBillService];
+        };
+
+        function EditBillItem(dailyBillService) {
+            var _this = this;
+
+            _classCallCheck(this, EditBillItem);
+
+            _initDefineProp(this, "billItem", _descriptor, this);
+
+            _initDefineProp(this, "products", _descriptor2, this);
+
+            _initDefineProp(this, "shopId", _descriptor3, this);
+
+            this.findLastPrice = function (productId) {
+                console.log('bill-item: find last price: ' + productId);
+                console.log(_this.shopId);
+                if (_this.shopId) {
+                    var _ret = function () {
+                        var self = _this;
+                        return {
+                            v: _this.dailyBillService.findLastPrice(_this.shopId, productId).then(function (response) {
+                                return response.json();
+                            }).then(function (data) {
+                                console.log('last price');
+                                console.log(data);
+                                var lastPrice = data.object;
+                                self.billItem.price = lastPrice ? lastPrice : 0;
+                                return data;
+                            })
+                        };
+                    }();
+
+                    if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
+                }
+            };
+
+            console.log("add bill item constructor");
+            this.dailyBillService = dailyBillService;
+        }
+
+        return EditBillItem;
+    }(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "billItem", [_aureliaFramework.bindable], {
+        enumerable: true,
+        initializer: null
+    }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "products", [_aureliaFramework.bindable], {
+        enumerable: true,
+        initializer: null
+    }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "shopId", [_aureliaFramework.bindable], {
+        enumerable: true,
+        initializer: null
     })), _class);
 });
 define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./css/daily-bill.css\"></require><nav role=\"navigation\"><div><a href=\"#\"><span>Bills</span> </a><span>|</span> <a route-href=\"route: addBill\"><span>Add Bill</span> </a><span>|</span> <a route-href=\"route: statistics\"><span>Statistics</span></a></div></nav><div class=\"container\"><router-view></router-view></div></template>"; });
 define('text!css/daily-bill.css', ['module'], function(module) { module.exports = "\n.bill-list .bill {\n  border: 1px solid black;\n  margin: 1px;\n}\n\n.bill-list .bill .bill-info>span {\n  font-weight: bolder;\n}\n\n.shop-info {\n  display: flex;\n  flex-direction: row;\n}\n.item{\n  border: 1px solid black;\n  margin: 2px;\n}\n\n.bill-item-info {\n  display: flex;\n  flex-direction: row;\n}\n\n.shop-info > p, .bill-item-info >p{\n  font-weight: bolder;\n  width: 20%;\n}\n.shop-info > input, .shop-info > filtered-select {\n    width: 75%\n}\n.bill-item {\n  display: flex;\n  flex-direction: row;\n  border: 1px solid black;\n  margin: 1px;\n  padding: 1px;\n}\n.bill-item .item-description {\n  font-weight: bolder;\n  margin-right: 2px;\n  margin-left: 2px;\n  width: 20%;\n}\n.bill-item-info > input {\n    width: 75%;\n}\n.bill-item-info > filtered-select {\n    width: 75%;\n}\n.item-button-panel button {\n    width: 100%;\n    font-size: 24px;\n    margin: 2px;\n}\n.bill-button-panel button {\n  width: 100%;\n  font-size: 24px;\n  margin: 2px;\n}\n\n.bill-details {\n    border: 1px solid black;\n}\n\n.bill-details .bill-info {\n    margin: 2px;\n    padding-bottom: 3px;\n    font-size: 20px;\n\n}\n\n.bill-details .bill-info .bill-info-item {\n    display: flex;\n    flex-direction: row;\n}\n\n.bill-details .bill-info .bill-info-item .bill-info-description {\n    font-weight: bolder;\n    width: 20%;\n}\n.bill-items .bill-item {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-items .bill-item .bill-item-info-data  {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item {\n    border: 1px solid black;\n    margin: 2px;\n    padding: 2px;\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item .name {\n    font-weight: bolder;\n}\n\n.statistics-button-panel .name-filter {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-button-panel .date-filter, .statistics-button-panel .date-filter > div {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-button-panel .filter-field,  .bill-list-button-panel .filter-field {\n    margin: 2px;\n}\n\n.statistics-button-panel .filter-field .filter-title, .bill-list-button-panel .filter-field .filter-title {\n    font-weight: bolder;\n}\n\n.statistics-button-panel .add-product-button {\n    width: 100%;\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n}\n\n.statistics-button-panel .edit-bill-button {\n    width: 100%;\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n    height: 40px;\n}\n\n.total-sum {\n    display: flex;\n    flex-direction: row;\n    margin: 3px;\n}\n\n.total-sum .title {\n    font-weight: bolder;\n    margin-right: 5px;\n}\n\n.filtered-select {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-list-button-panel {\n    display: flex;\n    flex-direction: row;\n}\n.bill-list-button-panel .filter-field {\n    display: flex;\n    flex-direction: row;\n}\n.bill-list-button-panel .edit-bill-button {\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n    width: 20%;\n}\n\n\n\n\n"; });
-define('text!daily-bill/add-bill.html', ['module'], function(module) { module.exports = "<template><require from=\"./components/filtered-select/filtered-select\"></require><div if.bind=\"bill\"><h1>Add Bill</h1><div class=\"shop-info\"><p>Shop name:</p><filtered-select items.two-way=\"shops\" selected-item.two-way=\"bill.shop\"></filtered-select></div><div class=\"shop-info\"><p>Date:</p><input type=\"text\" value.bind=\"bill.dateStr\"></div><div class=\"bill-items\"><div class=\"item\" repeat.for=\"billItem of bill.items\"><div class=\"bill-item-info\"><p>Product:</p><filtered-select items.two-way=\"products\" selected-item.two-way=\"billItem.product\"></filtered-select></div><div class=\"bill-item-info\"><p>Price:</p><input type=\"text\" value.bind=\"billItem.price\"></div><div class=\"bill-item-info\"><p>Amount:</p><input type=\"text\" value.bind=\"billItem.amount\"></div></div><div class=\"item-button-panel\"><button type=\"button\" click.delegate=\"addBillItem()\">Add item</button></div></div><div class=\"bill-button-panel\" if.bind=\"!bill.id\"><button type=\"button\" click.delegate=\"addBill()\">Add bill</button></div><div class=\"bill-button-panel\" if.bind=\"bill.id\"><button type=\"button\" click.delegate=\"updateBill()\">Update bill</button></div></div></template>"; });
+define('text!daily-bill/add-bill.html', ['module'], function(module) { module.exports = "<template><require from=\"./components/filtered-select/filtered-select\"></require><require from=\"./components/bill-item/edit-bill-item\"></require><div if.bind=\"bill\"><h1>Add Bill</h1><div class=\"shop-info\"><p>Shop name:</p><filtered-select items.two-way=\"shops\" selected-item.two-way=\"bill.shop\"></filtered-select></div><div class=\"shop-info\"><p>Date:</p><input type=\"text\" value.bind=\"bill.dateStr\"></div><div class=\"bill-items\"><div class=\"item\" repeat.for=\"billItem of bill.items\"><edit-bill-item bill-item.two-way=\"billItem\" products.two-way=\"products\" shop-id.two-way=\"bill.shop.id\"></edit-bill-item></div><div class=\"item-button-panel\"><button type=\"button\" click.delegate=\"addBillItem()\">Add item</button></div></div><div class=\"bill-button-panel\" if.bind=\"!bill.id\"><button type=\"button\" click.delegate=\"addBill()\">Add bill</button></div><div class=\"bill-button-panel\" if.bind=\"bill.id\"><button type=\"button\" click.delegate=\"updateBill()\">Update bill</button></div></div></template>"; });
 define('text!daily-bill/bill-details.html', ['module'], function(module) { module.exports = "<template><div class=\"bill-details\"><div class=\"bill-info\"><div class=\"bill-info-item\"><div class=\"bill-info-description\">bill id:</div><div class=\"bill-info-item\">${bill.id}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">date:</div><div class=\"bill-info-item\">${bill.dateStr}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">shop id:</div><div class=\"bill-info-item\">${bill.shop.id}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">shop:</div><div class=\"bill-info-item\">${bill.shop.name}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">bill sum:</div><div class=\"bill-info-item\">${bill.billSum}</div></div></div><div class=\"bill-items\"><div class=\"bill-item\" repeat.for=\"item of bill.items\"><div class=\"bill-item-info-data\"><div class=\"item-description\">product id:</div><div class=\"item-value\">${item.product.id}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">product:</div><div class=\"item-value\">${item.product.name}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">price:</div><div class=\"item-value\">${item.price}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">amount:</div><div class=\"item-value\">${item.amount}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">sum:</div><div class=\"item-value\">${item.amount * item.price}</div></div></div></div></div><div class=\"bill-button-panel\"><button class=\"edit-bill-button\" click.delegate=\"edit()\">Edit bill</button></div></template>"; });
 define('text!daily-bill/bill-list.html', ['module'], function(module) { module.exports = "<template><h1>Bill List</h1><div class=\"bill-list-button-panel\"><div class=\"filter-field\"><div class=\"filter-title\">Start Period Date:</div><div><input type=\"text\" value.bind=\"startDateStr\"></div></div><div class=\"filter-field\"><div class=\"filter-title\">End Period Date:</div><div><input type=\"text\" value.bind=\"endDateStr\"></div></div><button class=\"edit-bill-button\" click.delegate=\"findBills()\">Find</button></div><div class=\"bill-list\"><div repeat.for=\"bill of bills\" class=\"bill\" click.delegate=\"viewBillDetails(bill.id)\"><div class=\"bill-info\"><span>id:</span> ${bill.id}</div><div class=\"bill-info\"><span>shop:</span> ${bill.shopName}</div><div class=\"bill-info\"><span>date:</span> ${bill.dateStr}</div><div class=\"bill-info\"><span>sum:</span> ${bill.billSum}</div></div></div></template>"; });
 define('text!daily-bill/statistics.html', ['module'], function(module) { module.exports = "<template>Statistics:<div class=\"statistics-button-panel\"><div class=\"date-filter\"><div class=\"filter-field\"><div class=\"filter-title\">Start Period Date:</div><div><input type=\"text\" value.bind=\"startDateStr\"></div></div><div class=\"filter-field\"><div class=\"filter-title\">End Period Date:</div><div><input type=\"text\" value.bind=\"endDateStr\"></div></div></div><div class=\"name-filter\"><div class=\"filter-field\" repeat.for=\"productName of productNames\"><div class=\"filter-title\">Product Name:</div><div><input type=\"text\" value.bind=\"productName.name\"></div></div><button class=\"add-product-button\" click.delegate=\"addProductName()\">Add product name</button></div><button class=\"edit-bill-button\" click.delegate=\"updateStatistics()\">Update statistics</button></div><div class=\"total-sum\"><div class=\"title\">Total Sum:</div><div>${statisticsByProduct.totalSum}</div></div><div repeat.for=\"statistics of statisticsByProduct.statisticDetails\" class=\"statistics-item\"><div class=\"name\">${statistics.name}:</div><div class=\"value\">${statistics.price}</div></div><template></template></template>"; });
+define('text!daily-bill/components/bill-item/bill-item.html', ['module'], function(module) { module.exports = "<template><require from=\"../filtered-select/filtered-select\"></require><div class=\"bill-item-info\"><p>Product:</p><filtered-select items.two-way=\"products\" selected-item.two-way=\"billItem.product\" callback-fn.two-way=\"findLastPrice\"></filtered-select></div><div class=\"bill-item-info\"><p>Price:</p><input type=\"text\" value.bind=\"billItem.price\"></div><div class=\"bill-item-info\"><p>Amount:</p><input type=\"text\" value.bind=\"billItem.amount\"></div></template>"; });
 define('text!daily-bill/components/filtered-select/filtered-select.html', ['module'], function(module) { module.exports = "<template><div class=\"filtered-select\"><input type=\"text\" value.bind=\"filterValue\" change.delegate=\"filterChange()\"><select value.bind=\"filterSelectedItem\" change.delegate=\"selectItem()\" size=\"6\"><option repeat.for=\"it of filteredItems\" model.bind=\"it\">${it.name}</option></select></div></template>"; });
+define('text!daily-bill/components/bill-item/edit-bill-item.html', ['module'], function(module) { module.exports = "<template><require from=\"../filtered-select/filtered-select\"></require><div class=\"bill-item-info\"><p>Product:</p><filtered-select items.two-way=\"products\" selected-item.two-way=\"billItem.product\" callback-fn.two-way=\"findLastPrice\"></filtered-select></div><div class=\"bill-item-info\"><p>Price:</p><input type=\"text\" value.bind=\"billItem.price\"></div><div class=\"bill-item-info\"><p>Amount:</p><input type=\"text\" value.bind=\"billItem.amount\"></div></template>"; });
 //# sourceMappingURL=app-bundle.js.map

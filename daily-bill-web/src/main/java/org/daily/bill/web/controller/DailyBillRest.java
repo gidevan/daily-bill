@@ -115,7 +115,7 @@ public class DailyBillRest {
             return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
         }
     }
-    @RequestMapping("/product/last/price/{shopId}/{productId}")
+    @RequestMapping("/last/price/shop/{shopId}/product/{productId}")
     public Response findLastPrice(@PathVariable Long shopId, @PathVariable Long productId) {
         try {
             BigDecimal lastPrice = dailyBillService.findLastPrice(shopId, productId);

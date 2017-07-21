@@ -48,4 +48,8 @@ export class DailyBillService {
                    body: json(params)
             })
     }
+
+    findLastPrice(shopId, productId) {
+        return httpClient.fetch('http://localhost:8080/daily-bill/last/price/shop/' + shopId + '/product/' + productId)
+    }
 }

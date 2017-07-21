@@ -1,5 +1,6 @@
 <template>
     <require from="./components/filtered-select/filtered-select"></require>
+    <require from="./components/bill-item/edit-bill-item"></require>
   <div if.bind="bill">
   <h1>Add Bill</h1>
   <div class="shop-info">
@@ -12,19 +13,7 @@
   </div>
   <div class="bill-items">
     <div class="item" repeat.for="billItem of bill.items">
-      <div class="bill-item-info">
-        <p>Product:</p>
-          <filtered-select items.two-way="products" selected-item.two-way="billItem.product"></filtered-select>
-      </div>
-      <div class="bill-item-info">
-        <p>Price:</p>
-        <input type="text" value.bind="billItem.price">
-      </div>
-      <div class="bill-item-info">
-        <p>Amount:</p>
-        <input type="text" value.bind="billItem.amount">
-      </div>
-
+        <edit-bill-item bill-item.two-way="billItem" products.two-way="products" shop-id.two-way="bill.shop.id"></edit-bill-item>
     </div>
     <div class="item-button-panel">
       <button type="button" click.delegate="addBillItem()">Add item</button>

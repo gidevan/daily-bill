@@ -3,6 +3,7 @@ import {bindable, bindingMode} from 'aurelia-framework';
 export class FilteredSelect {
     @bindable selectedItem;
     @bindable items;
+    @bindable callbackFn;
     constructor() {
     }
     attached() {
@@ -40,10 +41,21 @@ export class FilteredSelect {
                 name: this.filterValue
             }
         }
+        console.log('call callback');
+        console.log(this.callbackFn);
+        /*
+        if(this.callbackFn) {
+            this.callbackFn(this.selectedItem.id);
+        }
+        */
     }
 
     selectItem() {
+        console.log('select item')
         this.filterValue = this.filterSelectedItem.name;
         this.selectedItem = this.filterSelectedItem;
+        if(this.callbackFn) {
+            this.callbackFn(this.selectedItem.id);
+        }
     }
 }

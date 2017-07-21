@@ -1,0 +1,16 @@
+<template>
+    <require from="../filtered-select/filtered-select"></require>
+    <div class="bill-item-info">
+        <p>Product:</p>
+        <filtered-select items.two-way="products" selected-item.two-way="billItem.product" callback-fn.two-way="findLastPrice"></filtered-select>
+    </div>
+    <div class="bill-item-info">
+        <p>Price:</p>
+        <input type="text" value.bind="billItem.price">
+    </div>
+    <div class="bill-item-info">
+        <p>Amount:</p>
+        <input type="text" value.bind="billItem.amount">
+    </div>
+</template>
+

@@ -3,6 +3,7 @@ package org.daily.bill.service;
 import org.daily.bill.api.dao.ShopDao;
 import org.daily.bill.api.service.ShopService;
 import org.daily.bill.domain.Shop;
+import org.daily.bill.utils.annotation.Profiling;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * Created by vano on 14.8.16.
  */
 @Service
+@Profiling
 public class ShopServiceImpl implements ShopService {
 
     @Autowired

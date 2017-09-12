@@ -46,7 +46,7 @@
     </profiles>
 
     <properties>
-        <liquibase.version>3.5.1</liquibase.version>
+        <liquibase.version>3.5.3</liquibase.version>
     </properties>
 
     <build>

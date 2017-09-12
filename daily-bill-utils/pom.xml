@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.daily.bill</groupId>
-    <artifactId>service</artifactId>
+    <artifactId>utils</artifactId>
     <version>0.1</version>
 
-    <name>daily-bill-service</name>
+    <name>daily-bill-utils</name>
 
     <packaging>jar</packaging>
 
@@ -17,16 +17,10 @@
         <artifactId>bill</artifactId>
         <version>0.1</version>
     </parent>
-
     <dependencies>
         <dependency>
             <groupId>org.daily.bill</groupId>
-            <artifactId>api</artifactId>
-            <version>0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.daily.bill</groupId>
-            <artifactId>utils</artifactId>
+            <artifactId>domain</artifactId>
             <version>0.1</version>
         </dependency>
     </dependencies>

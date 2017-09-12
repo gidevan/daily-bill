@@ -20,6 +20,7 @@
 
     <modules>
         <module>daily-bill-db</module>
+        <module>daily-bill-utils</module>
         <module>daily-bill-api</module>
         <module>daily-bill-domain</module>
         <module>daily-bill-dao</module>

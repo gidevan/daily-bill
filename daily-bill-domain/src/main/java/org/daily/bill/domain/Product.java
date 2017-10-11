@@ -11,6 +11,7 @@ public class Product implements Identifiable<Long> {
     private String description;
     private Date created;
     private Date updated;
+    private Boolean active;
 
     @Override
     public Long getId() {
@@ -51,5 +52,13 @@ public class Product implements Identifiable<Long> {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

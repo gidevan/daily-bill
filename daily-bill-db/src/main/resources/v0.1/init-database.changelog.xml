@@ -84,5 +84,25 @@
                 <modifyDataType tableName="bill_item" columnName="count_item" newDataType="int"/>
             </rollback>
         </changeSet>
+        <changeSet id="add-active-columns" author="vano">
+            <addColumn tableName="product">
+                <column name="active" type="boolean" defaultValueBoolean="true"></column>
+            </addColumn>
+            <addColumn tableName="shop">
+                <column name="active" type="boolean" defaultValueBoolean="true"></column>
+            </addColumn>
+            <update tableName="shop">
+                <column name="active" value="true"/>
+            </update>
+            <update tableName="product">
+                <column name="active" value="true"/>
+            </update>
+            <addNotNullConstraint tableName="shop" columnName="active"/>
+            <addNotNullConstraint tableName="product" columnName="active"/>
+            <rollback>
+                <dropColumn tableName="product" columnName="active"/>
+                <dropColumn tableName="shop" columnName="active"/>
+            </rollback>
+        </changeSet>
 
 </databaseChangeLog>

@@ -71,6 +71,23 @@ public class ShopDaoTest extends AbstractDaoTest<Long, Shop, ShopDao> {
         }
     }
 
+    @Test
+    public void testSetActiveFlag() {
+        Long id  = testShops.get(DEFAULT_INDEX).getId();
+        Shop shop = dao.findById(id);
+        Assert.assertTrue(shop.getActive());
+        shop.setActive(Boolean.FALSE);
+        dao.update(shop);
+
+        Shop updated = dao.findById(id);
+        Assert.assertFalse(updated.getActive());
+
+        updated.setActive(Boolean.TRUE);
+        dao.update(updated);
+        Shop shop1 = dao.findById(id);
+        Assert.assertTrue(shop1.getActive());
+    }
+
     //@TODO: implement
     @Override
     protected void assertEntity(Shop entity) {

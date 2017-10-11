@@ -21,29 +21,34 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ShopDao">
     <select id="findById" resultType="shop">
-        select id, name, created, updated from shop where id = #{id}
+        select id, name, created, updated, active from shop where id = #{id}
     </select>
 
     <select id="findAll" resultType="shop">
-        select id, name, created, updated from shop
+        select id, name, created, updated, active from shop
     </select>
 
     <select id="findShops" resultType="shop">
-        select id, name, created, updated from shop order by name
+        select id, name, created, updated, active from shop order by name
     </select>
 
     <insert id="insert" parameterType="java.util.Map">
         <selectKey keyProperty="id" keyColumn="id" order="AFTER" resultType="long">
             select currval('shop_seq')
         </selectKey>
-        insert into shop (id, name, created)
-        values(nextval('shop_seq'), #{name}, now())
+        insert into shop (id, name, created
+            <if test="active != null">, active</if>)
+        values(nextval('shop_seq'), #{name}, now()
+            <if test="active != null">, #{active}</if>)
     </insert>
 
     <update id="update" parameterType="java.util.Map">
         update shop
-            set name = #{name}
-            set updated = now()
+            set name = #{name},
+            <if test="active != null">
+                active = #{active},
+            </if>
+            updated = now()
         where id = #{id}
     </update>
     <delete id="delete" parameterType="long">

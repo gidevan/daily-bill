@@ -11,6 +11,7 @@ public class Shop implements Identifiable<Long> {
     private String name;
     private Date created;
     private Date updated;
+    private Boolean active;
 
     public Long getId() {
         return id;
@@ -42,5 +43,13 @@ public class Shop implements Identifiable<Long> {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

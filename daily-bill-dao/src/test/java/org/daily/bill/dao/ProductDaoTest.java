@@ -100,6 +100,7 @@ public class ProductDaoTest extends AbstractDaoTest<Long, Product, ProductDao> {
         for(Product product : products) {
             Assert.assertTrue(Arrays.asList(PRODUCT_NAMES).contains(product.getName()));
             Assert.assertTrue(product.getDescription().startsWith(DESCRIPTION_PREFIX));
+            Assert.assertTrue(product.getActive());
         }
     }
 
@@ -132,6 +133,24 @@ public class ProductDaoTest extends AbstractDaoTest<Long, Product, ProductDao> {
     public void testFindLastPriceOneProduct() {
         BigDecimal lastPrice = dao.findLastPrice(testShops.get(DEFAULT_INDEX).getId(), testProducts.get(DEFAULT_INDEX + 1).getId());
         Assert.assertEquals(lastPrice.doubleValue(), OLD_PRICE.doubleValue(), DELTA);
+    }
+
+    @Test
+    public void testSetActiveFlag() {
+        Long id  = testProducts.get(DEFAULT_INDEX).getId();
+        Product pr = dao.findById(id);
+        Assert.assertTrue(pr.getActive());
+        pr.setActive(Boolean.FALSE);
+        dao.update(pr);
+
+        Product updated = dao.findById(id);
+        Assert.assertFalse(updated.getActive());
+
+        updated.setActive(Boolean.TRUE);
+        dao.update(updated);
+
+        Product product = dao.findById(id);
+        Assert.assertTrue(product.getActive());
     }
 
     //@TODO: implement

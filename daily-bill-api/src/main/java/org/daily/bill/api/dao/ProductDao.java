@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface ProductDao extends CrudDao<Product, Long> {
 
-    List<Product> findProducts();
+    List<Product> findProducts(boolean showActive);
 
     BigDecimal findLastPrice(Long shopId, Long productId);
 }

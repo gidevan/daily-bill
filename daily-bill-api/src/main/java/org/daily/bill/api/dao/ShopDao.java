@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface ShopDao extends CrudDao<Shop, Long> {
 
-    List<Shop> findShops();
+    List<Shop> findShops(boolean showActive);
 }

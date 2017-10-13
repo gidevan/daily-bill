@@ -28,8 +28,13 @@
         select id, name, description, created, updated, active from product
     </select>
 
-    <select id="findProducts" resultType="product">
-        select id, name, description, created, updated, active from product order by name
+    <select id="findProducts" resultType="product" parameterType="java.util.Map">
+        select id, name, description, created, updated, active
+        from product
+        <if test="showActive">
+            where active = 'true'
+        </if>
+        order by name
     </select>
 
     <insert id="insert" parameterType="java.util.Map">

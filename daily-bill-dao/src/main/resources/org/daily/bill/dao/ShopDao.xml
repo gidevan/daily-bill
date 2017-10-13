@@ -28,8 +28,13 @@
         select id, name, created, updated, active from shop
     </select>
 
-    <select id="findShops" resultType="shop">
-        select id, name, created, updated, active from shop order by name
+    <select id="findShops" resultType="shop" parameterType="java.util.Map">
+        select id, name, created, updated, active
+        from shop
+        <if test="showActive != null">
+            where active = 'true'
+        </if>
+        order by name
     </select>
 
     <insert id="insert" parameterType="java.util.Map">

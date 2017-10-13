@@ -21,8 +21,13 @@ public class ProductDaoImpl extends AbstractCrudDao<Product, Long> implements Pr
     }
 
     @Override
-    public List<Product> findProducts() {
-        return getSqlSession().selectList(getNamespace() + ".findProducts");
+    public List<Product> findProducts(boolean showActive) {
+        Map<String, Object> queryParams = new HashMap<>();
+        if(showActive) {
+            queryParams.put("showActive", showActive);
+        }
+
+        return getSqlSession().selectList(getNamespace() + ".findProducts", queryParams);
     }
 
     @Override

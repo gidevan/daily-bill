@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.testng.CommandLineArgs.TEST_NAMES;
 
@@ -33,6 +34,7 @@ public class ProductDaoTest extends AbstractDaoTest<Long, Product, ProductDao> {
     private static final String[] PRODUCT_NAMES = {"Product1", "Product2", "Product3", "Product6", "Product5", "Product4"};
     private static final String UPDATED_NAME = "UpdatedProductName";
     private static final String SHOP_NAME = "TestShop";
+    private static final String INACTIVE_PRODUCT_NAME = "InactiveProduct";
     private static final double AMOUNT = 1;
     private static final BigDecimal OLD_PRICE = BigDecimal.valueOf(12.4);
     private static final BigDecimal NEW_PRICE = BigDecimal.valueOf(15.2);
@@ -106,15 +108,46 @@ public class ProductDaoTest extends AbstractDaoTest<Long, Product, ProductDao> {
 
     @Test
     public void testFindProducts() {
-        List<Product> products = dao.findProducts();
+        List<Product> products = dao.findProducts(true);
         Assert.assertFalse(products.isEmpty());
         Product pr = null;
         for(Product product : products) {
             if(pr != null) {
                 Assert.assertTrue(pr.getName().compareTo(product.getName()) <= 0 );
+                Assert.assertTrue(pr.getActive());
             }
             pr = product;
         }
+    }
+
+    @Test
+    public void testFindInactiveProduct() {
+        Product inactiveProduct = TestEntityFactory.createProduct(INACTIVE_PRODUCT_NAME, INACTIVE_PRODUCT_NAME);
+        inactiveProduct.setActive(false);
+        dao.create(inactiveProduct);
+
+        Product storedInactiveProduct = dao.findById(inactiveProduct.getId());
+        Assert.assertNotNull(storedInactiveProduct);
+
+        List<Product> allProducts = dao.findProducts(false);
+
+        List<Product> activeProducts = dao.findProducts(true);
+
+        Assert.assertFalse(allProducts.isEmpty());
+        Assert.assertFalse(activeProducts.isEmpty());
+
+        Assert.assertTrue(allProducts.size() > activeProducts.size());
+
+        List<Product> inactive = allProducts.stream().filter(pr -> !pr.getActive()).collect(Collectors.toList());
+        Assert.assertTrue(inactive.size() == 1);
+        Assert.assertFalse(inactive.get(DEFAULT_INDEX).getActive());
+
+        List<Product> inactive1 = activeProducts.stream().filter(pr -> !pr.getActive()).collect(Collectors.toList());
+        Assert.assertTrue(inactive1.isEmpty());
+
+        dao.delete(storedInactiveProduct.getId());
+        Assert.assertNull(dao.findById(storedInactiveProduct.getId()));
+
     }
 
     @Test

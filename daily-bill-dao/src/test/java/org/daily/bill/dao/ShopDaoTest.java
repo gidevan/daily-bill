@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by vano on 18.8.16.
@@ -26,6 +27,7 @@ public class ShopDaoTest extends AbstractDaoTest<Long, Shop, ShopDao> {
     private static final String TEST_NAME = "TestShop";
     private static final String TEST_NAMES[] = {"TestShop1", "TestShop2", "TestShop3", "TestShop5", "TestShop4"};
     private static final String UPDATED_TEST_NAME = "UpdatedTestShop";
+    private static final String INACTIVE_SHOP_NAME = "InactiveShop";
     private List<Shop> testShops = new ArrayList<>();
 
     @BeforeClass
@@ -60,15 +62,46 @@ public class ShopDaoTest extends AbstractDaoTest<Long, Shop, ShopDao> {
 
     @Test
     public void testFindShops() {
-        List<Shop> shops = dao.findShops();
+        List<Shop> shops = dao.findShops(true);
         Assert.assertFalse(shops.isEmpty());
         Shop sh = null;
         for(Shop shop : shops) {
             if(sh != null) {
                 Assert.assertTrue(sh.getName().compareTo(shop.getName()) <=0);
+                Assert.assertTrue(sh.getActive());
             }
             sh = shop;
         }
+    }
+
+    @Test
+    public void testFindInactiveShops() {
+        Shop inactiveShop = TestEntityFactory.createShop(INACTIVE_SHOP_NAME);
+        inactiveShop.setActive(false);
+        dao.create(inactiveShop);
+
+        Shop storedInactiveShop = dao.findById(inactiveShop.getId());
+        Assert.assertNotNull(storedInactiveShop);
+
+        List<Shop> allShops = dao.findShops(false);
+
+        List<Shop> activeShops = dao.findShops(true);
+
+        Assert.assertFalse(allShops.isEmpty());
+        Assert.assertFalse(activeShops.isEmpty());
+
+        Assert.assertTrue(allShops.size() > activeShops.size());
+
+        List<Shop> inactive = allShops.stream().filter(sh -> !sh.getActive()).collect(Collectors.toList());
+        Assert.assertTrue(inactive.size() == 1);
+        Assert.assertFalse(inactive.get(DEFAULT_INDEX).getActive());
+
+        List<Shop> inactive1 = activeShops.stream().filter(sh -> !sh.getActive()).collect(Collectors.toList());
+        Assert.assertTrue(inactive1.isEmpty());
+
+        dao.delete(storedInactiveShop.getId());
+        Assert.assertNull(dao.findById(storedInactiveShop.getId()));
+
     }
 
     @Test

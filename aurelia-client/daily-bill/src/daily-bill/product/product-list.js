@@ -7,5 +7,10 @@ export class ProductList {
     constructor(dailyBillService, router) {
         this.dailyBillService = dailyBillService;
         this.router = router;
+        this.initProducts();
+    }
+
+    initProducts() {
+        this.products = [];
     }
 }

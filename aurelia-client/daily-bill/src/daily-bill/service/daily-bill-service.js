@@ -52,4 +52,8 @@ export class DailyBillService {
     findLastPrice(shopId, productId) {
         return httpClient.fetch('http://localhost:8080/daily-bill/last/price/shop/' + shopId + '/product/' + productId)
     }
+
+    getAllShops(){
+        return httpClient.fetch("http://localhost:8080/shops/all")
+    }
 }

@@ -3,12 +3,15 @@ package org.daily.bill.web.controller;
 import org.daily.bill.api.service.DailyBillService;
 import org.daily.bill.domain.*;
 import org.daily.bill.web.response.Response;
+import org.daily.bill.web.utils.WebConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 import java.math.BigDecimal;
 import java.util.List;
+
+import static org.daily.bill.web.utils.WebConstants.*;
 
 /**
  * Created by vano on 31.7.16.
@@ -17,11 +20,6 @@ import java.util.List;
 @RequestMapping("/daily-bill")
 @CrossOrigin("http://localhost:9000")
 public class DailyBillRest {
-
-    private static final String ERROR_STATUS = "Error";
-    private static final String OK_STATUS = "OK";
-    private static final String ERROR_CODE = "500";
-    private static final String OK_CODE = "200";
 
     @Autowired
     private DailyBillService dailyBillService;

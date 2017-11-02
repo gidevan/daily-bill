@@ -170,6 +170,18 @@
     margin-top: 1px;
 }
 
+.shop-list .shop-info > span {
+    font-weight: bolder;
+}
+
+.shop-details .shop-info > span {
+    font-weight: bolder;
+}
+
+
+.error-messages p {
+    color : red;
+}
 
 
 

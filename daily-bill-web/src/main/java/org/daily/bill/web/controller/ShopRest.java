@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.daily.bill.web.utils.WebConstants.OK_CODE;
-import static org.daily.bill.web.utils.WebConstants.OK_STATUS;
+import static org.daily.bill.web.utils.WebConstants.*;
 
 /**
  * Created by vano on 14.8.16.
@@ -27,14 +26,36 @@ public class ShopRest {
         shopService.create(shop);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public Shop findById(@RequestParam Long id) {
-        return shopService.findById(id);
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    public Response findById(@PathVariable Long id) {
+        try {
+            Shop shop = shopService.findById(id);
+            return new Response(OK_CODE, OK_STATUS, "Shop", shop);
+        } catch (Exception e) {
+            return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage(), e);
+        }
+
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/all")
     public Response findAll() {
-        List<Shop> shops = shopService.findAll();
-        return new Response(OK_CODE, OK_STATUS, "Shop list", shops);
+        try {
+            List<Shop> shops = shopService.findAll();
+            return new Response(OK_CODE, OK_STATUS, "Shop list", shops);
+        } catch (Exception e) {
+            return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage(), e);
+        }
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public Response updateShop(@RequestBody Shop shop) {
+        try {
+            shopService.update(shop);
+            return new Response(OK_CODE, OK_STATUS, "Updated");
+        } catch (Exception e) {
+            return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage(), e);
+        }
+
     }
 }

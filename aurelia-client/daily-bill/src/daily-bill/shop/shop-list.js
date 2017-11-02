@@ -21,4 +21,8 @@ export class ShopList {
                 self.errorMsg.push(e)
             })
     }
+
+    editShop(id) {
+        this.router.navigateToRoute('shop-item', {id: id})
+    }
 }

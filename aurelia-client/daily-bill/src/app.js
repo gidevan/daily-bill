@@ -8,7 +8,8 @@ export class App {
         {route: 'bill/edit/:id', moduleId: 'daily-bill/add-bill', name: 'editBill'},
         {route: 'statistics', moduleId: 'daily-bill/statistics', name: 'statistics'},
         {route: 'product/list', moduleId: 'daily-bill/product/product-list', name: 'product-list'},
-        {route: 'shop/list', moduleId: 'daily-bill/shop/shop-list', name: 'shop-list'}
+        {route: 'shop/list', moduleId: 'daily-bill/shop/shop-list', name: 'shop-list'},
+        {route: 'shop/edit/:id', moduleId: 'daily-bill/shop/shop-item', name: 'shop-item'}
     ]);
 
     this.router = router;

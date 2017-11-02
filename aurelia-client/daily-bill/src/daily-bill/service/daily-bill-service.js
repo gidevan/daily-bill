@@ -56,4 +56,15 @@ export class DailyBillService {
     getAllShops(){
         return httpClient.fetch("http://localhost:8080/shops/all")
     }
+
+    getShopById(id) {
+        return httpClient.fetch("http://localhost:8080/shops/" + id)
+    }
+
+    updateShop(shop) {
+        return httpClient.fetch("http://localhost:8080/shops", {
+            method: "POST",
+            body: json(shop)
+        })
+    }
 }

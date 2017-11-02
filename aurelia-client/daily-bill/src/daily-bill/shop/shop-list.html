@@ -2,7 +2,7 @@
     <h2>Shop list:</h2>
     <div class="error-msg"></div>
     <div class="shop-list">
-        <div repeat.for="shop of shops" class="shop-item">
+        <div repeat.for="shop of shops" class="shop-item" click.delegate="editShop(shop.id)">
             <div class="shop-info">
                 <span>id:</span> ${shop.id}
             </div>

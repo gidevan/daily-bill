@@ -1,0 +1,19 @@
+<template>
+    <div class="error-messages">
+        <p repeat.for="msg of errorMessages">${msg}</p>
+    </div>
+    <div class="shop-details">
+        <div class="shop-info">
+            <span>id:</span> ${shop.id}
+        </div>
+        <div class="shop-info">
+            <span>name:</span> <input type="text" value.bind="shop.name"/>
+        </div>
+        <div class="shop-info">
+            <span>active:</span> <input type="checkbox" checked.bind="shop.active"/>
+        </div>
+    </div>
+    <div class="bill-button-panel">
+        <button type="button" click.delegate="updateShop()">Update shop</button>
+    </div>
+</template>

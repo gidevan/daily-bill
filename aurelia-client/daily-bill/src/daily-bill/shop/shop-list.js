@@ -7,18 +7,18 @@ export class ShopList {
     constructor(dailyBillService, router) {
         this.dailyBillService = dailyBillService;
         this.router = router;
-        this.errorMsg = [];
         this.initShops();
     }
 
     initShops() {
         let self = this;
+        this.errorMessages = [];
         this.dailyBillService.getAllShops()
             .then(response => response.json())
             .then(data => {
                 self.shops = data.object;
             }).catch(e => {
-                self.errorMsg.push(e)
+                self.errorMessages.push(e)
             })
     }
 

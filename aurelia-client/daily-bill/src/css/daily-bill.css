@@ -165,19 +165,18 @@
     width: 20%;
 }
 
-.shop-list .shop-item {
+.shop-list .shop-item, .product-list .product-item {
     border: 1px solid black;
     margin-top: 1px;
 }
 
-.shop-list .shop-info > span {
+.shop-list .shop-info > span, .product-list .product-info > span {
     font-weight: bolder;
 }
 
-.shop-details .shop-info > span {
+.shop-details .shop-info > span, .product-details .product-info > span {
     font-weight: bolder;
 }
-
 
 .error-messages p {
     color : red;

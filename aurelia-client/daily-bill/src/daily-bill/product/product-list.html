@@ -1,3 +1,20 @@
 <template>
-    Product list.
+    <h2>Product list</h2>
+
+    <div class="error-messages">
+        <p repeat.for="msg of errorMessages">${msg}</p>
+    </div>
+    <div class="product-list">
+        <div repeat.for="product of products" class="product-item" click.delegate="editProduct(product.id)">
+            <div class="product-info">
+                <span>id:</span> ${product.id}
+            </div>
+            <div class="product-info">
+                <span>name:</span> ${product.name}
+            </div>
+            <div class="product-info">
+                <span>active:</span> ${product.active}
+            </div>
+        </div>
+    </div>
 </template>

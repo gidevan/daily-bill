@@ -1,0 +1,20 @@
+<template>
+    <h2>Product Item</h2>
+    <div class="error-messages">
+        <p repeat.for="msg of errorMessages">${msg}</p>
+    </div>
+    <div class="product-details">
+        <div class="product-info">
+            <span>id:</span> ${product.id}
+        </div>
+        <div class="product-info">
+            <span>name:</span> <input type="text" value.bind="product.name"/>
+        </div>
+        <div class="product-info">
+            <span>active:</span> <input type="checkbox" checked.bind="product.active"/>
+        </div>
+    </div>
+    <div class="bill-button-panel">
+        <button type="button" click.delegate="updateProduct()">Update product</button>
+    </div>
+</template>

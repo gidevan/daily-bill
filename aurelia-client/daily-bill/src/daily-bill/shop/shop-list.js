@@ -8,6 +8,7 @@ export class ShopList {
         this.dailyBillService = dailyBillService;
         this.router = router;
         this.initShops();
+        this.filterValue = "";
     }
 
     initShops() {
@@ -17,6 +18,7 @@ export class ShopList {
             .then(response => response.json())
             .then(data => {
                 self.shops = data.object;
+                self.filteredShops = data.object;
             }).catch(e => {
                 self.errorMessages.push(e)
             })
@@ -24,5 +26,14 @@ export class ShopList {
 
     editShop(id) {
         this.router.navigateToRoute('shop-item', {id: id})
+    }
+
+    filterChange() {
+        console.log("filter shop changed")
+        if(this.filterValue) {
+            this.filteredShops = this.shops.filter(it => it.name.toLowerCase().indexOf(this.filterValue.toLowerCase()) >= 0);
+        } else {
+            this.filteredShops = this.shops;
+        }
     }
 }

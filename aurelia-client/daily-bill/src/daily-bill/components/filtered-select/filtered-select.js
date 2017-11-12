@@ -41,13 +41,6 @@ export class FilteredSelect {
                 name: this.filterValue
             }
         }
-        console.log('call callback');
-        console.log(this.callbackFn);
-        /*
-        if(this.callbackFn) {
-            this.callbackFn(this.selectedItem.id);
-        }
-        */
     }
 
     selectItem() {

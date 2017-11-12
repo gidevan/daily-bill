@@ -3,8 +3,13 @@
     <div class="error-messages">
         <p repeat.for="msg of errorMessages">${msg}</p>
     </div>
+    <div class="shop-filter">
+        <div class="filter-value">
+            <input type="text" value.bind="filterValue" change.delegate="filterChange()"/>
+        </div>
+    </div>
     <div class="shop-list">
-        <div repeat.for="shop of shops" class="shop-item" click.delegate="editShop(shop.id)">
+        <div repeat.for="shop of filteredShops" class="shop-item" click.delegate="editShop(shop.id)">
             <div class="shop-info">
                 <span>id:</span> ${shop.id}
             </div>

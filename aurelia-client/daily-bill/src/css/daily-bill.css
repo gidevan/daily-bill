@@ -182,5 +182,9 @@
     color : red;
 }
 
+.product-filter .filter-value > input, .shop-filter .filter-value > input{
+    width: 100%;
+}
+
 
 

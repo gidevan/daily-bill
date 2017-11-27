@@ -101,6 +101,10 @@
     font-weight: bolder;
 }
 
+.statistics-item .switch-item-button {
+    border: 1px solid black;
+    align:right;
+}
 .statistics-button-panel .name-filter {
     display: flex;
     flex-direction: row;
@@ -143,6 +147,10 @@
 .total-sum .title {
     font-weight: bolder;
     margin-right: 5px;
+}
+
+.total-sum .enable-button {
+    border: 1px solid black;
 }
 
 .filtered-select {

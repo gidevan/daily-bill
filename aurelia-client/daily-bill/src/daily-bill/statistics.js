@@ -35,6 +35,12 @@ export class Statistics {
                         .then(data => {
                             console.log(data);
                             self.statisticsByProduct = data.object;
+                            self.statisticsByProduct.statisticDetails.map(it => {
+                                it.active = true;
+                                return it;
+                            });
+                            self.statisticsByProduct.allEnabled = true;
+                            self.statisticsByProduct.totalSumCalculated = self.statisticsByProduct.totalSum;
                         });
     }
 
@@ -48,7 +54,23 @@ export class Statistics {
         this.getStatisticsByProduct(this.params);
     }
 
+    switchItem(statisticsItem) {
+        statisticsItem.active = !statisticsItem.active;
+        this.statisticsByProduct.totalSumCalculated = !statisticsItem.active
+                ? this.statisticsByProduct.totalSumCalculated - statisticsItem.price
+                : this.statisticsByProduct.totalSumCalculated + statisticsItem.price;
+    }
+
     addProductName() {
         this.productNames.push({name: ''});
+    }
+
+    switchItems() {
+        this.statisticsByProduct.allEnabled = !this.statisticsByProduct.allEnabled;
+        this.statisticsByProduct.totalSumCalculated = !this.statisticsByProduct.allEnabled ? 0 : this.statisticsByProduct.totalSum;
+        let self = this;
+        this.statisticsByProduct.statisticDetails.map(it => {
+            it.active = self.statisticsByProduct.allEnabled;
+        })
     }
 }

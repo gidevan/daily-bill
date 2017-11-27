@@ -99,11 +99,19 @@
 
 .statistics-item .name {
     font-weight: bolder;
+    margin-right: 5px;
 }
 
 .statistics-item .switch-item-button {
     border: 1px solid black;
-    align:right;
+    margin-left:auto;
+    margin-right:0;
+    width: 40px;
+    height: 20px;
+}
+
+.statistics-item .active {
+    background-color: rgb(204, 204, 204);
 }
 .statistics-button-panel .name-filter {
     display: flex;
@@ -149,7 +157,7 @@
     margin-right: 5px;
 }
 
-.total-sum .enable-button {
+.select-button .enable-button {
     border: 1px solid black;
 }
 

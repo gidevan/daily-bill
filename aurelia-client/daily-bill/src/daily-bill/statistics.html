@@ -22,13 +22,23 @@
     </div>
     <div class="total-sum">
         <div class="title">Total Sum: </div>
+        <div>${statisticsByProduct.totalSum}</div>
+    </div>
+    <div class="total-sum">
+        <div class="title">Total Sum Selected Items: </div>
         <div>${statisticsByProduct.totalSumCalculated}</div>
-        <div class="enable-button" click.delegate="switchItems()">all enabled: ${statisticsByProduct.allEnabled}</div>
     </div>
 
+    <div class="total-sum">
+        <div class="title">Total Sum Unselected Items: </div>
+        <div>${statisticsByProduct.totalSum - statisticsByProduct.totalSumCalculated}</div>
+    </div>
+    <div class="select-button">
+        <div class="enable-button" click.delegate="switchItems()">all enabled: ${statisticsByProduct.allEnabled}</div>
+    </div>
     <div repeat.for="statistics of statisticsByProduct.statisticDetails" class="statistics-item">
         <div class="name">${statistics.name}: </div>
         <div class="value">${statistics.price}</div>
-        <div class="switch-item-button" click.delegate="switchItem(statistics)">button: ${statistics.active}</div>
+        <div class="switch-item-button ${statistics.active ? 'active' : ''}" click.delegate="switchItem(statistics)"></div>
     </div>
 <template>

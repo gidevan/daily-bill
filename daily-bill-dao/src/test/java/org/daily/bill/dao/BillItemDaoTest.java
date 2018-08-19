@@ -9,7 +9,6 @@ import org.daily.bill.domain.BillItem;
 import org.daily.bill.domain.Product;
 import org.daily.bill.domain.Shop;
 import org.daily.bill.utils.TestEntityFactory;
-import org.junit.After;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;

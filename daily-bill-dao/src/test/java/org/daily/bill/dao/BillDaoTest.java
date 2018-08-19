@@ -6,12 +6,10 @@ import org.daily.bill.api.dao.ProductDao;
 import org.daily.bill.api.dao.ShopDao;
 import org.daily.bill.domain.*;
 import org.daily.bill.utils.TestEntityFactory;
-import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;

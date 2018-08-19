@@ -31,7 +31,7 @@
             <properties>
                 <db.username>postgres</db.username>
                 <db.password>postgres</db.password>
-                <db.url>jdbc:postgresql://localhost:5432/daily-bill-test</db.url>
+                <db.url>jdbc:postgresql://localhost:4000/daily-bill-test</db.url>
             </properties>
         </profile>
         <profile>

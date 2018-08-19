@@ -2,9 +2,7 @@ package org.daily.bill.dao;
 
 import org.daily.bill.api.dao.CrudDao;
 import org.daily.bill.domain.Identifiable;
-import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -14,7 +12,6 @@ import java.util.List;
 /**
  * Created by vano on 19.8.16.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestDataConfig.class)
 public abstract class AbstractDaoTest<ID, T extends Identifiable, D extends CrudDao> extends AbstractTestNGSpringContextTests {
     protected static final int DEFAULT_INDEX = 0;

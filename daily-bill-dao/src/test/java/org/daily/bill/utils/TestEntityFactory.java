@@ -1,9 +1,6 @@
 package org.daily.bill.utils;
 
-import org.daily.bill.domain.Bill;
-import org.daily.bill.domain.BillItem;
-import org.daily.bill.domain.Product;
-import org.daily.bill.domain.Shop;
+import org.daily.bill.domain.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -49,5 +46,13 @@ public final class TestEntityFactory {
         product.setDescription(description);
         product.setCreated(new Date());
         return product;
+    }
+
+    public static Currency createCurrency(String code, String name, Boolean isDefault) {
+        Currency currency = new Currency();
+        currency.setName(name);
+        currency.setCode(code);
+        currency.setDefaultCurrency(isDefault);
+        return currency;
     }
 }

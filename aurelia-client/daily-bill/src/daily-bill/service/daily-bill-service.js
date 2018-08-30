@@ -82,4 +82,8 @@ export class DailyBillService {
                 body: json(product)
         })
     }
+
+    getAllCurrencies() {
+        return httpClient.fetch("http://localhost:8080/currency/all")
+    }
 }

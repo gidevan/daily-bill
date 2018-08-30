@@ -104,5 +104,55 @@
                 <dropColumn tableName="shop" columnName="active"/>
             </rollback>
         </changeSet>
+        <changeSet id="add-currency" author="vano">
+            <createTable tableName="currency">
+                <column name="id" type="bigint">
+                    <constraints primaryKey="true" primaryKeyName="pk_currency_id"/>
+                </column>
+                <column name="code" type="varchar2(255)">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="name" type="varchar2(255)"/>
+                <column name="is_default" type="boolean" defaultValueBoolean="false"/>
+                <column name="created" type="timestamp(8)" defaultValueComputed="now()">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="updated" type="timestamp(8)"></column>
+            </createTable>
+            <createSequence sequenceName="currency_seq" minValue="1000"/>
+            <insert tableName="currency">
+                <column name="id">1</column>
+                <column name="code">BYN</column>
+                <column name="name">Белорусский рубль</column>
+                <column name="is_default">true</column>
+            </insert>
+            <insert tableName="currency">
+                <column name="id">2</column>
+                <column name="code">BGN</column>
+                <column name="name">Болгарский лев</column>
+                <column name="is_default">false</column>
+            </insert>
+            <insert tableName="currency">
+                <column name="id">3</column>
+                <column name="code">EUR</column>
+                <column name="name">Евро</column>
+                <column name="is_default">false</column>
+            </insert>
+            <addColumn tableName="bill">
+                <column name="currency_id" type="bigint"></column>
+            </addColumn>
+            <update tableName="bill">
+                <column name="currency_id" value="1"/>
+            </update>
+            <addForeignKeyConstraint baseTableName="bill" baseColumnNames="currency_id"
+                                     constraintName="fk_bill_currency_id" referencedTableName="currency"
+                                     referencedColumnNames="id"/>
+            <rollback>
+                <dropColumn tableName="bill" columnName="currency_id"/>
+                <dropSequence sequenceName="currency_seq"/>
+                <dropTable tableName="currency"/>
+            </rollback>
+
+        </changeSet>
 
 </databaseChangeLog>

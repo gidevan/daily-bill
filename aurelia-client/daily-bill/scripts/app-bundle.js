@@ -1,30 +1,30 @@
 define('app',['exports'], function (exports) {
-  'use strict';
+    'use strict';
 
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var App = exports.App = function () {
-    function App() {
-      _classCallCheck(this, App);
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
     }
 
-    App.prototype.configureRouter = function configureRouter(config, router) {
-      config.title = 'Daily Bill';
-      config.map([{ route: '', moduleId: 'daily-bill/bill-list', title: 'Bill List', name: 'billList' }, { route: 'bill/:id', moduleId: 'daily-bill/bill-details', name: 'billDetails' }, { route: 'bill/add', moduleId: 'daily-bill/add-bill', name: 'addBill' }, { route: 'bill/edit/:id', moduleId: 'daily-bill/add-bill', name: 'editBill' }, { route: 'statistics', moduleId: 'daily-bill/statistics', name: 'statistics' }]);
+    var App = exports.App = function () {
+        function App() {
+            _classCallCheck(this, App);
+        }
 
-      this.router = router;
-    };
+        App.prototype.configureRouter = function configureRouter(config, router) {
+            config.title = 'Daily Bill';
+            config.map([{ route: '', moduleId: 'daily-bill/bill-list', title: 'Bill List', name: 'billList' }, { route: 'bill/:id', moduleId: 'daily-bill/bill-details', name: 'billDetails' }, { route: 'bill/add', moduleId: 'daily-bill/add-bill', name: 'addBill' }, { route: 'bill/edit/:id', moduleId: 'daily-bill/add-bill', name: 'editBill' }, { route: 'statistics', moduleId: 'daily-bill/statistics', name: 'statistics' }, { route: 'product/list', moduleId: 'daily-bill/product/product-list', name: 'product-list' }, { route: 'product/edit/:id', moduleId: 'daily-bill/product/product-item', name: 'product-item' }, { route: 'shop/list', moduleId: 'daily-bill/shop/shop-list', name: 'shop-list' }, { route: 'shop/edit/:id', moduleId: 'daily-bill/shop/shop-item', name: 'shop-item' }, { route: 'currency/list', moduleId: 'daily-bill/currency/currency-list', name: 'currency-list' }]);
 
-    return App;
-  }();
+            this.router = router;
+        };
+
+        return App;
+    }();
 });
 define('environment',["exports"], function (exports) {
   "use strict";
@@ -387,6 +387,12 @@ define('daily-bill/statistics',["exports", "./service/daily-bill-service", "aure
             }).then(function (data) {
                 console.log(data);
                 self.statisticsByProduct = data.object;
+                self.statisticsByProduct.statisticDetails.map(function (it) {
+                    it.active = true;
+                    return it;
+                });
+                self.statisticsByProduct.allEnabled = true;
+                self.statisticsByProduct.totalSumCalculated = self.statisticsByProduct.totalSum;
             });
         };
 
@@ -400,8 +406,22 @@ define('daily-bill/statistics',["exports", "./service/daily-bill-service", "aure
             this.getStatisticsByProduct(this.params);
         };
 
+        Statistics.prototype.switchItem = function switchItem(statisticsItem) {
+            statisticsItem.active = !statisticsItem.active;
+            this.statisticsByProduct.totalSumCalculated = !statisticsItem.active ? this.statisticsByProduct.totalSumCalculated - statisticsItem.price : this.statisticsByProduct.totalSumCalculated + statisticsItem.price;
+        };
+
         Statistics.prototype.addProductName = function addProductName() {
             this.productNames.push({ name: '' });
+        };
+
+        Statistics.prototype.switchItems = function switchItems() {
+            this.statisticsByProduct.allEnabled = !this.statisticsByProduct.allEnabled;
+            this.statisticsByProduct.totalSumCalculated = !this.statisticsByProduct.allEnabled ? 0 : this.statisticsByProduct.totalSum;
+            var self = this;
+            this.statisticsByProduct.statisticDetails.map(function (it) {
+                it.active = self.statisticsByProduct.allEnabled;
+            });
         };
 
         return Statistics;
@@ -415,6 +435,179 @@ define('resources/index',["exports"], function (exports) {
   });
   exports.configure = configure;
   function configure(config) {}
+});
+define('daily-bill/currency/currency-list',["exports", "../service/daily-bill-service", "aurelia-router"], function (exports, _dailyBillService, _aureliaRouter) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.CurrencyList = undefined;
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    var CurrencyList = exports.CurrencyList = function () {
+        CurrencyList.inject = function inject() {
+            return [_dailyBillService.DailyBillService, _aureliaRouter.Router];
+        };
+
+        function CurrencyList(dailyBillService, router) {
+            _classCallCheck(this, CurrencyList);
+
+            this.dailyBillService = dailyBillService;
+            this.router = router;
+            this.initCurrencies();
+        }
+
+        CurrencyList.prototype.initCurrencies = function initCurrencies() {
+            var self = this;
+            this.currencies = [];
+            this.dailyBillService.getAllCurrencies().then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                self.currencies = data.object;
+            }).catch(function (e) {
+                self.errorMessages.push(e);
+            });
+        };
+
+        CurrencyList.prototype.editCurrency = function editCurrency(id) {
+            console.log("edit currency: " + id);
+        };
+
+        return CurrencyList;
+    }();
+});
+define('daily-bill/product/product-item',["exports", "../service/daily-bill-service", "aurelia-router"], function (exports, _dailyBillService, _aureliaRouter) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.ProductItem = undefined;
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    var ProductItem = exports.ProductItem = function () {
+        ProductItem.inject = function inject() {
+            return [_dailyBillService.DailyBillService, _aureliaRouter.Router];
+        };
+
+        function ProductItem(dailyBillService, router) {
+            _classCallCheck(this, ProductItem);
+
+            this.dailyBillService = dailyBillService;
+            this.router = router;
+        }
+
+        ProductItem.prototype.activate = function activate(params, routeConfig) {
+            var id = params.id;
+            this.initProduct(id);
+        };
+
+        ProductItem.prototype.initProduct = function initProduct(id) {
+            this.errorMessages = [];
+            var self = this;
+            this.dailyBillService.getProductById(id).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                self.product = data.object;
+                console.log("product:", self.product);
+            }).catch(function (e) {
+                console.log("error get bill:" + e);
+            });
+        };
+
+        ProductItem.prototype.updateProduct = function updateProduct() {
+            var _this = this;
+
+            this.errorMessages = [];
+            var self = this;
+            this.dailyBillService.updateProduct(this.product).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                console.log("update product result");
+                console.log(data);
+                if (data.code == '200') {
+                    _this.router.navigateToRoute('product-list');
+                } else {
+                    self.errorMessages.push(data.message);
+                }
+            });
+        };
+
+        return ProductItem;
+    }();
+});
+define('daily-bill/product/product-list',["exports", "../service/daily-bill-service", "aurelia-router"], function (exports, _dailyBillService, _aureliaRouter) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.ProductList = undefined;
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    var ProductList = exports.ProductList = function () {
+        ProductList.inject = function inject() {
+            return [_dailyBillService.DailyBillService, _aureliaRouter.Router];
+        };
+
+        function ProductList(dailyBillService, router) {
+            _classCallCheck(this, ProductList);
+
+            this.dailyBillService = dailyBillService;
+            this.router = router;
+            this.initProducts();
+            this.filterValue = "";
+        }
+
+        ProductList.prototype.initProducts = function initProducts() {
+            var self = this;
+            this.errorMessages = [];
+            this.products = [];
+            this.filteredProducts = [];
+            this.dailyBillService.getAllProducts().then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                self.products = data.object;
+                self.filteredProducts = data.object;
+            }).catch(function (e) {
+                self.errorMessages.push(e);
+            });
+        };
+
+        ProductList.prototype.editProduct = function editProduct(id) {
+            this.router.navigateToRoute('product-item', { id: id });
+        };
+
+        ProductList.prototype.filterChange = function filterChange() {
+            var _this = this;
+
+            if (this.filterValue) {
+                this.filteredProducts = this.products.filter(function (it) {
+                    return it.name.toLowerCase().indexOf(_this.filterValue.toLowerCase()) >= 0;
+                });
+            } else {
+                this.filteredProducts = this.products;
+            }
+        };
+
+        return ProductList;
+    }();
 });
 define('daily-bill/service/daily-bill-service',['exports', 'aurelia-fetch-client'], function (exports, _aureliaFetchClient) {
     'use strict';
@@ -480,8 +673,292 @@ define('daily-bill/service/daily-bill-service',['exports', 'aurelia-fetch-client
             });
         };
 
+        DailyBillService.prototype.findLastPrice = function findLastPrice(shopId, productId) {
+            return httpClient.fetch('http://localhost:8080/daily-bill/last/price/shop/' + shopId + '/product/' + productId);
+        };
+
+        DailyBillService.prototype.getAllShops = function getAllShops() {
+            return httpClient.fetch("http://localhost:8080/shops/all");
+        };
+
+        DailyBillService.prototype.getShopById = function getShopById(id) {
+            return httpClient.fetch("http://localhost:8080/shops/" + id);
+        };
+
+        DailyBillService.prototype.updateShop = function updateShop(shop) {
+            return httpClient.fetch("http://localhost:8080/shops", {
+                method: "POST",
+                body: (0, _aureliaFetchClient.json)(shop)
+            });
+        };
+
+        DailyBillService.prototype.getAllProducts = function getAllProducts() {
+            return httpClient.fetch("http://localhost:8080/products/all");
+        };
+
+        DailyBillService.prototype.getProductById = function getProductById(id) {
+            return httpClient.fetch("http://localhost:8080/products/" + id);
+        };
+
+        DailyBillService.prototype.updateProduct = function updateProduct(product) {
+            return httpClient.fetch("http://localhost:8080/products", {
+                method: "POST",
+                body: (0, _aureliaFetchClient.json)(product)
+            });
+        };
+
+        DailyBillService.prototype.getAllCurrencies = function getAllCurrencies() {
+            return httpClient.fetch("http://localhost:8080/currency/all");
+        };
+
         return DailyBillService;
     }();
+});
+define('daily-bill/shop/shop-item',["exports", "../service/daily-bill-service", "aurelia-router"], function (exports, _dailyBillService, _aureliaRouter) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.ShopItem = undefined;
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    var ShopItem = exports.ShopItem = function () {
+        ShopItem.inject = function inject() {
+            return [_dailyBillService.DailyBillService, _aureliaRouter.Router];
+        };
+
+        function ShopItem(dailyBillService, router) {
+            _classCallCheck(this, ShopItem);
+
+            this.dailyBillService = dailyBillService;
+            this.router = router;
+            this.errorMessages = [];
+        }
+
+        ShopItem.prototype.activate = function activate(params, routeConfig) {
+            var id = params.id;
+            this.initShop(id);
+        };
+
+        ShopItem.prototype.initShop = function initShop(id) {
+            var self = this;
+            this.dailyBillService.getShopById(id).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                self.shop = data.object;
+                console.log("shop:", self.shop);
+            }).catch(function (e) {
+                console.log("error get bill:" + e);
+            });
+        };
+
+        ShopItem.prototype.updateShop = function updateShop() {
+            var _this = this;
+
+            this.errorMessages = [];
+            var self = this;
+            this.dailyBillService.updateShop(this.shop).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                console.log("update shop result");
+                console.log(data);
+                if (data.code == '200') {
+                    _this.router.navigateToRoute('shop-list');
+                } else {
+                    self.errorMessages.push(data.message);
+                }
+            });
+        };
+
+        return ShopItem;
+    }();
+});
+define('daily-bill/shop/shop-list',["exports", "../service/daily-bill-service", "aurelia-router"], function (exports, _dailyBillService, _aureliaRouter) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.ShopList = undefined;
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    var ShopList = exports.ShopList = function () {
+        ShopList.inject = function inject() {
+            return [_dailyBillService.DailyBillService, _aureliaRouter.Router];
+        };
+
+        function ShopList(dailyBillService, router) {
+            _classCallCheck(this, ShopList);
+
+            this.dailyBillService = dailyBillService;
+            this.router = router;
+            this.initShops();
+            this.filterValue = "";
+        }
+
+        ShopList.prototype.initShops = function initShops() {
+            var self = this;
+            this.errorMessages = [];
+            this.dailyBillService.getAllShops().then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                self.shops = data.object;
+                self.filteredShops = data.object;
+            }).catch(function (e) {
+                self.errorMessages.push(e);
+            });
+        };
+
+        ShopList.prototype.editShop = function editShop(id) {
+            this.router.navigateToRoute('shop-item', { id: id });
+        };
+
+        ShopList.prototype.filterChange = function filterChange() {
+            var _this = this;
+
+            console.log("filter shop changed");
+            if (this.filterValue) {
+                this.filteredShops = this.shops.filter(function (it) {
+                    return it.name.toLowerCase().indexOf(_this.filterValue.toLowerCase()) >= 0;
+                });
+            } else {
+                this.filteredShops = this.shops;
+            }
+        };
+
+        return ShopList;
+    }();
+});
+define('daily-bill/components/bill-item/edit-bill-item',["exports", "aurelia-framework", "../../service/daily-bill-service"], function (exports, _aureliaFramework, _dailyBillService) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.EditBillItem = undefined;
+
+    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+        return typeof obj;
+    } : function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+
+    function _initDefineProp(target, property, descriptor, context) {
+        if (!descriptor) return;
+        Object.defineProperty(target, property, {
+            enumerable: descriptor.enumerable,
+            configurable: descriptor.configurable,
+            writable: descriptor.writable,
+            value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
+        });
+    }
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+        var desc = {};
+        Object['ke' + 'ys'](descriptor).forEach(function (key) {
+            desc[key] = descriptor[key];
+        });
+        desc.enumerable = !!desc.enumerable;
+        desc.configurable = !!desc.configurable;
+
+        if ('value' in desc || desc.initializer) {
+            desc.writable = true;
+        }
+
+        desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+            return decorator(target, property, desc) || desc;
+        }, desc);
+
+        if (context && desc.initializer !== void 0) {
+            desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+            desc.initializer = undefined;
+        }
+
+        if (desc.initializer === void 0) {
+            Object['define' + 'Property'](target, property, desc);
+            desc = null;
+        }
+
+        return desc;
+    }
+
+    function _initializerWarningHelper(descriptor, context) {
+        throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
+    }
+
+    var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3;
+
+    var EditBillItem = exports.EditBillItem = (_class = function () {
+        EditBillItem.inject = function inject() {
+            return [_dailyBillService.DailyBillService];
+        };
+
+        function EditBillItem(dailyBillService) {
+            var _this = this;
+
+            _classCallCheck(this, EditBillItem);
+
+            _initDefineProp(this, "billItem", _descriptor, this);
+
+            _initDefineProp(this, "products", _descriptor2, this);
+
+            _initDefineProp(this, "shopId", _descriptor3, this);
+
+            this.findLastPrice = function (productId) {
+                console.log('bill-item: find last price: ' + productId);
+                console.log(_this.shopId);
+                if (_this.shopId) {
+                    var _ret = function () {
+                        var self = _this;
+                        return {
+                            v: _this.dailyBillService.findLastPrice(_this.shopId, productId).then(function (response) {
+                                return response.json();
+                            }).then(function (data) {
+                                console.log('last price');
+                                console.log(data);
+                                var lastPrice = data.object;
+                                self.billItem.price = lastPrice ? lastPrice : 0;
+                                return data;
+                            })
+                        };
+                    }();
+
+                    if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
+                }
+            };
+
+            console.log("add bill item constructor");
+            this.dailyBillService = dailyBillService;
+        }
+
+        return EditBillItem;
+    }(), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "billItem", [_aureliaFramework.bindable], {
+        enumerable: true,
+        initializer: null
+    }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "products", [_aureliaFramework.bindable], {
+        enumerable: true,
+        initializer: null
+    }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, "shopId", [_aureliaFramework.bindable], {
+        enumerable: true,
+        initializer: null
+    })), _class);
 });
 define('daily-bill/components/filtered-select/filtered-select',['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
     'use strict';
@@ -540,7 +1017,7 @@ define('daily-bill/components/filtered-select/filtered-select',['exports', 'aure
         throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
     }
 
-    var _desc, _value, _class, _descriptor, _descriptor2;
+    var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3;
 
     var FilteredSelect = exports.FilteredSelect = (_class = function () {
         function FilteredSelect() {
@@ -549,6 +1026,8 @@ define('daily-bill/components/filtered-select/filtered-select',['exports', 'aure
             _initDefineProp(this, 'selectedItem', _descriptor, this);
 
             _initDefineProp(this, 'items', _descriptor2, this);
+
+            _initDefineProp(this, 'callbackFn', _descriptor3, this);
         }
 
         FilteredSelect.prototype.attached = function attached() {
@@ -612,8 +1091,12 @@ define('daily-bill/components/filtered-select/filtered-select',['exports', 'aure
         };
 
         FilteredSelect.prototype.selectItem = function selectItem() {
+            console.log('select item');
             this.filterValue = this.filterSelectedItem.name;
             this.selectedItem = this.filterSelectedItem;
+            if (this.callbackFn) {
+                this.callbackFn(this.selectedItem.id);
+            }
         };
 
         return FilteredSelect;
@@ -623,13 +1106,22 @@ define('daily-bill/components/filtered-select/filtered-select',['exports', 'aure
     }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, 'items', [_aureliaFramework.bindable], {
         enumerable: true,
         initializer: null
+    }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'callbackFn', [_aureliaFramework.bindable], {
+        enumerable: true,
+        initializer: null
     })), _class);
 });
-define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./css/daily-bill.css\"></require><nav role=\"navigation\"><div><a href=\"#\"><span>Bills</span> </a><span>|</span> <a route-href=\"route: addBill\"><span>Add Bill</span> </a><span>|</span> <a route-href=\"route: statistics\"><span>Statistics</span></a></div></nav><div class=\"container\"><router-view></router-view></div></template>"; });
-define('text!css/daily-bill.css', ['module'], function(module) { module.exports = "\n.bill-list .bill {\n  border: 1px solid black;\n  margin: 1px;\n}\n\n.bill-list .bill .bill-info>span {\n  font-weight: bolder;\n}\n\n.shop-info {\n  display: flex;\n  flex-direction: row;\n}\n.item{\n  border: 1px solid black;\n  margin: 2px;\n}\n\n.bill-item-info {\n  display: flex;\n  flex-direction: row;\n}\n\n.shop-info > p, .bill-item-info >p{\n  font-weight: bolder;\n  width: 20%;\n}\n.shop-info > input, .shop-info > filtered-select {\n    width: 75%\n}\n.bill-item {\n  display: flex;\n  flex-direction: row;\n  border: 1px solid black;\n  margin: 1px;\n  padding: 1px;\n}\n.bill-item .item-description {\n  font-weight: bolder;\n  margin-right: 2px;\n  margin-left: 2px;\n  width: 20%;\n}\n.bill-item-info > input {\n    width: 75%;\n}\n.bill-item-info > filtered-select {\n    width: 75%;\n}\n.item-button-panel button {\n    width: 100%;\n    font-size: 24px;\n    margin: 2px;\n}\n.bill-button-panel button {\n  width: 100%;\n  font-size: 24px;\n  margin: 2px;\n}\n\n.bill-details {\n    border: 1px solid black;\n}\n\n.bill-details .bill-info {\n    margin: 2px;\n    padding-bottom: 3px;\n    font-size: 20px;\n\n}\n\n.bill-details .bill-info .bill-info-item {\n    display: flex;\n    flex-direction: row;\n}\n\n.bill-details .bill-info .bill-info-item .bill-info-description {\n    font-weight: bolder;\n    width: 20%;\n}\n.bill-items .bill-item {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-items .bill-item .bill-item-info-data  {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item {\n    border: 1px solid black;\n    margin: 2px;\n    padding: 2px;\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item .name {\n    font-weight: bolder;\n}\n\n.statistics-button-panel .name-filter {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-button-panel .date-filter, .statistics-button-panel .date-filter > div {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-button-panel .filter-field,  .bill-list-button-panel .filter-field {\n    margin: 2px;\n}\n\n.statistics-button-panel .filter-field .filter-title, .bill-list-button-panel .filter-field .filter-title {\n    font-weight: bolder;\n}\n\n.statistics-button-panel .add-product-button {\n    width: 100%;\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n}\n\n.statistics-button-panel .edit-bill-button {\n    width: 100%;\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n    height: 40px;\n}\n\n.total-sum {\n    display: flex;\n    flex-direction: row;\n    margin: 3px;\n}\n\n.total-sum .title {\n    font-weight: bolder;\n    margin-right: 5px;\n}\n\n.filtered-select {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-list-button-panel {\n    display: flex;\n    flex-direction: row;\n}\n.bill-list-button-panel .filter-field {\n    display: flex;\n    flex-direction: row;\n}\n.bill-list-button-panel .edit-bill-button {\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n    width: 20%;\n}\n\n\n\n\n"; });
-define('text!daily-bill/add-bill.html', ['module'], function(module) { module.exports = "<template><require from=\"./components/filtered-select/filtered-select\"></require><div if.bind=\"bill\"><h1>Add Bill</h1><div class=\"shop-info\"><p>Shop name:</p><filtered-select items.two-way=\"shops\" selected-item.two-way=\"bill.shop\"></filtered-select></div><div class=\"shop-info\"><p>Date:</p><input type=\"text\" value.bind=\"bill.dateStr\"></div><div class=\"bill-items\"><div class=\"item\" repeat.for=\"billItem of bill.items\"><div class=\"bill-item-info\"><p>Product:</p><filtered-select items.two-way=\"products\" selected-item.two-way=\"billItem.product\"></filtered-select></div><div class=\"bill-item-info\"><p>Price:</p><input type=\"text\" value.bind=\"billItem.price\"></div><div class=\"bill-item-info\"><p>Amount:</p><input type=\"text\" value.bind=\"billItem.amount\"></div></div><div class=\"item-button-panel\"><button type=\"button\" click.delegate=\"addBillItem()\">Add item</button></div></div><div class=\"bill-button-panel\" if.bind=\"!bill.id\"><button type=\"button\" click.delegate=\"addBill()\">Add bill</button></div><div class=\"bill-button-panel\" if.bind=\"bill.id\"><button type=\"button\" click.delegate=\"updateBill()\">Update bill</button></div></div></template>"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./css/daily-bill.css\"></require><nav role=\"navigation\"><div><a href=\"#\"><span>Bills</span> </a><span>|</span> <a route-href=\"route: addBill\"><span>Add Bill</span> </a><span>|</span> <a route-href=\"route: statistics\"><span>Statistics</span> </a><span>|</span> <a route-href=\"route: product-list\"><span>Product list</span> </a><span>|</span> <a route-href=\"route: shop-list\"><span>Shop list</span> </a><span>|</span> <a route-href=\"route: currency-list\"><span>Currency list</span></a></div></nav><div class=\"container\"><router-view></router-view></div></template>"; });
+define('text!css/daily-bill.css', ['module'], function(module) { module.exports = "\n.bill-list .bill {\n  border: 1px solid black;\n  margin: 1px;\n}\n\n.bill-list .bill .bill-info>span {\n  font-weight: bolder;\n}\n\n.shop-info {\n  display: flex;\n  flex-direction: row;\n}\n.item{\n  border: 1px solid black;\n  margin: 2px;\n}\n\n.bill-item-info {\n  display: flex;\n  flex-direction: row;\n}\n\n.shop-info > p, .bill-item-info >p{\n  font-weight: bolder;\n  width: 20%;\n}\n.shop-info > input, .shop-info > filtered-select {\n    width: 75%\n}\n.bill-item {\n  display: flex;\n  flex-direction: row;\n  border: 1px solid black;\n  margin: 1px;\n  padding: 1px;\n}\n.bill-item .item-description {\n  font-weight: bolder;\n  margin-right: 2px;\n  margin-left: 2px;\n  width: 20%;\n}\n.bill-item-info > input {\n    width: 75%;\n}\n.bill-item-info > filtered-select {\n    width: 75%;\n}\n.item-button-panel button {\n    width: 100%;\n    font-size: 24px;\n    margin: 2px;\n}\n.bill-button-panel button {\n  width: 100%;\n  font-size: 24px;\n  margin: 2px;\n}\n\n.bill-details {\n    border: 1px solid black;\n}\n\n.bill-details .bill-info {\n    margin: 2px;\n    padding-bottom: 3px;\n    font-size: 20px;\n\n}\n\n.bill-details .bill-info .bill-info-item {\n    display: flex;\n    flex-direction: row;\n}\n\n.bill-details .bill-info .bill-info-item .bill-info-description {\n    font-weight: bolder;\n    width: 20%;\n}\n.bill-items .bill-item {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-items .bill-item .bill-item-info-data  {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item {\n    border: 1px solid black;\n    margin: 2px;\n    padding: 2px;\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item .name {\n    font-weight: bolder;\n    margin-right: 5px;\n}\n\n.statistics-item .switch-item-button {\n    border: 1px solid black;\n    margin-left:auto;\n    margin-right:0;\n    width: 40px;\n    height: 20px;\n}\n\n.statistics-item .active {\n    background-color: rgb(204, 204, 204);\n}\n.statistics-button-panel .name-filter {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-button-panel .date-filter, .statistics-button-panel .date-filter > div {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-button-panel .filter-field,  .bill-list-button-panel .filter-field {\n    margin: 2px;\n}\n\n.statistics-button-panel .filter-field .filter-title, .bill-list-button-panel .filter-field .filter-title {\n    font-weight: bolder;\n}\n\n.statistics-button-panel .add-product-button {\n    width: 100%;\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n}\n\n.statistics-button-panel .edit-bill-button {\n    width: 100%;\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n    height: 40px;\n}\n\n.total-sum {\n    display: flex;\n    flex-direction: row;\n    margin: 3px;\n}\n\n.total-sum .title {\n    font-weight: bolder;\n    margin-right: 5px;\n}\n\n.select-button .enable-button {\n    border: 1px solid black;\n}\n\n.filtered-select {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-list-button-panel {\n    display: flex;\n    flex-direction: row;\n}\n.bill-list-button-panel .filter-field {\n    display: flex;\n    flex-direction: row;\n}\n.bill-list-button-panel .edit-bill-button {\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n    width: 20%;\n}\n\n.shop-list .shop-item, .product-list .product-item {\n    border: 1px solid black;\n    margin-top: 1px;\n}\n\n.shop-list .shop-info > span, .product-list .product-info > span {\n    font-weight: bolder;\n}\n\n.shop-details .shop-info > span, .product-details .product-info > span {\n    font-weight: bolder;\n}\n\n.error-messages p {\n    color : red;\n}\n\n.product-filter .filter-value > input, .shop-filter .filter-value > input{\n    width: 100%;\n}\n\n\n\n"; });
+define('text!daily-bill/add-bill.html', ['module'], function(module) { module.exports = "<template><require from=\"./components/filtered-select/filtered-select\"></require><require from=\"./components/bill-item/edit-bill-item\"></require><div if.bind=\"bill\"><h1>Add Bill</h1><div class=\"shop-info\"><p>Shop name:</p><filtered-select items.two-way=\"shops\" selected-item.two-way=\"bill.shop\"></filtered-select></div><div class=\"shop-info\"><p>Date:</p><input type=\"text\" value.bind=\"bill.dateStr\"></div><div class=\"bill-items\"><div class=\"item\" repeat.for=\"billItem of bill.items\"><edit-bill-item bill-item.two-way=\"billItem\" products.two-way=\"products\" shop-id.two-way=\"bill.shop.id\"></edit-bill-item></div><div class=\"item-button-panel\"><button type=\"button\" click.delegate=\"addBillItem()\">Add item</button></div></div><div class=\"bill-button-panel\" if.bind=\"!bill.id\"><button type=\"button\" click.delegate=\"addBill()\">Add bill</button></div><div class=\"bill-button-panel\" if.bind=\"bill.id\"><button type=\"button\" click.delegate=\"updateBill()\">Update bill</button></div></div></template>"; });
 define('text!daily-bill/bill-details.html', ['module'], function(module) { module.exports = "<template><div class=\"bill-details\"><div class=\"bill-info\"><div class=\"bill-info-item\"><div class=\"bill-info-description\">bill id:</div><div class=\"bill-info-item\">${bill.id}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">date:</div><div class=\"bill-info-item\">${bill.dateStr}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">shop id:</div><div class=\"bill-info-item\">${bill.shop.id}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">shop:</div><div class=\"bill-info-item\">${bill.shop.name}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">bill sum:</div><div class=\"bill-info-item\">${bill.billSum}</div></div></div><div class=\"bill-items\"><div class=\"bill-item\" repeat.for=\"item of bill.items\"><div class=\"bill-item-info-data\"><div class=\"item-description\">product id:</div><div class=\"item-value\">${item.product.id}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">product:</div><div class=\"item-value\">${item.product.name}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">price:</div><div class=\"item-value\">${item.price}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">amount:</div><div class=\"item-value\">${item.amount}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">sum:</div><div class=\"item-value\">${item.amount * item.price}</div></div></div></div></div><div class=\"bill-button-panel\"><button class=\"edit-bill-button\" click.delegate=\"edit()\">Edit bill</button></div></template>"; });
 define('text!daily-bill/bill-list.html', ['module'], function(module) { module.exports = "<template><h1>Bill List</h1><div class=\"bill-list-button-panel\"><div class=\"filter-field\"><div class=\"filter-title\">Start Period Date:</div><div><input type=\"text\" value.bind=\"startDateStr\"></div></div><div class=\"filter-field\"><div class=\"filter-title\">End Period Date:</div><div><input type=\"text\" value.bind=\"endDateStr\"></div></div><button class=\"edit-bill-button\" click.delegate=\"findBills()\">Find</button></div><div class=\"bill-list\"><div repeat.for=\"bill of bills\" class=\"bill\" click.delegate=\"viewBillDetails(bill.id)\"><div class=\"bill-info\"><span>id:</span> ${bill.id}</div><div class=\"bill-info\"><span>shop:</span> ${bill.shopName}</div><div class=\"bill-info\"><span>date:</span> ${bill.dateStr}</div><div class=\"bill-info\"><span>sum:</span> ${bill.billSum}</div></div></div></template>"; });
-define('text!daily-bill/statistics.html', ['module'], function(module) { module.exports = "<template>Statistics:<div class=\"statistics-button-panel\"><div class=\"date-filter\"><div class=\"filter-field\"><div class=\"filter-title\">Start Period Date:</div><div><input type=\"text\" value.bind=\"startDateStr\"></div></div><div class=\"filter-field\"><div class=\"filter-title\">End Period Date:</div><div><input type=\"text\" value.bind=\"endDateStr\"></div></div></div><div class=\"name-filter\"><div class=\"filter-field\" repeat.for=\"productName of productNames\"><div class=\"filter-title\">Product Name:</div><div><input type=\"text\" value.bind=\"productName.name\"></div></div><button class=\"add-product-button\" click.delegate=\"addProductName()\">Add product name</button></div><button class=\"edit-bill-button\" click.delegate=\"updateStatistics()\">Update statistics</button></div><div class=\"total-sum\"><div class=\"title\">Total Sum:</div><div>${statisticsByProduct.totalSum}</div></div><div repeat.for=\"statistics of statisticsByProduct.statisticDetails\" class=\"statistics-item\"><div class=\"name\">${statistics.name}:</div><div class=\"value\">${statistics.price}</div></div><template></template></template>"; });
+define('text!daily-bill/statistics.html', ['module'], function(module) { module.exports = "<template>Statistics:<div class=\"statistics-button-panel\"><div class=\"date-filter\"><div class=\"filter-field\"><div class=\"filter-title\">Start Period Date:</div><div><input type=\"text\" value.bind=\"startDateStr\"></div></div><div class=\"filter-field\"><div class=\"filter-title\">End Period Date:</div><div><input type=\"text\" value.bind=\"endDateStr\"></div></div></div><div class=\"name-filter\"><div class=\"filter-field\" repeat.for=\"productName of productNames\"><div class=\"filter-title\">Product Name:</div><div><input type=\"text\" value.bind=\"productName.name\"></div></div><button class=\"add-product-button\" click.delegate=\"addProductName()\">Add product name</button></div><button class=\"edit-bill-button\" click.delegate=\"updateStatistics()\">Update statistics</button></div><div class=\"total-sum\"><div class=\"title\">Total Sum:</div><div>${statisticsByProduct.totalSum}</div></div><div class=\"total-sum\"><div class=\"title\">Total Sum Selected Items:</div><div>${statisticsByProduct.totalSumCalculated}</div></div><div class=\"total-sum\"><div class=\"title\">Total Sum Unselected Items:</div><div>${statisticsByProduct.totalSum - statisticsByProduct.totalSumCalculated}</div></div><div class=\"select-button\"><div class=\"enable-button\" click.delegate=\"switchItems()\">all enabled: ${statisticsByProduct.allEnabled}</div></div><div repeat.for=\"statistics of statisticsByProduct.statisticDetails\" class=\"statistics-item\"><div class=\"name\">${statistics.name}:</div><div class=\"value\">${statistics.price}</div><div class=\"switch-item-button ${statistics.active ? 'active' : ''}\" click.delegate=\"switchItem(statistics)\"></div></div><template></template></template>"; });
+define('text!daily-bill/currency/currency-list.html', ['module'], function(module) { module.exports = "<template><h2>Product list</h2><div class=\"error-messages\"><p repeat.for=\"msg of errorMessages\">${msg}</p></div><div class=\"product-list\"><div repeat.for=\"currency of currencies\" class=\"product-item\" click.delegate=\"editCurrency(currency.id)\"><div class=\"product-info\"><span>id:</span> ${currency.id}</div><div class=\"product-info\"><span>code:</span> ${currency.code}</div><div class=\"product-info\"><span>name:</span> ${currency.name}</div><div class=\"product-info\"><span>defaultCurrency:</span> ${currency.defaultCurrency}</div></div></div></template>"; });
+define('text!daily-bill/product/product-item.html', ['module'], function(module) { module.exports = "<template><h2>Product Item</h2><div class=\"error-messages\"><p repeat.for=\"msg of errorMessages\">${msg}</p></div><div class=\"product-details\"><div class=\"product-info\"><span>id:</span> ${product.id}</div><div class=\"product-info\"><span>name:</span> <input type=\"text\" value.bind=\"product.name\"></div><div class=\"product-info\"><span>active:</span> <input type=\"checkbox\" checked.bind=\"product.active\"></div></div><div class=\"bill-button-panel\"><button type=\"button\" click.delegate=\"updateProduct()\">Update product</button></div></template>"; });
+define('text!daily-bill/product/product-list.html', ['module'], function(module) { module.exports = "<template><h2>Product list</h2><div class=\"error-messages\"><p repeat.for=\"msg of errorMessages\">${msg}</p></div><div class=\"product-filter\"><div class=\"filter-value\"><input type=\"text\" value.bind=\"filterValue\" change.delegate=\"filterChange()\"></div></div><div class=\"product-list\"><div repeat.for=\"product of filteredProducts\" class=\"product-item\" click.delegate=\"editProduct(product.id)\"><div class=\"product-info\"><span>id:</span> ${product.id}</div><div class=\"product-info\"><span>name:</span> ${product.name}</div><div class=\"product-info\"><span>active:</span> ${product.active}</div></div></div></template>"; });
+define('text!daily-bill/shop/shop-item.html', ['module'], function(module) { module.exports = "<template><h2>Shop Item</h2><div class=\"error-messages\"><p repeat.for=\"msg of errorMessages\">${msg}</p></div><div class=\"shop-details\"><div class=\"shop-info\"><span>id:</span> ${shop.id}</div><div class=\"shop-info\"><span>name:</span> <input type=\"text\" value.bind=\"shop.name\"></div><div class=\"shop-info\"><span>active:</span> <input type=\"checkbox\" checked.bind=\"shop.active\"></div></div><div class=\"bill-button-panel\"><button type=\"button\" click.delegate=\"updateShop()\">Update shop</button></div></template>"; });
+define('text!daily-bill/shop/shop-list.html', ['module'], function(module) { module.exports = "<template><h2>Shop list:</h2><div class=\"error-messages\"><p repeat.for=\"msg of errorMessages\">${msg}</p></div><div class=\"shop-filter\"><div class=\"filter-value\"><input type=\"text\" value.bind=\"filterValue\" change.delegate=\"filterChange()\"></div></div><div class=\"shop-list\"><div repeat.for=\"shop of filteredShops\" class=\"shop-item\" click.delegate=\"editShop(shop.id)\"><div class=\"shop-info\"><span>id:</span> ${shop.id}</div><div class=\"shop-info\"><span>name:</span> ${shop.name}</div><div class=\"shop-info\"><span>active:</span> ${shop.active}</div></div></div></template>"; });
+define('text!daily-bill/components/bill-item/edit-bill-item.html', ['module'], function(module) { module.exports = "<template><require from=\"../filtered-select/filtered-select\"></require><div class=\"bill-item-info\"><p>Product:</p><filtered-select items.two-way=\"products\" selected-item.two-way=\"billItem.product\" callback-fn.two-way=\"findLastPrice\"></filtered-select></div><div class=\"bill-item-info\"><p>Price:</p><input type=\"text\" value.bind=\"billItem.price\"></div><div class=\"bill-item-info\"><p>Amount:</p><input type=\"text\" value.bind=\"billItem.amount\"></div></template>"; });
 define('text!daily-bill/components/filtered-select/filtered-select.html', ['module'], function(module) { module.exports = "<template><div class=\"filtered-select\"><input type=\"text\" value.bind=\"filterValue\" change.delegate=\"filterChange()\"><select value.bind=\"filterSelectedItem\" change.delegate=\"selectItem()\" size=\"6\"><option repeat.for=\"it of filteredItems\" model.bind=\"it\">${it.name}</option></select></div></template>"; });
 //# sourceMappingURL=app-bundle.js.map

@@ -1,0 +1,22 @@
+<template>
+    <h2>Product list</h2>
+    <div class="error-messages">
+        <p repeat.for="msg of errorMessages">${msg}</p>
+    </div>
+    <div class="product-list">
+        <div repeat.for="currency of currencies" class="product-item" click.delegate="editCurrency(currency.id)">
+            <div class="product-info">
+                <span>id:</span> ${currency.id}
+            </div>
+            <div class="product-info">
+                <span>code:</span> ${currency.code}
+            </div>
+            <div class="product-info">
+                <span>name:</span> ${currency.name}
+            </div>
+            <div class="product-info">
+                <span>defaultCurrency:</span> ${currency.defaultCurrency}
+            </div>
+        </div>
+    </div>
+</template>

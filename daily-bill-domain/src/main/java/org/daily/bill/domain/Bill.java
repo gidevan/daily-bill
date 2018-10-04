@@ -19,6 +19,7 @@ public class Bill implements Identifiable<Long> {
     private Date created;
     private Date updated;
     private BigDecimal billSum;
+    private Currency currency;
     @Override
     public Long getId() {
         return id;
@@ -90,5 +91,13 @@ public class Bill implements Identifiable<Long> {
 
     public void setBillSum(BigDecimal billSum) {
         this.billSum = billSum;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 }

@@ -5,6 +5,7 @@ import org.daily.bill.api.dao.BillItemDao;
 import org.daily.bill.api.dao.ProductDao;
 import org.daily.bill.api.dao.ShopDao;
 import org.daily.bill.domain.*;
+import org.daily.bill.domain.Currency;
 import org.daily.bill.utils.TestEntityFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
@@ -28,6 +29,7 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
             {PRODUCT_NAMES[1], PRICES[1], AMOUNTS[1]}
     };
     private static final String WRONG_NAME = "wrong name";
+    private static final long UPDATE_CURRENCY_ID = 2;
 
     @Autowired
     private ShopDao shopDao;
@@ -71,6 +73,7 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
         Assert.assertEquals(updated.getId(), expected.getId());
         Assert.assertEquals(updated.getDate(), expected.getDate());
         Assert.assertNotNull(updated.getUpdated());
+        Assert.assertEquals(expected.getCurrency().getId(), updated.getCurrency().getId());
     }
 
     @Override
@@ -79,6 +82,7 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
         Assert.assertNotNull(entity.getCreated());
         Assert.assertNotNull(entity.getShop());
         Assert.assertNotNull(entity.getShopId());
+        Assert.assertNotNull(entity.getCurrency().getId());
     }
 
     @Autowired
@@ -96,6 +100,9 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
     protected void updateEntity(Bill entity) {
         entity.setShopId(shops.get(SHOP_NAMES[1]).getId());
         entity.setDate(new Date());
+        Currency currency = new Currency();
+        currency.setId(UPDATE_CURRENCY_ID);
+        entity.setCurrency(currency);
     }
 
     @Test
@@ -107,14 +114,17 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
         createBillItems(billId);
         List<Bill> bills = dao.getBills(new BillListParams());
         Date date = new Date();
+        Assert.assertFalse(bills.isEmpty());
         for(Bill stored: bills) {
             boolean dateCondition = date.compareTo(stored.getDate()) >= 0;
             Assert.assertTrue(dateCondition);
             Assert.assertNotNull(stored.getId());
             Assert.assertNotNull(stored.getShop().getName());
+            Assert.assertNotNull(stored.getCurrency().getId());
+            Assert.assertNotNull(stored.getCurrency().getCode());
+            Assert.assertNotNull(stored.getCurrency().getName());
             date = stored.getDate();
         }
-        Assert.assertFalse(bills.isEmpty());
         deleteBillItems();
         dao.delete(bill.getId());
     }
@@ -126,6 +136,7 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
         Long billId = bill.getId();
         Assert.assertNotNull(billId);
         createBillItems(billId);
+
         List<BillDetails> billDetails = dao.getBillDetails(billId);
         Assert.assertFalse(billDetails.isEmpty());
         for(BillDetails details : billDetails) {

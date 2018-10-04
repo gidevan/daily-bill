@@ -32,6 +32,11 @@
             <id column="shop_id" property="id"/>
             <result column="shop_name" property="name"/>
         </association>
+        <association property="currency" column="currency_id" javaType="currency">
+            <id column="currency_id" property="id"/>
+            <result column="currency_name" property="name"/>
+            <result column="currency_code" property="code"/>
+        </association>
     </resultMap>
     <resultMap id="billDetails" type="billDetails" autoMapping="true">
         <result column="bill_id" property="billId"/>
@@ -50,25 +55,26 @@
         <result column="price" property="price"/>
     </resultMap>
     <select id="findById" resultMap="bill">
-        select id, date, shop_id, created, updated from bill where id = #{id}
+        select id, date, shop_id, currency_id, created, updated from bill where id = #{id}
     </select>
 
     <select id="findAll" resultMap="bill">
         select id, date, shop_id, created, updated from bill
     </select>
 
-    <insert id="insert" parameterType="java.util.Map">
+    <insert id="insert" parameterType="bill">
         <selectKey keyProperty="id" keyColumn="id" order="AFTER" resultType="long">
             select currval('bill_seq')
         </selectKey>
-        insert into bill (id, date, shop_id, created)
-        values(nextval('bill_seq'), #{date}, #{shopId}, now())
+        insert into bill (id, date, shop_id, currency_id, created)
+        values(nextval('bill_seq'), #{date}, #{shopId}, #{currency.id}, now())
     </insert>
 
-    <update id="update" parameterType="java.util.Map">
+    <update id="update" parameterType="bill">
         update bill
         set date = #{date},
         shop_id = #{shopId},
+        currency_id = #{currency.id}
         updated = now()
         where id = #{id}
     </update>
@@ -78,9 +84,14 @@
     </delete>
 
     <select id="getBills" resultMap="bill" parameterType="map">
-        select bills.id, bills.date, bills.shop_id, bills.shop_name, sum(item_price) as bill_sum
-        from (select b.id, b.date, b.shop_id shop_id, s.name as shop_name, bi.price * bi.amount item_price
+        select bills.id, bills.date, bills.shop_id, bills.shop_name,
+                bills.currency_id, bills.currency_code, bills.currency_name,
+                sum(item_price) as bill_sum
+        from (select b.id, b.date, b.shop_id shop_id, s.name as shop_name,
+                    cu.id currency_id, cu.code currency_code, cu.name currency_name,
+                    bi.price * bi.amount item_price
                 from bill b
+                inner join currency cu on b.currency_id = cu.id
                 inner join shop s on b.shop_id = s.id
                 inner join bill_item bi on bi.bill_id = b.id) bills
         <where>
@@ -95,7 +106,8 @@
                 ]]>
             </if>
         </where>
-        group by bills.id, bills.date, bills.shop_id, bills.shop_name
+        group by bills.id, bills.date, bills.shop_id, bills.shop_name,
+        bills.currency_id, bills.currency_code, bills.currency_name
         order by bills.date desc
     </select>
     <select id="getBillDetails"  resultMap="billDetails" parameterType="long">

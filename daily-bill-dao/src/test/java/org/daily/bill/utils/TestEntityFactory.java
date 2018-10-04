@@ -10,6 +10,8 @@ import java.util.Date;
  */
 public final class TestEntityFactory {
 
+    public static final long DEFAULT_CURRENCY_ID = 1;
+
     private TestEntityFactory() {
     }
 
@@ -21,12 +23,19 @@ public final class TestEntityFactory {
     }
 
     public static Bill createBill(Long shopId, Date date) {
+        return createBill(shopId, date, DEFAULT_CURRENCY_ID);
+    }
+
+    public static Bill createBill(Long shopId, Date date, Long currencyId) {
         Bill bill = new Bill();
         bill.setDate(date);
         bill.setShopId(shopId);
         Shop shop = new Shop();
         shop.setId(shopId);
         bill.setShop(shop);
+        Currency currency = new Currency();
+        currency.setId(currencyId);
+        bill.setCurrency(currency);
         return bill;
     }
 

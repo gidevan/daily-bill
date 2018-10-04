@@ -142,6 +142,9 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
         for(BillDetails details : billDetails) {
             Assert.assertEquals(details.getBillId(), billId);
             Assert.assertEquals(details.getShopName(), SHOP_NAMES[0]);
+            Assert.assertNotNull(details.getCurrencyId());
+            Assert.assertNotNull(details.getCurrencyCode());
+            Assert.assertNotNull(details.getCurrencyName());
         }
         deleteBillItems();
         dao.delete(billId);

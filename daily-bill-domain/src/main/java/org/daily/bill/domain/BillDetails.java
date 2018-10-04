@@ -9,6 +9,9 @@ public class BillDetails {
     private Date date;
     private Long shopId;
     private String shopName;
+    private Long currencyId;
+    private String currencyCode;
+    private String currencyName;
     private Long billItemId;
     private BigDecimal price;
     private Double amount;
@@ -45,6 +48,30 @@ public class BillDetails {
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
+    }
+
+    public Long getCurrencyId() {
+        return currencyId;
+    }
+
+    public void setCurrencyId(Long currencyId) {
+        this.currencyId = currencyId;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
+
+    public String getCurrencyName() {
+        return currencyName;
+    }
+
+    public void setCurrencyName(String currencyName) {
+        this.currencyName = currencyName;
     }
 
     public Long getBillItemId() {

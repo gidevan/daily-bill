@@ -127,11 +127,18 @@ public class DailyBillServiceImpl implements DailyBillService {
     private Bill createBill(List<BillDetails> billDetails) {
         Bill bill = new Bill();
         for(BillDetails details :billDetails) {
-            if(bill.getShop() == null) {
+            if (bill.getShop() == null) {
                 Shop shop = new Shop();
                 shop.setId(details.getShopId());
                 shop.setName(details.getShopName());
                 bill.setShop(shop);
+            }
+            if (bill.getCurrency() == null) {
+                Currency currency = new Currency();
+                currency.setId(details.getCurrencyId());
+                currency.setCode(details.getCurrencyCode());
+                currency.setName(details.getCurrencyName());
+                bill.setCurrency(currency);
             }
             bill.setId(details.getBillId());
             bill.setDate(details.getDate());

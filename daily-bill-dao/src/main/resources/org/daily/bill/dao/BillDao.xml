@@ -26,7 +26,7 @@
         <result column="shop_id" property="shopId"/>
         <result column="shop_name" property="shopName"/>
         <result column="created" property="created"/>
-        <result column="updtaed" property="updated"/>
+        <result column="updated" property="updated"/>
         <result column="bill_sum" property="billSum"/>
         <association property="shop" column="shop_id" javaType="shop">
             <id column="shop_id" property="id"/>
@@ -77,7 +77,7 @@
         update bill
         set date = #{date},
         shop_id = #{shopId},
-        currency_id = #{currency.id}
+        currency_id = #{currency.id},
         updated = now()
         where id = #{id}
     </update>

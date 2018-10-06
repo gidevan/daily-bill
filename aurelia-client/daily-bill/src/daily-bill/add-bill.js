@@ -12,8 +12,9 @@ export class AddBill{
         this.routeConfig = routeConfig;
         console.log('activate add-bill');
         console.log('params: ', params.id)
-        let self = this;
-
+        this.changeCurrency = false;
+        let self =this;
+        this.messages = [];
         this.dailyBillService.getShops()
             .then(response => response.json())
                         .then(data => {
@@ -33,6 +34,14 @@ export class AddBill{
                                                               self.products = prodData.object
                                                               return self.products;
                                                           })
+                        .then(products => self.dailyBillService.getAllCurrencies())
+                                                .then(response => response.json())
+                                                .then(currenciesData => {
+                                                    console.log('Currencies: ');
+                                                    console.log(currenciesData);
+                                                    self.currencies = currenciesData.object;
+
+                                                })
                         .then(products => {
                             if(params.id) {
                                         return self.dailyBillService.getBillById(params.id)
@@ -49,6 +58,7 @@ export class AddBill{
                             } else {
                                 this.createBill();
                             }
+
                         }).catch(error => {
                             console.log('Error getting data')
                             console.log(error)
@@ -66,10 +76,13 @@ export class AddBill{
     }
   createBill() {
     let date = new Date();
+    let defaultCurrency = this.currencies.find(c => c.defaultCurrency == true);
+    console.log('defaultCurrency', defaultCurrency);
     this.bill = {
         id: null,
         date: date,
         dateStr: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate(),
+        currency: defaultCurrency,
         shop: {
           shopId: null,
           shopName: ""
@@ -88,14 +101,26 @@ export class AddBill{
   addBill() {
     console.log("add bill:");
     this.bill.date = Date.parse(this.bill.dateStr);
-    console.log(this.bill);
-    let self = this;
-    this.dailyBillService.addBill(this.bill)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            self.router.navigateToRoute('billList')
-        });;
+    this.validateBill();
+    if(this.messages.length == 0) {
+        console.log('bill to save:');
+        console.log(this.bill);
+        let self = this;
+        this.dailyBillService.addBill(this.bill)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    self.router.navigateToRoute('billList')
+                });
+    }
+
+  }
+
+  validateBill() {
+  this.messages = [];
+     if (!this.bill.shop.id) {
+        this.messages.push("Shop is empty");
+     }
   }
 
   updateBill() {

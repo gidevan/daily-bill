@@ -1,9 +1,6 @@
 package org.daily.bill.dao;
 
-import org.daily.bill.api.dao.BillDao;
-import org.daily.bill.api.dao.BillItemDao;
-import org.daily.bill.api.dao.ProductDao;
-import org.daily.bill.api.dao.ShopDao;
+import org.daily.bill.api.dao.*;
 import org.daily.bill.domain.*;
 import org.daily.bill.domain.Currency;
 import org.daily.bill.utils.TestEntityFactory;
@@ -37,6 +34,8 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
     private ProductDao productDao;
     @Autowired
     private BillItemDao billItemDao;
+    @Autowired
+    private CurrencyDao currencyDao;
     private Map<String, Shop> shops = new HashMap<>();
     private Map<String, Product> products = new HashMap<>();
 

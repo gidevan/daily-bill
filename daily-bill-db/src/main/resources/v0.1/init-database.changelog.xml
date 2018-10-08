@@ -154,5 +154,22 @@
             </rollback>
 
         </changeSet>
+        <changeSet id="add-currency-index" author="vano">
+            <createIndex tableName="bill" indexName="bill_currency_id_idx">
+                <column name="currency_id"></column>
+            </createIndex>
+            <insert tableName="currency">
+                <column name="id">4</column>
+                <column name="code">USD</column>
+                <column name="name">Американский доллар</column>
+                <column name="is_default">false</column>
+            </insert>
+            <rollback>
+                <delete tableName="currency">
+                    <where>id = 4</where>
+                </delete>
+                <dropIndex tableName="bill" indexName="bill_currency_id_idx"/>
+            </rollback>
+        </changeSet>
 
 </databaseChangeLog>

@@ -6,6 +6,7 @@ import org.daily.bill.domain.Identifiable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -16,6 +17,7 @@ import java.util.List;
  */
 //@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestDataConfig.class)
+@Transactional(readOnly = true)
 public abstract class AbstractDaoTest<ID, T extends Identifiable, D extends CrudDao> extends AbstractTestNGSpringContextTests {
     protected static final int DEFAULT_INDEX = 0;
 

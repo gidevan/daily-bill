@@ -10,6 +10,7 @@ public class StatisticDetails implements Identifiable<Long>{
     private Long id;
     private String name;
     private BigDecimal price;
+    private Currency currency;
 
     @Override
     public Long getId() {
@@ -34,5 +35,13 @@ public class StatisticDetails implements Identifiable<Long>{
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 }

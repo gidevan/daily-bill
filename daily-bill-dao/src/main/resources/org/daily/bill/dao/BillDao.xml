@@ -56,6 +56,11 @@
         <result column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="price" property="price"/>
+        <association property="currency" column = "currency_id" javaType="currency">
+            <id column="currency_id" property="id"/>
+            <result column="currency_name" property="name"/>
+            <result column="currency_code" property="code"/>
+        </association>
     </resultMap>
     <select id="findById" resultMap="bill">
         select id, date, shop_id, currency_id, created, updated from bill where id = #{id}
@@ -126,10 +131,14 @@
         where b.id = #{billId}
     </select>
     <select id="getDetailsByProduct" parameterType="map" resultMap="statisticDetails">
-        select a.id,a.name, sum(a.product_price) price
+        select a.id, a.name, a.currency_id, a.currency_name, a.currency_code,
+            sum(a.product_price) price
         from (
-        select p.id, p.name, b.date, bi.price, bi.amount, bi.price* bi.amount product_price
+        select p.id, p.name, b.date, bi.price,
+            b.currency_id, cu.name currency_name, cu.code currency_code,
+            bi.amount, bi.price* bi.amount product_price
         from bill b
+        inner join currency cu on b.currency_id = cu.id
         inner join bill_item bi on bi.bill_id = b.id
         inner join product p on bi.product_id = p.id
         <where>
@@ -153,7 +162,7 @@
         </where>
         ) a
 
-        group by a.id, a.name
+        group by a.id, a.name, a.currency_id, a.currency_name, a.currency_code
         order by price desc
     </select>
 </mapper>

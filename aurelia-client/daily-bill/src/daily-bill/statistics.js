@@ -63,12 +63,10 @@ export class Statistics {
 
 
                                 self.statisticsByProduct = self.fullStatisticInfo.statisticInfo[self.selectedCurrency];
-                                //currencies.forEach(function(curr) {
-                                    self.statisticsByProduct.statisticDetails.map(it => {
+                                self.statisticsByProduct.statisticDetails.map(it => {
                                                                 it.active = true;
                                                                 return it;
-                                                            });
-                                //})
+                                });
 
                                 self.statisticsByProduct.allEnabled = true;
                                 self.statisticsByProduct.totalSumCalculated = self.statisticsByProduct.totalSum;

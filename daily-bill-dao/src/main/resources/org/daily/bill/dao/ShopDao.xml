@@ -25,7 +25,7 @@
     </select>
 
     <select id="findAll" resultType="shop">
-        select id, name, created, updated, active from shop
+        select id, name, created, updated, active from shop order by name
     </select>
 
     <select id="findShops" resultType="shop" parameterType="java.util.Map">

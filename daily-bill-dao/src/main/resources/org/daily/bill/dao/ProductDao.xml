@@ -25,7 +25,7 @@
     </select>
 
     <select id="findAll" resultType="product">
-        select id, name, description, created, updated, active from product
+        select id, name, description, created, updated, active from product order by name
     </select>
 
     <select id="findProducts" resultType="product" parameterType="java.util.Map">

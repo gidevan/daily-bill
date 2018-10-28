@@ -33,7 +33,7 @@
     </select>
 
     <select id="findAll" resultMap="currencyMap">
-        select id, code, name, is_default, created, updated from currency
+        select id, code, name, is_default, created, updated from currency order by code
     </select>
 
     <insert id="insert" parameterType="java.util.Map">

@@ -19,7 +19,11 @@
             <button class="add-product-button" click.delegate="addProductName()">Add product name</button>
         </div>
         <button class="edit-bill-button" click.delegate="updateStatistics()">Update statistics</button>
+        <div class="currency-button-panel">
+            <div repeat.for="currency of currencies" class="currency-button ${currency.active  ? 'currency-button-active' :''}" click.delegate="changeCurrency(currency)">${currency.name}</div>
+        </div>
     </div>
+
     <div class="total-sum">
         <div class="title">Total Sum: </div>
         <div>${statisticsByProduct.totalSum}</div>

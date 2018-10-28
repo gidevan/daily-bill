@@ -3,13 +3,15 @@ package org.daily.bill.service;
 import org.daily.bill.api.dao.*;
 import org.daily.bill.api.service.DailyBillService;
 import org.daily.bill.domain.*;
+import org.daily.bill.domain.Currency;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by vano on 31.7.16.
@@ -70,31 +72,6 @@ public class DailyBillServiceImpl implements DailyBillService {
     }
 
     @Override
-    public Long updateDailyBill(Bill bill) {
-        Shop shop = bill.getShop();
-        checkShop(shop);
-        bill.setShopId(shop.getId());
-        bill.setUpdated(new Date());
-        billDao.update(bill);
-
-        List<BillItem> items = bill.getItems();
-        for(BillItem item : items) {
-            Product product = item.getProduct();
-            checkProduct(product);
-            item.setBillId(bill.getId());
-            item.setProductId(product.getId());
-            if(item.getId() != null) {
-                item.setUpdated(new Date());
-                billItemDao.update(item);
-            } else {
-
-            }
-            billItemDao.create(item);
-        }
-        return bill.getId();
-    }
-
-    @Override
     public List<Bill> getBills(BillListParams params) {
         return billDao.getBills(params);
     }
@@ -111,12 +88,22 @@ public class DailyBillServiceImpl implements DailyBillService {
     }
 
     @Override
-    public StatisticsInfo getDetailsByProduct(StatisticsParams params) {
+    public ClientStatisticsDetails getDetailsByProduct(StatisticsParams params) {
         if(params.getEndPeriodDate() == null) {
             params.setEndPeriodDate(new Date());
         }
         List<StatisticDetails> details = billDao.getStatisticByProduct(params);
-        return new StatisticsInfo(details);
+        Map<String, StatisticsInfo> detailsMap = details.stream()
+                .collect(Collectors.groupingBy(d -> d.getCurrency().getCode()))
+                .entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey(), e -> new StatisticsInfo(e.getValue())));
+
+        ClientStatisticsDetails clientStatisticsDetails = new ClientStatisticsDetails();
+        List<String> currencies = new ArrayList<>();
+        currencies.addAll(detailsMap.keySet());
+        clientStatisticsDetails.setCurrencies(currencies);
+        clientStatisticsDetails.setStatisticInfo(detailsMap);
+        return clientStatisticsDetails;
     }
 
     @Override

@@ -202,5 +202,20 @@
     width: 100%;
 }
 
+.currency-button-panel {
+    display: flex;
+    flex-direction: row;
+}
+.currency-button-panel .currency-button {
+    border: 1px solid grey;
+    margin: 2px;
+    padding: 2px;
+    width: 30%;
+}
+
+.currency-button-panel .currency-button-active {
+    font-weight: bolder;
+    background: grey;
+}
 
 

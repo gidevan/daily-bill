@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.websocket.server.PathParam;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import static org.daily.bill.web.utils.WebConstants.*;
 
@@ -107,7 +108,7 @@ public class DailyBillRest {
     @RequestMapping(value="/statistics/product", method = RequestMethod.POST)
     public Response getStatisticsByProduct(@RequestBody StatisticsParams params) {
         try {
-            StatisticsInfo details = dailyBillService.getDetailsByProduct(params);
+            ClientStatisticsDetails details = dailyBillService.getDetailsByProduct(params);
             return new Response(OK_CODE, OK_STATUS, null, details);
         } catch (Exception e) {
             return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());

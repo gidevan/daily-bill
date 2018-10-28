@@ -18,7 +18,7 @@ define('app',['exports'], function (exports) {
 
         App.prototype.configureRouter = function configureRouter(config, router) {
             config.title = 'Daily Bill';
-            config.map([{ route: '', moduleId: 'daily-bill/bill-list', title: 'Bill List', name: 'billList' }, { route: 'bill/:id', moduleId: 'daily-bill/bill-details', name: 'billDetails' }, { route: 'bill/add', moduleId: 'daily-bill/add-bill', name: 'addBill' }, { route: 'bill/edit/:id', moduleId: 'daily-bill/add-bill', name: 'editBill' }, { route: 'statistics', moduleId: 'daily-bill/statistics', name: 'statistics' }, { route: 'product/list', moduleId: 'daily-bill/product/product-list', name: 'product-list' }, { route: 'product/edit/:id', moduleId: 'daily-bill/product/product-item', name: 'product-item' }, { route: 'shop/list', moduleId: 'daily-bill/shop/shop-list', name: 'shop-list' }, { route: 'shop/edit/:id', moduleId: 'daily-bill/shop/shop-item', name: 'shop-item' }]);
+            config.map([{ route: '', moduleId: 'daily-bill/bill-list', title: 'Bill List', name: 'billList' }, { route: 'bill/:id', moduleId: 'daily-bill/bill-details', name: 'billDetails' }, { route: 'bill/add', moduleId: 'daily-bill/add-bill', name: 'addBill' }, { route: 'bill/edit/:id', moduleId: 'daily-bill/add-bill', name: 'editBill' }, { route: 'statistics', moduleId: 'daily-bill/statistics', name: 'statistics' }, { route: 'product/list', moduleId: 'daily-bill/product/product-list', name: 'product-list' }, { route: 'product/edit/:id', moduleId: 'daily-bill/product/product-item', name: 'product-item' }, { route: 'shop/list', moduleId: 'daily-bill/shop/shop-list', name: 'shop-list' }, { route: 'shop/edit/:id', moduleId: 'daily-bill/shop/shop-item', name: 'shop-item' }, { route: 'currency/list', moduleId: 'daily-bill/currency/currency-list', name: 'currency-list' }]);
 
             this.router = router;
         };
@@ -107,8 +107,9 @@ define('daily-bill/add-bill',["exports", "./service/daily-bill-service", "aureli
             this.routeConfig = routeConfig;
             console.log('activate add-bill');
             console.log('params: ', params.id);
+            this.changeCurrency = false;
             var self = this;
-
+            this.messages = [];
             this.dailyBillService.getShops().then(function (response) {
                 return response.json();
             }).then(function (data) {
@@ -126,6 +127,14 @@ define('daily-bill/add-bill',["exports", "./service/daily-bill-service", "aureli
                 console.log(prodData.object);
                 self.products = prodData.object;
                 return self.products;
+            }).then(function (products) {
+                return self.dailyBillService.getAllCurrencies();
+            }).then(function (response) {
+                return response.json();
+            }).then(function (currenciesData) {
+                console.log('Currencies: ');
+                console.log(currenciesData);
+                self.currencies = currenciesData.object;
             }).then(function (products) {
                 if (params.id) {
                     return self.dailyBillService.getBillById(params.id).then(function (response) {
@@ -161,10 +170,15 @@ define('daily-bill/add-bill',["exports", "./service/daily-bill-service", "aureli
 
         AddBill.prototype.createBill = function createBill() {
             var date = new Date();
+            var defaultCurrency = this.currencies.find(function (c) {
+                return c.defaultCurrency == true;
+            });
+            console.log('defaultCurrency', defaultCurrency);
             this.bill = {
                 id: null,
                 date: date,
                 dateStr: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate(),
+                currency: defaultCurrency,
                 shop: {
                     shopId: null,
                     shopName: ""
@@ -180,16 +194,31 @@ define('daily-bill/add-bill',["exports", "./service/daily-bill-service", "aureli
         };
 
         AddBill.prototype.addBill = function addBill() {
+            var _this2 = this;
+
             console.log("add bill:");
             this.bill.date = Date.parse(this.bill.dateStr);
-            console.log(this.bill);
-            var self = this;
-            this.dailyBillService.addBill(this.bill).then(function (response) {
-                return response.json();
-            }).then(function (data) {
-                console.log(data);
-                self.router.navigateToRoute('billList');
-            });;
+            this.validateBill();
+            if (this.messages.length == 0) {
+                (function () {
+                    console.log('bill to save:');
+                    console.log(_this2.bill);
+                    var self = _this2;
+                    _this2.dailyBillService.addBill(_this2.bill).then(function (response) {
+                        return response.json();
+                    }).then(function (data) {
+                        console.log(data);
+                        self.router.navigateToRoute('billList');
+                    });
+                })();
+            }
+        };
+
+        AddBill.prototype.validateBill = function validateBill() {
+            this.messages = [];
+            if (!this.bill.shop.id) {
+                this.messages.push("Shop is empty");
+            }
         };
 
         AddBill.prototype.updateBill = function updateBill() {
@@ -367,6 +396,10 @@ define('daily-bill/statistics',["exports", "./service/daily-bill-service", "aure
             this.productNames = [{ name: '' }];
             this.startDateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + 1;
             this.endDateStr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+            this.selectedCurrency = null;
+            this.currencies = [];
+            this.fullStatiscicInfo = null;
+            this.statisticsByProduct = [];
         }
 
         Statistics.prototype.activate = function activate(params, routeConfig) {
@@ -381,18 +414,45 @@ define('daily-bill/statistics',["exports", "./service/daily-bill-service", "aure
             });
             params.productNames = names;
             console.log(params);
+            this.statisticsByProduct = {};
             var self = this;
             this.dailyBillService.getStatisticByProduct(params).then(function (response) {
                 return response.json();
             }).then(function (data) {
                 console.log(data);
-                self.statisticsByProduct = data.object;
-                self.statisticsByProduct.statisticDetails.map(function (it) {
-                    it.active = true;
-                    return it;
-                });
-                self.statisticsByProduct.allEnabled = true;
-                self.statisticsByProduct.totalSumCalculated = self.statisticsByProduct.totalSum;
+                self.fullStatisticInfo = data.object;
+                var currencies = self.fullStatisticInfo.currencies;
+                if (currencies.length > 0) {
+
+                    self.currencies = currencies.map(function (it) {
+                        return { name: it, active: false };
+                    });
+                    if (!self.selectedCurrency) {
+                        self.selectedCurrency = self.currencies[0].name;
+                        self.currencies[0].active = true;
+                    } else {
+                        var isCurrencyExists = false;
+                        self.currencies.forEach(function (it) {
+                            if (it.name == self.selectedCurrency) {
+                                it.active = true;
+                                isCurrencyExists = true;
+                            }
+                        });
+                        if (!isCurrencyExists) {
+                            self.selectedCurrency = self.currencies[0].name;
+                            self.currencies[0].active = true;
+                        }
+                    }
+
+                    self.statisticsByProduct = self.fullStatisticInfo.statisticInfo[self.selectedCurrency];
+                    self.statisticsByProduct.statisticDetails.map(function (it) {
+                        it.active = true;
+                        return it;
+                    });
+
+                    self.statisticsByProduct.allEnabled = true;
+                    self.statisticsByProduct.totalSumCalculated = self.statisticsByProduct.totalSum;
+                }
             });
         };
 
@@ -404,6 +464,14 @@ define('daily-bill/statistics',["exports", "./service/daily-bill-service", "aure
                 endPeriodDate: endDate
             };
             this.getStatisticsByProduct(this.params);
+        };
+
+        Statistics.prototype.changeCurrency = function changeCurrency(currency) {
+            this.currencies.forEach(function (it) {
+                return it.name != currency.name ? it.active = false : it.active = true;
+            });
+            this.selectedCurrency = currency.name;
+            this.updateStatistics();
         };
 
         Statistics.prototype.switchItem = function switchItem(statisticsItem) {
@@ -435,6 +503,52 @@ define('resources/index',["exports"], function (exports) {
   });
   exports.configure = configure;
   function configure(config) {}
+});
+define('daily-bill/currency/currency-list',["exports", "../service/daily-bill-service", "aurelia-router"], function (exports, _dailyBillService, _aureliaRouter) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.CurrencyList = undefined;
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    var CurrencyList = exports.CurrencyList = function () {
+        CurrencyList.inject = function inject() {
+            return [_dailyBillService.DailyBillService, _aureliaRouter.Router];
+        };
+
+        function CurrencyList(dailyBillService, router) {
+            _classCallCheck(this, CurrencyList);
+
+            this.dailyBillService = dailyBillService;
+            this.router = router;
+            this.initCurrencies();
+        }
+
+        CurrencyList.prototype.initCurrencies = function initCurrencies() {
+            var self = this;
+            this.currencies = [];
+            this.dailyBillService.getAllCurrencies().then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                self.currencies = data.object;
+            }).catch(function (e) {
+                self.errorMessages.push(e);
+            });
+        };
+
+        CurrencyList.prototype.editCurrency = function editCurrency(id) {
+            console.log("edit currency: " + id);
+        };
+
+        return CurrencyList;
+    }();
 });
 define('daily-bill/product/product-item',["exports", "../service/daily-bill-service", "aurelia-router"], function (exports, _dailyBillService, _aureliaRouter) {
     "use strict";
@@ -659,6 +773,10 @@ define('daily-bill/service/daily-bill-service',['exports', 'aurelia-fetch-client
                 method: "POST",
                 body: (0, _aureliaFetchClient.json)(product)
             });
+        };
+
+        DailyBillService.prototype.getAllCurrencies = function getAllCurrencies() {
+            return httpClient.fetch("http://localhost:8080/currency/all");
         };
 
         return DailyBillService;
@@ -1061,12 +1179,13 @@ define('daily-bill/components/filtered-select/filtered-select',['exports', 'aure
         initializer: null
     })), _class);
 });
-define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./css/daily-bill.css\"></require><nav role=\"navigation\"><div><a href=\"#\"><span>Bills</span> </a><span>|</span> <a route-href=\"route: addBill\"><span>Add Bill</span> </a><span>|</span> <a route-href=\"route: statistics\"><span>Statistics</span> </a><span>|</span> <a route-href=\"route: product-list\"><span>Product list</span> </a><span>|</span> <a route-href=\"route: shop-list\"><span>Shop list</span></a></div></nav><div class=\"container\"><router-view></router-view></div></template>"; });
-define('text!css/daily-bill.css', ['module'], function(module) { module.exports = "\n.bill-list .bill {\n  border: 1px solid black;\n  margin: 1px;\n}\n\n.bill-list .bill .bill-info>span {\n  font-weight: bolder;\n}\n\n.shop-info {\n  display: flex;\n  flex-direction: row;\n}\n.item{\n  border: 1px solid black;\n  margin: 2px;\n}\n\n.bill-item-info {\n  display: flex;\n  flex-direction: row;\n}\n\n.shop-info > p, .bill-item-info >p{\n  font-weight: bolder;\n  width: 20%;\n}\n.shop-info > input, .shop-info > filtered-select {\n    width: 75%\n}\n.bill-item {\n  display: flex;\n  flex-direction: row;\n  border: 1px solid black;\n  margin: 1px;\n  padding: 1px;\n}\n.bill-item .item-description {\n  font-weight: bolder;\n  margin-right: 2px;\n  margin-left: 2px;\n  width: 20%;\n}\n.bill-item-info > input {\n    width: 75%;\n}\n.bill-item-info > filtered-select {\n    width: 75%;\n}\n.item-button-panel button {\n    width: 100%;\n    font-size: 24px;\n    margin: 2px;\n}\n.bill-button-panel button {\n  width: 100%;\n  font-size: 24px;\n  margin: 2px;\n}\n\n.bill-details {\n    border: 1px solid black;\n}\n\n.bill-details .bill-info {\n    margin: 2px;\n    padding-bottom: 3px;\n    font-size: 20px;\n\n}\n\n.bill-details .bill-info .bill-info-item {\n    display: flex;\n    flex-direction: row;\n}\n\n.bill-details .bill-info .bill-info-item .bill-info-description {\n    font-weight: bolder;\n    width: 20%;\n}\n.bill-items .bill-item {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-items .bill-item .bill-item-info-data  {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item {\n    border: 1px solid black;\n    margin: 2px;\n    padding: 2px;\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item .name {\n    font-weight: bolder;\n    margin-right: 5px;\n}\n\n.statistics-item .switch-item-button {\n    border: 1px solid black;\n    margin-left:auto;\n    margin-right:0;\n    width: 40px;\n    height: 20px;\n}\n\n.statistics-item .active {\n    background-color: rgb(204, 204, 204);\n}\n.statistics-button-panel .name-filter {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-button-panel .date-filter, .statistics-button-panel .date-filter > div {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-button-panel .filter-field,  .bill-list-button-panel .filter-field {\n    margin: 2px;\n}\n\n.statistics-button-panel .filter-field .filter-title, .bill-list-button-panel .filter-field .filter-title {\n    font-weight: bolder;\n}\n\n.statistics-button-panel .add-product-button {\n    width: 100%;\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n}\n\n.statistics-button-panel .edit-bill-button {\n    width: 100%;\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n    height: 40px;\n}\n\n.total-sum {\n    display: flex;\n    flex-direction: row;\n    margin: 3px;\n}\n\n.total-sum .title {\n    font-weight: bolder;\n    margin-right: 5px;\n}\n\n.select-button .enable-button {\n    border: 1px solid black;\n}\n\n.filtered-select {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-list-button-panel {\n    display: flex;\n    flex-direction: row;\n}\n.bill-list-button-panel .filter-field {\n    display: flex;\n    flex-direction: row;\n}\n.bill-list-button-panel .edit-bill-button {\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n    width: 20%;\n}\n\n.shop-list .shop-item, .product-list .product-item {\n    border: 1px solid black;\n    margin-top: 1px;\n}\n\n.shop-list .shop-info > span, .product-list .product-info > span {\n    font-weight: bolder;\n}\n\n.shop-details .shop-info > span, .product-details .product-info > span {\n    font-weight: bolder;\n}\n\n.error-messages p {\n    color : red;\n}\n\n.product-filter .filter-value > input, .shop-filter .filter-value > input{\n    width: 100%;\n}\n\n\n\n"; });
-define('text!daily-bill/add-bill.html', ['module'], function(module) { module.exports = "<template><require from=\"./components/filtered-select/filtered-select\"></require><require from=\"./components/bill-item/edit-bill-item\"></require><div if.bind=\"bill\"><h1>Add Bill</h1><div class=\"shop-info\"><p>Shop name:</p><filtered-select items.two-way=\"shops\" selected-item.two-way=\"bill.shop\"></filtered-select></div><div class=\"shop-info\"><p>Date:</p><input type=\"text\" value.bind=\"bill.dateStr\"></div><div class=\"bill-items\"><div class=\"item\" repeat.for=\"billItem of bill.items\"><edit-bill-item bill-item.two-way=\"billItem\" products.two-way=\"products\" shop-id.two-way=\"bill.shop.id\"></edit-bill-item></div><div class=\"item-button-panel\"><button type=\"button\" click.delegate=\"addBillItem()\">Add item</button></div></div><div class=\"bill-button-panel\" if.bind=\"!bill.id\"><button type=\"button\" click.delegate=\"addBill()\">Add bill</button></div><div class=\"bill-button-panel\" if.bind=\"bill.id\"><button type=\"button\" click.delegate=\"updateBill()\">Update bill</button></div></div></template>"; });
-define('text!daily-bill/bill-details.html', ['module'], function(module) { module.exports = "<template><div class=\"bill-details\"><div class=\"bill-info\"><div class=\"bill-info-item\"><div class=\"bill-info-description\">bill id:</div><div class=\"bill-info-item\">${bill.id}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">date:</div><div class=\"bill-info-item\">${bill.dateStr}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">shop id:</div><div class=\"bill-info-item\">${bill.shop.id}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">shop:</div><div class=\"bill-info-item\">${bill.shop.name}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">bill sum:</div><div class=\"bill-info-item\">${bill.billSum}</div></div></div><div class=\"bill-items\"><div class=\"bill-item\" repeat.for=\"item of bill.items\"><div class=\"bill-item-info-data\"><div class=\"item-description\">product id:</div><div class=\"item-value\">${item.product.id}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">product:</div><div class=\"item-value\">${item.product.name}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">price:</div><div class=\"item-value\">${item.price}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">amount:</div><div class=\"item-value\">${item.amount}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">sum:</div><div class=\"item-value\">${item.amount * item.price}</div></div></div></div></div><div class=\"bill-button-panel\"><button class=\"edit-bill-button\" click.delegate=\"edit()\">Edit bill</button></div></template>"; });
-define('text!daily-bill/bill-list.html', ['module'], function(module) { module.exports = "<template><h1>Bill List</h1><div class=\"bill-list-button-panel\"><div class=\"filter-field\"><div class=\"filter-title\">Start Period Date:</div><div><input type=\"text\" value.bind=\"startDateStr\"></div></div><div class=\"filter-field\"><div class=\"filter-title\">End Period Date:</div><div><input type=\"text\" value.bind=\"endDateStr\"></div></div><button class=\"edit-bill-button\" click.delegate=\"findBills()\">Find</button></div><div class=\"bill-list\"><div repeat.for=\"bill of bills\" class=\"bill\" click.delegate=\"viewBillDetails(bill.id)\"><div class=\"bill-info\"><span>id:</span> ${bill.id}</div><div class=\"bill-info\"><span>shop:</span> ${bill.shopName}</div><div class=\"bill-info\"><span>date:</span> ${bill.dateStr}</div><div class=\"bill-info\"><span>sum:</span> ${bill.billSum}</div></div></div></template>"; });
-define('text!daily-bill/statistics.html', ['module'], function(module) { module.exports = "<template>Statistics:<div class=\"statistics-button-panel\"><div class=\"date-filter\"><div class=\"filter-field\"><div class=\"filter-title\">Start Period Date:</div><div><input type=\"text\" value.bind=\"startDateStr\"></div></div><div class=\"filter-field\"><div class=\"filter-title\">End Period Date:</div><div><input type=\"text\" value.bind=\"endDateStr\"></div></div></div><div class=\"name-filter\"><div class=\"filter-field\" repeat.for=\"productName of productNames\"><div class=\"filter-title\">Product Name:</div><div><input type=\"text\" value.bind=\"productName.name\"></div></div><button class=\"add-product-button\" click.delegate=\"addProductName()\">Add product name</button></div><button class=\"edit-bill-button\" click.delegate=\"updateStatistics()\">Update statistics</button></div><div class=\"total-sum\"><div class=\"title\">Total Sum:</div><div>${statisticsByProduct.totalSum}</div></div><div class=\"total-sum\"><div class=\"title\">Total Sum Selected Items:</div><div>${statisticsByProduct.totalSumCalculated}</div></div><div class=\"total-sum\"><div class=\"title\">Total Sum Unselected Items:</div><div>${statisticsByProduct.totalSum - statisticsByProduct.totalSumCalculated}</div></div><div class=\"select-button\"><div class=\"enable-button\" click.delegate=\"switchItems()\">all enabled: ${statisticsByProduct.allEnabled}</div></div><div repeat.for=\"statistics of statisticsByProduct.statisticDetails\" class=\"statistics-item\"><div class=\"name\">${statistics.name}:</div><div class=\"value\">${statistics.price}</div><div class=\"switch-item-button ${statistics.active ? 'active' : ''}\" click.delegate=\"switchItem(statistics)\"></div></div><template></template></template>"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./css/daily-bill.css\"></require><nav role=\"navigation\"><div><a href=\"#\"><span>Bills</span> </a><span>|</span> <a route-href=\"route: addBill\"><span>Add Bill</span> </a><span>|</span> <a route-href=\"route: statistics\"><span>Statistics</span> </a><span>|</span> <a route-href=\"route: product-list\"><span>Product list</span> </a><span>|</span> <a route-href=\"route: shop-list\"><span>Shop list</span> </a><span>|</span> <a route-href=\"route: currency-list\"><span>Currency list</span></a></div></nav><div class=\"container\"><router-view></router-view></div></template>"; });
+define('text!css/daily-bill.css', ['module'], function(module) { module.exports = "\n.bill-list .bill {\n  border: 1px solid black;\n  margin: 1px;\n}\n\n.bill-list .bill .bill-info>span {\n  font-weight: bolder;\n}\n\n.shop-info {\n  display: flex;\n  flex-direction: row;\n}\n.item{\n  border: 1px solid black;\n  margin: 2px;\n}\n\n.bill-item-info {\n  display: flex;\n  flex-direction: row;\n}\n\n.shop-info > p, .bill-item-info >p{\n  font-weight: bolder;\n  width: 20%;\n}\n.shop-info > input, .shop-info > filtered-select {\n    width: 75%\n}\n.bill-item {\n  display: flex;\n  flex-direction: row;\n  border: 1px solid black;\n  margin: 1px;\n  padding: 1px;\n}\n.bill-item .item-description {\n  font-weight: bolder;\n  margin-right: 2px;\n  margin-left: 2px;\n  width: 20%;\n}\n.bill-item-info > input {\n    width: 75%;\n}\n.bill-item-info > filtered-select {\n    width: 75%;\n}\n.item-button-panel button {\n    width: 100%;\n    font-size: 24px;\n    margin: 2px;\n}\n.bill-button-panel button {\n  width: 100%;\n  font-size: 24px;\n  margin: 2px;\n}\n\n.bill-details {\n    border: 1px solid black;\n}\n\n.bill-details .bill-info {\n    margin: 2px;\n    padding-bottom: 3px;\n    font-size: 20px;\n\n}\n\n.bill-details .bill-info .bill-info-item {\n    display: flex;\n    flex-direction: row;\n}\n\n.bill-details .bill-info .bill-info-item .bill-info-description {\n    font-weight: bolder;\n    width: 20%;\n}\n.bill-items .bill-item {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-items .bill-item .bill-item-info-data  {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item {\n    border: 1px solid black;\n    margin: 2px;\n    padding: 2px;\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-item .name {\n    font-weight: bolder;\n    margin-right: 5px;\n}\n\n.statistics-item .switch-item-button {\n    border: 1px solid black;\n    margin-left:auto;\n    margin-right:0;\n    width: 40px;\n    height: 20px;\n}\n\n.statistics-item .active {\n    background-color: rgb(204, 204, 204);\n}\n.statistics-button-panel .name-filter {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-button-panel .date-filter, .statistics-button-panel .date-filter > div {\n    display: flex;\n    flex-direction: row;\n}\n\n.statistics-button-panel .filter-field,  .bill-list-button-panel .filter-field {\n    margin: 2px;\n}\n\n.statistics-button-panel .filter-field .filter-title, .bill-list-button-panel .filter-field .filter-title {\n    font-weight: bolder;\n}\n\n.statistics-button-panel .add-product-button {\n    width: 100%;\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n}\n\n.statistics-button-panel .edit-bill-button {\n    width: 100%;\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n    height: 40px;\n}\n\n.total-sum {\n    display: flex;\n    flex-direction: row;\n    margin: 3px;\n}\n\n.total-sum .title {\n    font-weight: bolder;\n    margin-right: 5px;\n}\n\n.select-button .enable-button {\n    border: 1px solid black;\n}\n\n.filtered-select {\n    display: flex;\n    flex-direction: column;\n}\n\n.bill-list-button-panel {\n    display: flex;\n    flex-direction: row;\n}\n.bill-list-button-panel .filter-field {\n    display: flex;\n    flex-direction: row;\n}\n.bill-list-button-panel .edit-bill-button {\n    font-weight: bolder;\n    padding: 2px;\n    margin: 2px;\n    width: 20%;\n}\n\n.shop-list .shop-item, .product-list .product-item {\n    border: 1px solid black;\n    margin-top: 1px;\n}\n\n.shop-list .shop-info > span, .product-list .product-info > span {\n    font-weight: bolder;\n}\n\n.shop-details .shop-info > span, .product-details .product-info > span {\n    font-weight: bolder;\n}\n\n.error-messages p {\n    color : red;\n}\n\n.product-filter .filter-value > input, .shop-filter .filter-value > input{\n    width: 100%;\n}\n\n.currency-button-panel {\n    display: flex;\n    flex-direction: row;\n}\n.currency-button-panel .currency-button {\n    border: 1px solid grey;\n    margin: 2px;\n    padding: 2px;\n    width: 30%;\n}\n\n.currency-button-panel .currency-button-active {\n    font-weight: bolder;\n    background: grey;\n}\n\n\n"; });
+define('text!daily-bill/add-bill.html', ['module'], function(module) { module.exports = "<template><require from=\"./components/filtered-select/filtered-select\"></require><require from=\"./components/bill-item/edit-bill-item\"></require><div if.bind=\"bill\"><h1>Add Bill</h1><div class=\"error-messages\"><p repeat.for=\"msg of messages\">${msg}</p></div><div class=\"shop-info\"><p>Shop name:</p><filtered-select items.two-way=\"shops\" selected-item.two-way=\"bill.shop\"></filtered-select></div><div class=\"shop-info\"><p>Date:</p><input type=\"text\" value.bind=\"bill.dateStr\"></div><div class=\"shop-info\"><p>Change currency:</p><input type=\"checkbox\" checked.bind=\"changeCurrency\"></div><div class=\"shop-info\" if.bind=\"!!changeCurrency\"><p>Currency:</p><filtered-select items.two-way=\"currencies\" selected-item.two-way=\"bill.currency\"></filtered-select></div><div class=\"shop-info\" if.bind=\"!changeCurrency\"><p>Currency:</p><input type=\"text\" disabled=\"disabled\" value.bind=\"bill.currency.code\"></div><div class=\"bill-items\"><div class=\"item\" repeat.for=\"billItem of bill.items\"><edit-bill-item bill-item.two-way=\"billItem\" products.two-way=\"products\" shop-id.two-way=\"bill.shop.id\"></edit-bill-item></div><div class=\"item-button-panel\"><button type=\"button\" click.delegate=\"addBillItem()\">Add item</button></div></div><div class=\"bill-button-panel\" if.bind=\"!bill.id\"><button type=\"button\" click.delegate=\"addBill()\">Add bill</button></div><div class=\"bill-button-panel\" if.bind=\"bill.id\"><button type=\"button\" click.delegate=\"updateBill()\">Update bill</button></div></div></template>"; });
+define('text!daily-bill/bill-details.html', ['module'], function(module) { module.exports = "<template><div class=\"bill-details\"><div class=\"bill-info\"><div class=\"bill-info-item\"><div class=\"bill-info-description\">bill id:</div><div class=\"bill-info-item\">${bill.id}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">date:</div><div class=\"bill-info-item\">${bill.dateStr}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">shop id:</div><div class=\"bill-info-item\">${bill.shop.id}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">shop:</div><div class=\"bill-info-item\">${bill.shop.name}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">currency:</div><div class=\"bill-info-item\">${bill.currency.code}</div></div><div class=\"bill-info-item\"><div class=\"bill-info-description\">bill sum:</div><div class=\"bill-info-item\">${bill.billSum}</div></div></div><div class=\"bill-items\"><div class=\"bill-item\" repeat.for=\"item of bill.items\"><div class=\"bill-item-info-data\"><div class=\"item-description\">product id:</div><div class=\"item-value\">${item.product.id}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">product:</div><div class=\"item-value\">${item.product.name}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">price:</div><div class=\"item-value\">${item.price}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">amount:</div><div class=\"item-value\">${item.amount}</div></div><div class=\"bill-item-info-data\"><div class=\"item-description\">sum:</div><div class=\"item-value\">${item.amount * item.price}</div></div></div></div></div><div class=\"bill-button-panel\"><button class=\"edit-bill-button\" click.delegate=\"edit()\">Edit bill</button></div></template>"; });
+define('text!daily-bill/bill-list.html', ['module'], function(module) { module.exports = "<template><h1>Bill List</h1><div class=\"bill-list-button-panel\"><div class=\"filter-field\"><div class=\"filter-title\">Start Period Date:</div><div><input type=\"text\" value.bind=\"startDateStr\"></div></div><div class=\"filter-field\"><div class=\"filter-title\">End Period Date:</div><div><input type=\"text\" value.bind=\"endDateStr\"></div></div><button class=\"edit-bill-button\" click.delegate=\"findBills()\">Find</button></div><div class=\"bill-list\"><div repeat.for=\"bill of bills\" class=\"bill\" click.delegate=\"viewBillDetails(bill.id)\"><div class=\"bill-info\"><span>id:</span> ${bill.id}</div><div class=\"bill-info\"><span>shop:</span> ${bill.shopName}</div><div class=\"bill-info\"><span>date:</span> ${bill.dateStr}</div><div class=\"bill-info\"><span>currency:</span> ${bill.currency.code}</div><div class=\"bill-info\"><span>sum:</span> ${bill.billSum}</div></div></div></template>"; });
+define('text!daily-bill/statistics.html', ['module'], function(module) { module.exports = "<template>Statistics:<div class=\"statistics-button-panel\"><div class=\"date-filter\"><div class=\"filter-field\"><div class=\"filter-title\">Start Period Date:</div><div><input type=\"text\" value.bind=\"startDateStr\"></div></div><div class=\"filter-field\"><div class=\"filter-title\">End Period Date:</div><div><input type=\"text\" value.bind=\"endDateStr\"></div></div></div><div class=\"name-filter\"><div class=\"filter-field\" repeat.for=\"productName of productNames\"><div class=\"filter-title\">Product Name:</div><div><input type=\"text\" value.bind=\"productName.name\"></div></div><button class=\"add-product-button\" click.delegate=\"addProductName()\">Add product name</button></div><button class=\"edit-bill-button\" click.delegate=\"updateStatistics()\">Update statistics</button><div class=\"currency-button-panel\"><div repeat.for=\"currency of currencies\" class=\"currency-button ${currency.active ? 'currency-button-active' :''}\" click.delegate=\"changeCurrency(currency)\">${currency.name}</div></div></div><div class=\"total-sum\"><div class=\"title\">Total Sum:</div><div>${statisticsByProduct.totalSum}</div></div><div class=\"total-sum\"><div class=\"title\">Total Sum Selected Items:</div><div>${statisticsByProduct.totalSumCalculated}</div></div><div class=\"total-sum\"><div class=\"title\">Total Sum Unselected Items:</div><div>${statisticsByProduct.totalSum - statisticsByProduct.totalSumCalculated}</div></div><div class=\"select-button\"><div class=\"enable-button\" click.delegate=\"switchItems()\">all enabled: ${statisticsByProduct.allEnabled}</div></div><div repeat.for=\"statistics of statisticsByProduct.statisticDetails\" class=\"statistics-item\"><div class=\"name\">${statistics.name}:</div><div class=\"value\">${statistics.price}</div><div class=\"switch-item-button ${statistics.active ? 'active' : ''}\" click.delegate=\"switchItem(statistics)\"></div></div><template></template></template>"; });
+define('text!daily-bill/currency/currency-list.html', ['module'], function(module) { module.exports = "<template><h2>Product list</h2><div class=\"error-messages\"><p repeat.for=\"msg of errorMessages\">${msg}</p></div><div class=\"product-list\"><div repeat.for=\"currency of currencies\" class=\"product-item\" click.delegate=\"editCurrency(currency.id)\"><div class=\"product-info\"><span>id:</span> ${currency.id}</div><div class=\"product-info\"><span>code:</span> ${currency.code}</div><div class=\"product-info\"><span>name:</span> ${currency.name}</div><div class=\"product-info\"><span>defaultCurrency:</span> ${currency.defaultCurrency}</div></div></div></template>"; });
 define('text!daily-bill/product/product-item.html', ['module'], function(module) { module.exports = "<template><h2>Product Item</h2><div class=\"error-messages\"><p repeat.for=\"msg of errorMessages\">${msg}</p></div><div class=\"product-details\"><div class=\"product-info\"><span>id:</span> ${product.id}</div><div class=\"product-info\"><span>name:</span> <input type=\"text\" value.bind=\"product.name\"></div><div class=\"product-info\"><span>active:</span> <input type=\"checkbox\" checked.bind=\"product.active\"></div></div><div class=\"bill-button-panel\"><button type=\"button\" click.delegate=\"updateProduct()\">Update product</button></div></template>"; });
 define('text!daily-bill/product/product-list.html', ['module'], function(module) { module.exports = "<template><h2>Product list</h2><div class=\"error-messages\"><p repeat.for=\"msg of errorMessages\">${msg}</p></div><div class=\"product-filter\"><div class=\"filter-value\"><input type=\"text\" value.bind=\"filterValue\" change.delegate=\"filterChange()\"></div></div><div class=\"product-list\"><div repeat.for=\"product of filteredProducts\" class=\"product-item\" click.delegate=\"editProduct(product.id)\"><div class=\"product-info\"><span>id:</span> ${product.id}</div><div class=\"product-info\"><span>name:</span> ${product.name}</div><div class=\"product-info\"><span>active:</span> ${product.active}</div></div></div></template>"; });
 define('text!daily-bill/shop/shop-item.html', ['module'], function(module) { module.exports = "<template><h2>Shop Item</h2><div class=\"error-messages\"><p repeat.for=\"msg of errorMessages\">${msg}</p></div><div class=\"shop-details\"><div class=\"shop-info\"><span>id:</span> ${shop.id}</div><div class=\"shop-info\"><span>name:</span> <input type=\"text\" value.bind=\"shop.name\"></div><div class=\"shop-info\"><span>active:</span> <input type=\"checkbox\" checked.bind=\"shop.active\"></div></div><div class=\"bill-button-panel\"><button type=\"button\" click.delegate=\"updateShop()\">Update shop</button></div></template>"; });

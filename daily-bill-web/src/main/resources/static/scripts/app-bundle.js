@@ -198,6 +198,7 @@ define('daily-bill/add-bill',["exports", "./service/daily-bill-service", "aureli
 
             console.log("add bill:");
             this.bill.date = Date.parse(this.bill.dateStr);
+            console.log(this.bill);
             this.validateBill();
             if (this.messages.length == 0) {
                 (function () {
@@ -216,7 +217,7 @@ define('daily-bill/add-bill',["exports", "./service/daily-bill-service", "aureli
 
         AddBill.prototype.validateBill = function validateBill() {
             this.messages = [];
-            if (!this.bill.shop.id) {
+            if (!this.bill.shop.name) {
                 this.messages.push("Shop is empty");
             }
         };

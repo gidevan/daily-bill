@@ -101,6 +101,7 @@ export class AddBill{
   addBill() {
     console.log("add bill:");
     this.bill.date = Date.parse(this.bill.dateStr);
+    console.log(this.bill);
     this.validateBill();
     if(this.messages.length == 0) {
         console.log('bill to save:');
@@ -118,7 +119,7 @@ export class AddBill{
 
   validateBill() {
   this.messages = [];
-     if (!this.bill.shop.id) {
+     if (!this.bill.shop.name) {
         this.messages.push("Shop is empty");
      }
   }

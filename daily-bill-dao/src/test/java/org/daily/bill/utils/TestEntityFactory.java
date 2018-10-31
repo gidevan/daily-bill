@@ -29,7 +29,6 @@ public final class TestEntityFactory {
     public static Bill createBill(Long shopId, Date date, Long currencyId) {
         Bill bill = new Bill();
         bill.setDate(date);
-        bill.setShopId(shopId);
         Shop shop = new Shop();
         shop.setId(shopId);
         bill.setShop(shop);

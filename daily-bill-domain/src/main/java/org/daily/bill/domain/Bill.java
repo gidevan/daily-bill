@@ -12,8 +12,6 @@ public class Bill implements Identifiable<Long> {
 
     private Long id;
     private Date date;
-    private Long shopId;
-    private String shopName;
     private Shop shop;
     private List<BillItem> items = new ArrayList<>();
     private Date created;
@@ -35,22 +33,6 @@ public class Bill implements Identifiable<Long> {
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public Long getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(Long shopId) {
-        this.shopId = shopId;
-    }
-
-    public String getShopName() {
-        return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
     }
 
     public Shop getShop() {

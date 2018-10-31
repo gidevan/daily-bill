@@ -80,7 +80,7 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
         Assert.assertNotNull(entity.getId());
         Assert.assertNotNull(entity.getCreated());
         Assert.assertNotNull(entity.getShop());
-        Assert.assertNotNull(entity.getShopId());
+        Assert.assertNotNull(entity.getShop().getId());
         Assert.assertNotNull(entity.getCurrency().getId());
     }
 
@@ -97,7 +97,8 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
 
     @Override
     protected void updateEntity(Bill entity) {
-        entity.setShopId(shops.get(SHOP_NAMES[1]).getId());
+        Shop shop = new Shop();
+        shop.setId(shops.get(SHOP_NAMES[1]).getId());
         entity.setDate(new Date());
         Currency currency = new Currency();
         currency.setId(UPDATE_CURRENCY_ID);

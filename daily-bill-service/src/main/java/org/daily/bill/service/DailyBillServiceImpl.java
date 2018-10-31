@@ -48,7 +48,6 @@ public class DailyBillServiceImpl implements DailyBillService {
     public Long addDailyBill(Bill bill) {
         Shop shop = bill.getShop();
         checkShop(shop);
-        bill.setShopId(shop.getId());
         if(bill.getId() != null) {
             billDao.update(bill);
         } else {

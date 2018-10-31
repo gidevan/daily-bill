@@ -23,8 +23,6 @@
     <resultMap id="bill" type="bill" autoMapping="true">
         <id column="id" property="id"/>
         <result column="date" property="date"/>
-        <result column="shop_id" property="shopId"/>
-        <result column="shop_name" property="shopName"/>
         <result column="created" property="created"/>
         <result column="updated" property="updated"/>
         <result column="bill_sum" property="billSum"/>
@@ -75,13 +73,13 @@
             select currval('bill_seq')
         </selectKey>
         insert into bill (id, date, shop_id, currency_id, created)
-        values(nextval('bill_seq'), #{date}, #{shopId}, #{currency.id}, now())
+        values(nextval('bill_seq'), #{date}, #{shop.id}, #{currency.id}, now())
     </insert>
 
     <update id="update" parameterType="bill">
         update bill
         set date = #{date},
-        shop_id = #{shopId},
+        shop_id = #{shop.id},
         currency_id = #{currency.id},
         updated = now()
         where id = #{id}

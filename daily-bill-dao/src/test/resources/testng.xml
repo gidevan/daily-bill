@@ -1,7 +1,0 @@
-<suite name="Suite1" verbose="1" >
-    <test name="Regression1">
-        <packages>
-            <package name="org.daily.bill.dao" />
-        </packages>
-    </test>
-</suite>

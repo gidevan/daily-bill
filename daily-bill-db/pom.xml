@@ -8,7 +8,7 @@
         <artifactId>bill</artifactId>
         <version>0.1</version>
     </parent>
-    <groupId>org.daily.bill</groupId>
+    <groupId>org.daily.bill.bill</groupId>
     <artifactId>db</artifactId>
     <version>0.1</version>
     <packaging>jar</packaging>

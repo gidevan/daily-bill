@@ -5,11 +5,16 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.PriorityOrdered;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -19,12 +24,13 @@ import javax.sql.DataSource;
 
 /**
  * Created by vano on 18.8.16.
+ * implementation of BeanDefinitionRegistryPostProcessor, PriorityOrdered is necessary to config mappers.
+ * See https://jira.spring.io/browse/SPR-7868
+ * https://stackoverflow.com/questions/8999597/mybatis-spring-configuration-cant-autowire-mapper-beans
  */
 @Configuration
-@TestPropertySource(value = "/db-test.properties")
-@MapperScan("org.daily.bill.dao")
-@ComponentScan(basePackages = "org.daily.bill.dao")
-public class TestDataConfig {
+@ComponentScan(basePackages = "org.daily.bill")
+public class TestDataConfig implements BeanDefinitionRegistryPostProcessor, PriorityOrdered {
     @Value("${db.username}")
     protected String dbUserName;
     @Value("${db.password}")
@@ -55,7 +61,7 @@ public class TestDataConfig {
     public SqlSessionFactory createSessionFactory(@Qualifier(value = "dataSource") DataSource dataSource) throws Exception{
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
-        sessionFactory.setTypeAliasesPackage("org.daily.bill.bill.domain");
+        sessionFactory.setTypeAliasesPackage("org.daily.bill.domain");
         sessionFactory.setConfigLocation(new ClassPathResource("mybatis-config.xml"));
         return sessionFactory.getObject();
     }
@@ -64,4 +70,18 @@ public class TestDataConfig {
     public SqlSession createSqlSession(@Qualifier(value = "sessionFactory") SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
+
+    @Override
+    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+    }
+
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    }
+
+    @Override
+    public int getOrder() {
+        return 0;
+    }
+
 }

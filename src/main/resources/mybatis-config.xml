@@ -35,10 +35,10 @@
         <typeAlias alias="currency" type="org.daily.bill.domain.Currency"/>
     </typeAliases>
     <mappers>
-        <mapper resource="org/daily/bill/dao/ShopDao.xml"/>
-        <mapper resource="org/daily/bill/dao/ProductDao.xml"/>
-        <mapper resource="org/daily/bill/dao/BillDao.xml"/>
-        <mapper resource="org/daily/bill/dao/BillItemDao.xml"/>
-        <mapper resource="org/daily/bill/dao/CurrencyDao.xml"/>
+        <mapper resource="org/daily/bill/dao/mapper/ShopDao.xml"/>
+        <mapper resource="org/daily/bill/dao/mapper/ProductDao.xml"/>
+        <mapper resource="org/daily/bill/dao/mapper/BillDao.xml"/>
+        <mapper resource="org/daily/bill/dao/mapper/BillItemDao.xml"/>
+        <mapper resource="org/daily/bill/dao/mapper/CurrencyDao.xml"/>
     </mappers>
 </configuration>

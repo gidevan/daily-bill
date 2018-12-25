@@ -1,5 +1,6 @@
 package org.daily.bill.dao;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.daily.bill.domain.Shop;
 
 import java.util.List;

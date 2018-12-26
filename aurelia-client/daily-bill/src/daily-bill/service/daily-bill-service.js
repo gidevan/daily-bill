@@ -1,15 +1,16 @@
 import {HttpClient, json} from 'aurelia-fetch-client'
-//import {HttpClient} from 'aurelia-http-client'
+import environment from '../../environment'
 
 let httpClient = new HttpClient();
 
 export class DailyBillService {
     constructor() {
+        console.log('environment:' + environment.dailyBillUrl.origin);
     }
 
     getBills(params) {
         console.log("Get bills")
-        return httpClient.fetch('http://localhost:8080/daily-bill/bills', {
+        return httpClient.fetch(environment.dailyBillUrl.origin + '/daily-bill/bills', {
                    method: "POST",
                    body: json(params)
             })
@@ -17,73 +18,75 @@ export class DailyBillService {
 
     getBillById(id) {
         console.log("Get bill by id: " +id)
-        return httpClient.fetch('http://localhost:8080/daily-bill/bill/' + id)
+        return httpClient.fetch(environment.dailyBillUrl.origin + '/daily-bill/bill/' + id)
     }
 
     addBill(bill) {
-        return httpClient.fetch('http://localhost:8080/daily-bill/add', {
+        return httpClient.fetch(environment.dailyBillUrl.origin + '/daily-bill/add', {
              method: "PUT",
              body: json(bill)
         })
       }
     updateBill(bill) {
-        return httpClient.fetch('http://localhost:8080/daily-bill/edit', {
+        return httpClient.fetch(environment.dailyBillUrl.origin + '/daily-bill/edit', {
                method: "POST",
                body: json(bill)
         })
     }
 
     getShops() {
-        return httpClient.fetch('http://localhost:8080/daily-bill/shops')
+        return httpClient.fetch(environment.dailyBillUrl.origin + '/daily-bill/shops')
     }
 
     getProducts() {
-        return httpClient.fetch('http://localhost:8080/daily-bill/products')
+        return httpClient.fetch(environment.dailyBillUrl.origin + '/daily-bill/products')
     }
 
     getStatisticByProduct(params) {
         console.log('Getstatistic by product');
-        return httpClient.fetch('http://localhost:8080/daily-bill/statistics/product', {
+        let url = environment.dailyBillUrl.origin + '/daily-bill/statistics/product';
+        console.log("url: " + url);
+        return httpClient.fetch(url, {
                    method: "POST",
                    body: json(params)
             })
     }
 
     findLastPrice(shopId, productId) {
-        return httpClient.fetch('http://localhost:8080/daily-bill/last/price/shop/' + shopId + '/product/' + productId)
+        return httpClient.fetch(environment.dailyBillUrl.origin + '/daily-bill/last/price/shop/' + shopId + '/product/' + productId)
     }
 
     getAllShops(){
-        return httpClient.fetch("http://localhost:8080/shops/all")
+        return httpClient.fetch(environment.dailyBillUrl.origin + "/shops/all")
     }
 
     getShopById(id) {
-        return httpClient.fetch("http://localhost:8080/shops/" + id)
+        return httpClient.fetch(environment.dailyBillUrl.origin + "/shops/" + id)
     }
 
     updateShop(shop) {
-        return httpClient.fetch("http://localhost:8080/shops", {
+        return httpClient.fetch(environment.dailyBillUrl.origin + "/shops", {
             method: "POST",
             body: json(shop)
         })
     }
 
     getAllProducts(){
-        return httpClient.fetch("http://localhost:8080/products/all")
+        return httpClient.fetch(environment.dailyBillUrl.origin + "/products/all")
     }
 
     getProductById(id) {
-        return httpClient.fetch("http://localhost:8080/products/" + id)
+        return httpClient.fetch(environment.dailyBillUrl.origin + "/products/" + id)
     }
 
     updateProduct(product) {
-        return httpClient.fetch("http://localhost:8080/products", {
+        return httpClient.fetch(environment.dailyBillUrl.origin + "/products", {
                 method: "POST",
                 body: json(product)
         })
     }
 
     getAllCurrencies() {
-        return httpClient.fetch("http://localhost:8080/currency/all")
+        return httpClient.fetch(environment.dailyBillUrl.origin + "/currency/all")
     }
 }

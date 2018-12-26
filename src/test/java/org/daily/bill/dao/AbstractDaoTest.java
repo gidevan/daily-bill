@@ -1,9 +1,10 @@
 package org.daily.bill.dao;
 
 import org.daily.bill.config.Config;
-import org.daily.bill.config.TestDataConfig;
+import org.daily.bill.config.DataConfig;
 import org.daily.bill.domain.Identifiable;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
@@ -12,8 +13,9 @@ import org.testng.annotations.Test;
 /**
  * Created by vano on 19.8.16.
  */
-@ContextConfiguration(classes = {TestDataConfig.class})
+@ContextConfiguration(classes = {Config.class, DataConfig.class})
 @Transactional(readOnly = true)
+@TestPropertySource(locations={"classpath:application-test.properties"})
 public abstract class AbstractDaoTest<ID, T extends Identifiable, D extends CrudDao> extends AbstractTestNGSpringContextTests {
     protected static final int DEFAULT_INDEX = 0;
 

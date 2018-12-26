@@ -24,8 +24,6 @@ import javax.sql.DataSource;
 @Configuration
 public class DataConfig implements BeanDefinitionRegistryPostProcessor, PriorityOrdered {
 
-
-
     @Bean(name="sessionFactory")
     public SqlSessionFactory createSessionFactory(@Qualifier(value = "dataSource") DataSource dataSource) throws Exception{
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();

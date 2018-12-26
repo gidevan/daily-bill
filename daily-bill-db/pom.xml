@@ -6,11 +6,11 @@
     <parent>
         <groupId>org.daily</groupId>
         <artifactId>bill</artifactId>
-        <version>0.1</version>
+        <version>0.2</version>
     </parent>
-    <groupId>org.daily.bill.bill</groupId>
+    <groupId>org.daily.bill</groupId>
     <artifactId>db</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
 
     <name>daily-bill-db</name>

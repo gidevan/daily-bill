@@ -1,5 +1,5 @@
 export default {
   debug: true,
   testing: false,
-  dailyBillUrl: window.location
+  dailyBillUrl: window.location.origin
 };

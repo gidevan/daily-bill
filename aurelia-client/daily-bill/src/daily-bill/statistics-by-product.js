@@ -1,13 +1,13 @@
 import {DailyBillService} from "./service/daily-bill-service"
 import {Router} from "aurelia-router"
 
-export class Statistics {
+export class StatisticsByProduct {
     static inject() {
         return [DailyBillService, Router]
     }
 
     constructor(dailyBillService, router) {
-        console.log('Init statistics module')
+        console.log('Init statistics by product module')
         this.dailyBillService = dailyBillService;
         this.router = router;
         let date = new Date();

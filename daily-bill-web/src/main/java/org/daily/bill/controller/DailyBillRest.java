@@ -111,6 +111,17 @@ public class DailyBillRest {
             return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
         }
     }
+
+    @RequestMapping(value="/statistics/shop", method = RequestMethod.POST)
+    public Response getStatisticsByShop(@RequestBody StatisticsParams params) {
+        try {
+            ClientStatisticsDetails details = dailyBillService.getDetailsByShop(params);
+            return new Response(OK_CODE, OK_STATUS, null, details);
+        } catch (Exception e) {
+            return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());
+        }
+    }
+
     @RequestMapping("/last/price/shop/{shopId}/product/{productId}")
     public Response findLastPrice(@PathVariable Long shopId, @PathVariable Long productId) {
         try {

@@ -11,6 +11,7 @@ public class StatisticsParams {
     private Date startPeriodDate;
     private Date endPeriodDate;
     private List<String> productNames;
+    private List<String> shopNames;
 
     public Date getStartPeriodDate() {
         return startPeriodDate;
@@ -34,5 +35,13 @@ public class StatisticsParams {
 
     public void setProductNames(List<String> productNames) {
         this.productNames = productNames;
+    }
+
+    public List<String> getShopNames() {
+        return shopNames;
+    }
+
+    public void setShopNames(List<String> shopNames) {
+        this.shopNames = shopNames;
     }
 }

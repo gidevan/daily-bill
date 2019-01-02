@@ -2,6 +2,7 @@ package org.daily.bill.dao;
 
 
 import org.daily.bill.domain.Identifiable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

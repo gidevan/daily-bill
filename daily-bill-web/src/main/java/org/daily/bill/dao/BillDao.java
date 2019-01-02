@@ -20,4 +20,6 @@ public interface BillDao extends CrudDao<Bill, Long> {
 
     List<StatisticDetails> getStatisticByProduct(StatisticsParams params);
 
+    List<StatisticDetails> getStatisticByShop(StatisticsParams params);
+
 }

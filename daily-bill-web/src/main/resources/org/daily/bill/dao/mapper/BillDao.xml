@@ -163,4 +163,41 @@
         group by a.id, a.name, a.currency_id, a.currency_name, a.currency_code
         order by price desc
     </select>
+
+    <select id="getDetailsByShop" parameterType="map" resultMap="statisticDetails">
+        select a.id, a.name, a.currency_id, a.currency_name, a.currency_code,
+        sum(a.product_price) price
+        from (
+        select sh.id, sh.name, b.date, bi.price,
+        b.currency_id, cu.name currency_name, cu.code currency_code,
+        bi.amount, bi.price * bi.amount product_price
+        from bill b
+        inner join shop sh on sh.id = b.shop_id
+        inner join currency cu on b.currency_id = cu.id
+        inner join bill_item bi on bi.bill_id = b.id
+        inner join product p on bi.product_id = p.id
+        <where>
+            <if test="endPeriodDate != null">
+                <![CDATA[
+                    b.date <= #{endPeriodDate}
+                ]]>
+            </if>
+            <if test="startPeriodDate != null">
+                <![CDATA[
+                    and b.date >= #{startPeriodDate}
+                ]]>
+            </if>
+            <if test="shopNames != null and shopNames.size() > 0">
+                and
+                <foreach item="shopName" index="index" collection="shopNames"
+                         open="(" close=")" separator=" or ">
+                    lower(sh.name) like #{shopName}
+                </foreach>
+            </if>
+        </where>
+        ) a
+
+        group by a.id, a.name, a.currency_id, a.currency_name, a.currency_code
+        order by price desc
+    </select>
 </mapper>

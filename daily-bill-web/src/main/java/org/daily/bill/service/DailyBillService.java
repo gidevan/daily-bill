@@ -16,5 +16,6 @@ public interface DailyBillService {
     Bill getBillById(Long id);
     List<Product> getProducts();
     ClientStatisticsDetails getDetailsByProduct(StatisticsParams params);
+    ClientStatisticsDetails getDetailsByShop(StatisticsParams params);
     BigDecimal findLastPrice(Long shopId, Long productId);
 }

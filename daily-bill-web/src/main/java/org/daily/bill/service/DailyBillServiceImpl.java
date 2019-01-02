@@ -93,6 +93,24 @@ public class DailyBillServiceImpl implements DailyBillService {
             params.setEndPeriodDate(new Date());
         }
         List<StatisticDetails> details = billDao.getStatisticByProduct(params);
+        return createClientStatisticDetails(details);
+    }
+
+    @Override
+    public ClientStatisticsDetails getDetailsByShop(StatisticsParams params) {
+        if(params.getEndPeriodDate() == null) {
+            params.setEndPeriodDate(new Date());
+        }
+        List<StatisticDetails> shopDetails = billDao.getStatisticByShop(params);
+        return createClientStatisticDetails(shopDetails);
+    }
+
+    @Override
+    public BigDecimal findLastPrice(Long shopId, Long productId) {
+        return productDao.findLastPrice(shopId, productId);
+    }
+
+    private ClientStatisticsDetails createClientStatisticDetails(List<StatisticDetails> details) {
         Map<String, StatisticsInfo> detailsMap = details.stream()
                 .collect(Collectors.groupingBy(d -> d.getCurrency().getCode()))
                 .entrySet().stream()
@@ -104,11 +122,6 @@ public class DailyBillServiceImpl implements DailyBillService {
         clientStatisticsDetails.setCurrencies(currencies);
         clientStatisticsDetails.setStatisticInfo(detailsMap);
         return clientStatisticsDetails;
-    }
-
-    @Override
-    public BigDecimal findLastPrice(Long shopId, Long productId) {
-        return productDao.findLastPrice(shopId, productId);
     }
 
     private Bill createBill(List<BillDetails> billDetails) {

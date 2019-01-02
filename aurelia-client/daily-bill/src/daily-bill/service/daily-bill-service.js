@@ -43,7 +43,6 @@ export class DailyBillService {
     }
 
     getStatisticByProduct(params) {
-        console.log('Getstatistic by product');
         let url = environment.dailyBillUrl.origin + '/daily-bill/statistics/product';
         console.log("url: " + url);
         return httpClient.fetch(url, {
@@ -51,6 +50,14 @@ export class DailyBillService {
                    body: json(params)
             })
     }
+
+    getStatisticByShop(params) {
+            let url = environment.dailyBillUrl.origin + '/daily-bill/statistics/shop';
+            return httpClient.fetch(url, {
+                       method: "POST",
+                       body: json(params)
+                })
+        }
 
     findLastPrice(shopId, productId) {
         return httpClient.fetch(environment.dailyBillUrl.origin + '/daily-bill/last/price/shop/' + shopId + '/product/' + productId)

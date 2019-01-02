@@ -46,4 +46,18 @@ public class BillDaoImpl extends AbstractCrudDao<Bill, Long> implements BillDao 
 
         return getSqlSession().selectList(getNamespace() + ".getDetailsByProduct", queryParams);
     }
+
+    @Override
+    public List<StatisticDetails> getStatisticByShop(StatisticsParams params) {
+        Map<String, Object> queryParams = new HashMap<>();
+        queryParams.put("startPeriodDate", params.getStartPeriodDate());
+        queryParams.put("endPeriodDate", params.getEndPeriodDate());
+        if(!params.getShopNames().isEmpty()) {
+            List<String> likeCondition = params.getShopNames().stream().map(n -> "%" + n.toLowerCase() + "%")
+                    .collect(Collectors.toList());
+            queryParams.put("shopNames", likeCondition);
+        }
+
+        return getSqlSession().selectList(getNamespace() + ".getDetailsByShop", queryParams);
+    }
 }

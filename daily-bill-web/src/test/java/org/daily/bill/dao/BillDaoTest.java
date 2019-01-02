@@ -167,6 +167,25 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
     }
 
     @Test
+    public void testGetStatisticsByShop() {
+        Bill bill = TestEntityFactory.createBill(shops.get(SHOP_NAMES[0]).getId(), new Date());
+        dao.create(bill);
+        Long billId = bill.getId();
+        Assert.assertNotNull(billId);
+        createBillItems(billId);
+        StatisticsParams statisticsParams = new StatisticsParams();
+        statisticsParams.setShopNames(Arrays.asList(SHOP_NAMES[0], SHOP_NAMES[1]));
+        List<StatisticDetails> details = dao.getStatisticByShop(statisticsParams);
+        Assert.assertFalse(details.isEmpty());
+        for (StatisticDetails info : details) {
+            Assert.assertEquals(SHOP_NAMES[0], info.getName());
+        }
+        deleteBillItems();
+        dao.delete(billId);
+        Assert.assertNull(dao.findById(billId));
+    }
+
+    @Test
     public void testGetStatisticsByProductWrongName() {
         Bill bill = TestEntityFactory.createBill(shops.get(SHOP_NAMES[0]).getId(), new Date());
         dao.create(bill);
@@ -176,6 +195,22 @@ public class BillDaoTest extends AbstractDaoTest<Long, Bill, BillDao> {
         StatisticsParams statisticsParams = new StatisticsParams();
         statisticsParams.setProductNames(Arrays.asList(WRONG_NAME));
         List<StatisticDetails> details = dao.getStatisticByProduct(statisticsParams);
+        Assert.assertTrue(details.isEmpty());
+        deleteBillItems();
+        dao.delete(billId);
+        Assert.assertNull(dao.findById(billId));
+    }
+
+    @Test
+    public void testGetStatisticsByShopWrongName() {
+        Bill bill = TestEntityFactory.createBill(shops.get(SHOP_NAMES[0]).getId(), new Date());
+        dao.create(bill);
+        Long billId = bill.getId();
+        Assert.assertNotNull(billId);
+        createBillItems(billId);
+        StatisticsParams statisticsParams = new StatisticsParams();
+        statisticsParams.setShopNames(Arrays.asList(WRONG_NAME));
+        List<StatisticDetails> details = dao.getStatisticByShop(statisticsParams);
         Assert.assertTrue(details.isEmpty());
         deleteBillItems();
         dao.delete(billId);

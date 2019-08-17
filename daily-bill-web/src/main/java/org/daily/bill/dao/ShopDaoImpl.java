@@ -12,11 +12,6 @@ import java.util.Map;
 public class ShopDaoImpl extends AbstractCrudDao<Shop, Long> implements ShopDao {
 
     @Override
-    protected String getNamespace() {
-        return "ShopDao";
-    }
-
-    @Override
     public List<Shop> findShops(boolean showActive) {
         Map<String, Object> params = new HashMap<>();
         if(showActive) {
@@ -24,4 +19,10 @@ public class ShopDaoImpl extends AbstractCrudDao<Shop, Long> implements ShopDao 
         }
         return getSqlSession().selectList(getNamespace() + ".findShops", params);
     }
+
+    @Override
+    protected String getNamespace() {
+        return "ShopDao";
+    }
+
 }

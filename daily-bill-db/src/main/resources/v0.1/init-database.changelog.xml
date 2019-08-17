@@ -171,5 +171,25 @@
                 <dropIndex tableName="bill" indexName="bill_currency_id_idx"/>
             </rollback>
         </changeSet>
+        <changeSet id="add-shop-rating" author="vano">
+            <createTable tableName="shop_rating">
+                <column name="id" type="bigint">
+                    <constraints primaryKey="true" primaryKeyName="pk_shop_rating_id"/>
+                </column>
+                <column name="shop_id" type="bigint"/>
+                <column name="rating" type="real"/>
+                <column name="created" type="timestamp(8)" defaultValueComputed="now()">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="updated" type="timestamp(8)"/>
+            </createTable>
+            <addForeignKeyConstraint baseTableName="shop_rating" baseColumnNames="shop_id"
+                                     constraintName="fk_shop_rating_shop_id" referencedTableName="shop"
+                                     referencedColumnNames="id"/>
+            <rollback>
+                <dropForeignKeyConstraint baseTableName="shop_rating" constraintName="fk_shop_rating_shop_id"/>
+                <dropTable tableName="shop_rating"/>
+            </rollback>
+        </changeSet>
 
 </databaseChangeLog>

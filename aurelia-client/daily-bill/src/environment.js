@@ -1,5 +1,5 @@
 export default {
-  debug: false,
-  testing: false,
-  dailyBillUrl: window.location.origin
+  debug: true,
+  testing: true,
+  dailyBillUrl: 'http://localhost:8080'
 };

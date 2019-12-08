@@ -110,8 +110,16 @@ export class AddBill{
         this.dailyBillService.addBill(this.bill)
                 .then(response => response.json())
                 .then(data => {
+                    console.log("add bill result");
                     console.log(data);
-                    self.router.navigateToRoute('billList')
+                    if (data.status == "OK") {
+                        self.router.navigateToRoute('billList');
+                    } else {
+                        let msg = "Error during add bill. Error code: [" + data.code + "], error status: ["
+                                + data.status + "], error message: [" + data.message + "]";
+                        self.messages.push(msg);
+                    }
+
                 });
     }
 
@@ -122,6 +130,16 @@ export class AddBill{
      if (!this.bill.shop.name) {
         this.messages.push("Shop is empty");
      }
+     let filteredItems = this.bill.items.filter(el => el.product.id);
+     this.bill.items = filteredItems;
+     this.bill.items.forEach(item => {
+        if(isNaN(item.price)) {
+             this.messages.push("Price of product [" + item.product.name + "] is not number: [" + item.price + "]");
+        }
+        if(isNaN(item.amount)) {
+             this.messages.push("Amount of product [" + item.product.name + "] is not number: [" + item.amount + "]");
+        }
+     })
   }
 
   updateBill() {
@@ -129,12 +147,25 @@ export class AddBill{
       this.bill.date = Date.parse(this.bill.dateStr);
       console.log(this.bill);
       let self = this;
-      this.dailyBillService.updateBill(this.bill)
-          .then(response => response.json())
-          .then(data => {
-              console.log(data);
-              self.router.navigateToRoute('billList')
-          });;
+      this.validateBill();
+      if (this.messages.length == 0) {
+            this.dailyBillService.updateBill(this.bill)
+                      .then(response => response.json())
+                      .then(data => {
+                          console.log("update bill result");
+                          console.log(data);
+                          if (data.status == "OK") {
+                                self.router.navigateToRoute('billList');
+                          } else {
+
+                                let msg = "Error during update bill. Error code: [" + data.code + "], error status: ["
+                                                                + data.status + "], error message: [" + data.message + "]";
+                                self.messages.push(msg);
+                          }
+
+                      });
+      }
+
     }
 
   createDefaultBillItem() {

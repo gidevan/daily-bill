@@ -126,11 +126,11 @@ export class AddBill{
   }
 
   validateBill() {
-  this.messages = [];
+     this.messages = [];
      if (!this.bill.shop.name) {
         this.messages.push("Shop is empty");
      }
-     let filteredItems = this.bill.items.filter(el => el.product.id);
+     let filteredItems = this.bill.items.filter(el => (el.product.id || el.product.name ));
      this.bill.items = filteredItems;
      this.bill.items.forEach(item => {
         if(isNaN(item.price)) {

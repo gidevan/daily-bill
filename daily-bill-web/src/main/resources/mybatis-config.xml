@@ -33,6 +33,8 @@
         <typeAlias alias="entity" type="org.daily.bill.domain.Entity"/>
         <typeAlias alias="statisticDetails" type="org.daily.bill.domain.StatisticDetails"/>
         <typeAlias alias="currency" type="org.daily.bill.domain.Currency"/>
+        <typeAlias alias="shopRating" type="org.daily.bill.domain.ShopRating"/>
+        <typeAlias alias="shopView" type="org.daily.bill.domain.ShopView"/>
     </typeAliases>
     <mappers>
         <mapper resource="org/daily/bill/dao/mapper/ShopDao.xml"/>
@@ -40,5 +42,6 @@
         <mapper resource="org/daily/bill/dao/mapper/BillDao.xml"/>
         <mapper resource="org/daily/bill/dao/mapper/BillItemDao.xml"/>
         <mapper resource="org/daily/bill/dao/mapper/CurrencyDao.xml"/>
+        <mapper resource="org/daily/bill/dao/mapper/ShopRatingDao.xml"/>
     </mappers>
 </configuration>

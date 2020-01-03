@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+       Copyright 2015-2016 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+
+-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ShopRatingDao">
+    <select id="findById" resultType="shopRating">
+        select id, shop_id, rating, created, updated from shop_rating where id = #{id}
+    </select>
+
+    <select id="findAll" resultType="shopRating">
+        select id, shop_id, rating, created, updated from shop_rating
+    </select>
+
+    <insert id="insert" parameterType="java.util.Map">
+        <selectKey keyProperty="id" keyColumn="id" order="AFTER" resultType="long">
+            select currval('shop_rating_seq')
+        </selectKey>
+        insert into shop_rating (id, shop_id, rating, created)
+        values(nextval('shop_rating_seq'), #{shopId}, #{rating}, now())
+    </insert>
+
+    <update id="update" parameterType="java.util.Map">
+        update shop_rating
+        set shop_id = #{shopId},
+        rating = #{rating},
+        updated = now()
+        where id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        delete from shop_rating where id = #{id}
+    </delete>
+
+    <select id="findShopsByRating" resultType="shopView">
+        select s.id, s.name, sr.rating, sr.rating_id from shop s
+        shop_rating sr on s.id = sr.shop_id
+        where s.active = 'true'
+        order by rating desc
+    </select>
+</mapper>

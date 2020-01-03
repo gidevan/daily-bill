@@ -186,9 +186,11 @@
             <addForeignKeyConstraint baseTableName="shop_rating" baseColumnNames="shop_id"
                                      constraintName="fk_shop_rating_shop_id" referencedTableName="shop"
                                      referencedColumnNames="id"/>
+            <createSequence sequenceName="shop_rating_seq" minValue="1000"/>
             <rollback>
                 <dropForeignKeyConstraint baseTableName="shop_rating" constraintName="fk_shop_rating_shop_id"/>
                 <dropTable tableName="shop_rating"/>
+                <dropSequence sequenceName="shop_rating_seq"/>
             </rollback>
         </changeSet>
 

@@ -63,4 +63,11 @@ public final class TestEntityFactory {
         currency.setDefaultCurrency(isDefault);
         return currency;
     }
+
+    public static ShopRating createShopRating(Long shopId, Double rating) {
+        ShopRating shopRating = new ShopRating();
+        shopRating.setShopId(shopId);
+        shopRating.setRating(rating);
+        return shopRating;
+    }
 }

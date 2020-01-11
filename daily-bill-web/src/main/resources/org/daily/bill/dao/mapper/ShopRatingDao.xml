@@ -20,11 +20,20 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ShopRatingDao">
-    <select id="findById" resultType="shopRating">
+
+    <resultMap id="shopRating" type="shopRating">
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="rating" property="rating"/>
+        <result column="created" property="created"/>
+        <result column="updtaed" property="updated"/>
+    </resultMap>
+
+    <select id="findById" resultMap="shopRating">
         select id, shop_id, rating, created, updated from shop_rating where id = #{id}
     </select>
 
-    <select id="findAll" resultType="shopRating">
+    <select id="findAll" resultMap="shopRating">
         select id, shop_id, rating, created, updated from shop_rating
     </select>
 
@@ -49,9 +58,10 @@
     </delete>
 
     <select id="findShopsByRating" resultType="shopView">
-        select s.id, s.name, sr.rating, sr.rating_id from shop s
+        select s.id, s.name, sr.rating, sr.rating_id
+        from shop s
         shop_rating sr on s.id = sr.shop_id
         where s.active = 'true'
-        order by rating desc
+        order by rating desc, s.name asc
     </select>
 </mapper>

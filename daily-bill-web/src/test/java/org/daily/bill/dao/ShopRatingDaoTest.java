@@ -10,9 +10,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-@Test
 public class ShopRatingDaoTest extends AbstractDaoTest<Long, ShopRating, ShopRatingDao> {
 
     private static final String[] SHOP_NAMES = {"ShopName1", "ShopName2"};
@@ -30,6 +30,7 @@ public class ShopRatingDaoTest extends AbstractDaoTest<Long, ShopRating, ShopRat
         for(String shopName : SHOP_NAMES) {
             Shop shop = TestEntityFactory.createShop(shopName);
             shopDao.create(shop);
+            Assert.assertNotNull(shop.getId());
             shops.add(shop);
         }
 
@@ -40,25 +41,42 @@ public class ShopRatingDaoTest extends AbstractDaoTest<Long, ShopRating, ShopRat
 
     @AfterClass
     public void afterClass() {
+        List<ShopRating> ratings = dao.findAll();
+        for(ShopRating rating : ratings) {
+            dao.delete(rating.getId());
+        }
         Assert.assertFalse(shops.isEmpty());
         for(Shop shop : shops) {
             shopDao.delete(shop.getId());
         }
     }
 
+    @Test
     @Override
     public void testFindAll() {
+        ShopRating rating1 = createEntity(SHOP_NAMES[0], RATING);
+        ShopRating rating2 = createEntity(SHOP_NAMES[1], UPDATED_RATING);
+        ShopRating stored1 = insertEntity(rating1);
+        ShopRating stored2 = insertEntity(rating2);
 
+        List<ShopRating> shopRatings = dao.findAll();
+        Assert.assertFalse(shopRatings.isEmpty());
+        List<Long> expectedIds = Arrays.asList(stored1.getId(), stored2.getId());
+        for(ShopRating rating : shopRatings) {
+            Assert.assertTrue(expectedIds.contains(rating.getId()));
+        }
     }
 
     @Test
-    public void testFindShopByRating() {
+    public void testFindShopsByRating() {
         throw new IllegalStateException("Implement it!!");
     }
 
     @Override
     protected void assertEntity(ShopRating entity) {
-        Shop shop = shops.stream().filter(sh -> SHOP_NAMES[0].equals(sh.getName())).findFirst().get();
+        Shop shop = shops.stream()
+                .filter(sh -> SHOP_NAMES[0].equals(sh.getName()))
+                .findFirst().get();
         Assert.assertEquals(shop.getId(), entity.getShopId());
         Assert.assertEquals(RATING, entity.getRating());
         Assert.assertNotNull(entity.getId());
@@ -84,8 +102,7 @@ public class ShopRatingDaoTest extends AbstractDaoTest<Long, ShopRating, ShopRat
 
     @Override
     protected ShopRating createEntity() {
-        Shop shop = shops.stream().filter(sh -> SHOP_NAMES[0].equals(sh.getName())).findFirst().get();
-        return TestEntityFactory.createShopRating(shop.getId(), RATING);
+        return createEntity(SHOP_NAMES[0], RATING);
     }
 
     @Override
@@ -93,6 +110,11 @@ public class ShopRatingDaoTest extends AbstractDaoTest<Long, ShopRating, ShopRat
         Shop shop = shops.stream().filter(sh -> SHOP_NAMES[1].equals(sh.getName())).findFirst().get();
         entity.setRating(UPDATED_RATING);
         entity.setShopId(shop.getId());
+    }
+
+    private ShopRating createEntity(String shopName, Double rating) {
+        Shop shop = shops.stream().filter(sh -> shopName.equals(sh.getName())).findFirst().get();
+        return TestEntityFactory.createShopRating(shop.getId(), rating);
     }
 
 }

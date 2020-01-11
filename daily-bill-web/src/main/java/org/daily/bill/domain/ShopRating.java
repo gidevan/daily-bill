@@ -9,7 +9,7 @@ public class ShopRating implements Identifiable<Long> {
 
     private Long id;
     private Long shopId;
-    private Double  rating;
+    private Double rating;
     private Date created;
     private Date updated;
 

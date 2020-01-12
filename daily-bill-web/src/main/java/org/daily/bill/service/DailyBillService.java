@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface DailyBillService {
     Shop getShopById(Long id);
-    List<Shop> findShops();
+    List<ShopView> findShops();
     Long addDailyBill(Bill bill);
     List<Bill> getBills(BillListParams params);
     Bill getBillById(Long id);

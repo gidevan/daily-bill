@@ -21,7 +21,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ShopRatingDao">
 
-    <resultMap id="shopRating" type="shopRating">
+    <resultMap id="shopRatingMap" type="shopRating">
         <id column="id" property="id"/>
         <result column="shop_id" property="shopId"/>
         <result column="rating" property="rating"/>
@@ -29,11 +29,18 @@
         <result column="updtaed" property="updated"/>
     </resultMap>
 
-    <select id="findById" resultMap="shopRating">
+    <resultMap id="shopViewMap" type="shopView">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="rating_id" property="ratingId"/>
+        <result column="rating" property="rating"/>
+    </resultMap>
+
+    <select id="findById" resultMap="shopRatingMap">
         select id, shop_id, rating, created, updated from shop_rating where id = #{id}
     </select>
 
-    <select id="findAll" resultMap="shopRating">
+    <select id="findAll" resultMap="shopRatingMap">
         select id, shop_id, rating, created, updated from shop_rating
     </select>
 
@@ -57,11 +64,28 @@
         delete from shop_rating where id = #{id}
     </delete>
 
-    <select id="findShopsByRating" resultType="shopView">
-        select s.id, s.name, sr.rating, sr.rating_id
+    <delete id="deleteAll">
+        delete from shop_rating
+    </delete>
+
+    <select id="findShopsByRating" resultMap="shopViewMap">
+        select s.id, s.name, sr.rating, sr.id rating_id
         from shop s
-        shop_rating sr on s.id = sr.shop_id
+        left join shop_rating sr on s.id = sr.shop_id
         where s.active = 'true'
-        order by rating desc, s.name asc
+        order by rating desc nulls last, s.name asc
     </select>
+
+    <insert id="calculateShopRating">
+        insert into shop_rating(id, shop_id, rating, created)
+        select nextval('shop_rating_seq'), a.shop_id, a.rating, now()
+        from (
+            select s.id shop_id, count(b.id) rating
+            from shop s
+            inner join bill b on s.id = b.shop_id
+            where s.active = 'true' and b.date > (now() - interval '30 days')
+            group by s.id
+        ) a
+
+    </insert>
 </mapper>

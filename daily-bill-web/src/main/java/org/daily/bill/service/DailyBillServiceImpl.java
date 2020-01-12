@@ -1,9 +1,6 @@
 package org.daily.bill.service;
 
-import org.daily.bill.dao.BillDao;
-import org.daily.bill.dao.BillItemDao;
-import org.daily.bill.dao.ProductDao;
-import org.daily.bill.dao.ShopDao;
+import org.daily.bill.dao.*;
 import org.daily.bill.domain.*;
 import org.daily.bill.domain.Currency;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +31,8 @@ public class DailyBillServiceImpl implements DailyBillService {
     private ShopDao shopDao;
     @Autowired
     private ProductDao productDao;
+    @Autowired
+    private ShopRatingDao shopRatingDao;
 
     @Override
     public Shop getShopById(Long id) {
@@ -41,8 +40,8 @@ public class DailyBillServiceImpl implements DailyBillService {
     }
 
     @Override
-    public List<Shop> findShops() {
-        return shopDao.findShops(true);
+    public List<ShopView> findShops() {
+        return shopRatingDao.findShopsByRating();
     }
 
     @Override

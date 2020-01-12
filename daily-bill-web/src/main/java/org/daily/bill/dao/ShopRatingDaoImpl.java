@@ -18,6 +18,16 @@ public class ShopRatingDaoImpl extends AbstractCrudDao<ShopRating, Long> impleme
     }
 
     @Override
+    public void deleteAll() {
+        getSqlSession().delete(getNamespace() + ".deleteAll");
+    }
+
+    @Override
+    public void calculateShopRating() {
+        getSqlSession().insert(getNamespace() + ".calculateShopRating");
+    }
+
+    @Override
     protected String getNamespace() {
         return "ShopRatingDao";
     }

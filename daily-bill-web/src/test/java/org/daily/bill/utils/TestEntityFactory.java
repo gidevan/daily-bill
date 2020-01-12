@@ -16,9 +16,14 @@ public final class TestEntityFactory {
     }
 
     public static Shop createShop(String name) {
+        return createShop(name, null);
+    }
+
+    public static Shop createShop(String name, Boolean isActive) {
         Shop shop = new Shop();
         shop.setName(name);
         shop.setCreated(new Date());
+        shop.setActive(isActive);
         return shop;
     }
 

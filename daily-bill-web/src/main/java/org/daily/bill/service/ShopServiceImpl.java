@@ -1,7 +1,9 @@
 package org.daily.bill.service;
 
 import org.daily.bill.dao.ShopDao;
+import org.daily.bill.dao.ShopRatingDao;
 import org.daily.bill.domain.Shop;
+import org.daily.bill.domain.ShopView;
 import org.daily.bill.utils.annotation.Profiling;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ public class ShopServiceImpl implements ShopService {
 
     @Autowired
     private ShopDao shopDao;
+
+    @Autowired
+    private ShopRatingDao shopRatingDao;
 
     @Override
     public void create(Shop entity) {
@@ -41,5 +46,17 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public List<Shop> findAll() {
         return shopDao.findAll();
+    }
+
+    @Override
+    public List<ShopView> findShopsByRating() {
+        return shopRatingDao.findShopsByRating();
+    }
+
+    @Override
+    public void calculateShopRating() {
+        shopRatingDao.deleteAll();
+        shopRatingDao.calculateShopRating();
+
     }
 }

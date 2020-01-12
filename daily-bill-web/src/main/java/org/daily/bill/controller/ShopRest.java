@@ -1,6 +1,7 @@
 package org.daily.bill.controller;
 
 import org.daily.bill.domain.Shop;
+import org.daily.bill.domain.ShopView;
 import org.daily.bill.response.Response;
 import org.daily.bill.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,17 @@ public class ShopRest {
         try {
             shopService.update(shop);
             return new Response(OK_CODE, OK_STATUS, "Updated");
+        } catch (Exception e) {
+            return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage(), e);
+        }
+
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value="/rating/calculate")
+    public Response calculateShopRating() {
+        try {
+            shopService.calculateShopRating();
+            return new Response(OK_CODE, OK_STATUS, "Rating isCalculated");
         } catch (Exception e) {
             return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage(), e);
         }

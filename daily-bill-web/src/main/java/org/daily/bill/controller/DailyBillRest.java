@@ -95,7 +95,7 @@ public class DailyBillRest {
     @RequestMapping("/shops")
     public Response findShops() {
         try {
-            List<Shop> shops = dailyBillService.findShops();
+            List<ShopView> shops = dailyBillService.findShops();
             return new Response(OK_CODE, OK_STATUS, null, shops);
         } catch (Exception e) {
             return new Response(ERROR_CODE, ERROR_STATUS, e.getMessage());

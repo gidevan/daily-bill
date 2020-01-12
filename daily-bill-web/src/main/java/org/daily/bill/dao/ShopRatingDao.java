@@ -11,4 +11,8 @@ import java.util.List;
 public interface ShopRatingDao extends CrudDao<ShopRating, Long> {
 
     List<ShopView> findShopsByRating();
+
+    void deleteAll();
+
+    void calculateShopRating();
 }

@@ -6,7 +6,6 @@ import org.daily.bill.domain.Identifiable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -15,7 +14,6 @@ import org.testng.annotations.Test;
  */
 @ContextConfiguration(classes = {Config.class, DataConfig.class})
 @TestPropertySource(locations={"classpath:application-test.properties"})
-@Transactional(readOnly = true)
 public abstract class AbstractDaoTest<ID, T extends Identifiable, D extends CrudDao> extends AbstractTestNGSpringContextTests {
     protected static final int DEFAULT_INDEX = 0;
 

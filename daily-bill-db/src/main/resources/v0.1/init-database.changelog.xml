@@ -11,33 +11,33 @@
                 </column>
                 <column name="name" type="varchar2(255)"></column>
                 <column name="description" type="varchar2(512)"></column>
-                <column name="created" type="timestamp(8)" defaultValueComputed="now()">
+                <column name="created" type="timestamp" defaultValueComputed="now()">
                     <constraints nullable="false"/>
                 </column>
-                <column name="updated" type="timestamp(8)"></column>
+                <column name="updated" type="timestamp"></column>
             </createTable>
             <createTable tableName="shop">
                 <column name="id" type="bigint">
                     <constraints primaryKey="true" primaryKeyName="pk_shop_id"/>
                 </column>
                 <column name="name" type="varchar2(255)"></column>
-                <column name="created" type="timestamp(8)" defaultValueComputed="now()">
+                <column name="created" type="timestamp" defaultValueComputed="now()">
                     <constraints nullable="false"/>
                 </column>
-                <column name="updated" type="timestamp(8)"></column>
+                <column name="updated" type="timestamp"></column>
             </createTable>
             <createTable tableName="bill">
                 <column name="id" type="bigint">
                     <constraints primaryKey="true" primaryKeyName="pk_bill_id"/>
                 </column>
-                <column name="date" type="timestamp(8)"></column>
+                <column name="date" type="timestamp"></column>
                 <column name="shop_id" type="bigint">
                     <constraints referencedColumnNames="id" references="shop" foreignKeyName="fk_bill_shop_id"/>
                 </column>
-                <column name="created" type="timestamp(8)" defaultValueComputed="now()">
+                <column name="created" type="timestamp" defaultValueComputed="now()">
                     <constraints nullable="false"/>
                 </column>
-                <column name="updated" type="timestamp(8)"></column>
+                <column name="updated" type="timestamp"></column>
             </createTable>
             <createTable tableName="bill_item">
                 <column name="id" type="bigint">
@@ -52,10 +52,10 @@
                 <column name="price" type="real" remarks="Pric of one item">
                 </column>
                 <column name="count_item" type="int"></column>
-                <column name="created" type="timestamp(8)" defaultValueComputed="now()">
+                <column name="created" type="timestamp" defaultValueComputed="now()">
                     <constraints nullable="false"/>
                 </column>
-                <column name="updated" type="timestamp(8)"></column>
+                <column name="updated" type="timestamp"></column>
             </createTable>
             <rollback>
                 <dropTable tableName="bill_item"/>
@@ -114,10 +114,10 @@
                 </column>
                 <column name="name" type="varchar2(255)"/>
                 <column name="is_default" type="boolean" defaultValueBoolean="false"/>
-                <column name="created" type="timestamp(8)" defaultValueComputed="now()">
+                <column name="created" type="timestamp" defaultValueComputed="now()">
                     <constraints nullable="false"/>
                 </column>
-                <column name="updated" type="timestamp(8)"></column>
+                <column name="updated" type="timestamp"></column>
             </createTable>
             <createSequence sequenceName="currency_seq" minValue="1000"/>
             <insert tableName="currency">
@@ -178,10 +178,10 @@
                 </column>
                 <column name="shop_id" type="bigint"/>
                 <column name="rating" type="real"/>
-                <column name="created" type="timestamp(8)" defaultValueComputed="now()">
+                <column name="created" type="timestamp" defaultValueComputed="now()">
                     <constraints nullable="false"/>
                 </column>
-                <column name="updated" type="timestamp(8)"/>
+                <column name="updated" type="timestamp"/>
             </createTable>
             <addForeignKeyConstraint baseTableName="shop_rating" baseColumnNames="shop_id"
                                      constraintName="fk_shop_rating_shop_id" referencedTableName="shop"

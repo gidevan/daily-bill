@@ -6,11 +6,11 @@
     <parent>
         <groupId>org.daily</groupId>
         <artifactId>bill</artifactId>
-        <version>0.3</version>
+        <version>0.4</version>
     </parent>
     <groupId>org.daily.bill</groupId>
     <artifactId>db</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
     <packaging>jar</packaging>
 
     <name>daily-bill-db</name>
@@ -28,6 +28,9 @@
         </profile>
         <profile>
             <id>test</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <properties>
                 <db.username>postgres</db.username>
                 <db.password>postgres</db.password>
@@ -36,6 +39,9 @@
         </profile>
         <profile>
             <id>prod</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <properties>
                 <db.username>postgres</db.username>
                 <db.password>postgres</db.password>
@@ -46,7 +52,7 @@
     </profiles>
 
     <properties>
-        <liquibase.version>3.5.3</liquibase.version>
+        <liquibase.version>4.23.0</liquibase.version>
     </properties>
 
     <build>
